@@ -1,0 +1,79 @@
+<div class="tp-company-header-card">
+  <!-- TOPO: IDENTIFICAÇÃO DA EMPRESA & BOTÕES DE AÇÃO -->
+  <div class="tp-company-identity-row">
+    <div class="tp-company-brand-info">
+      <div class="tp-company-avatar">
+        <tp-icon name="briefcase" size="md"></tp-icon>
+      </div>
+
+      <div class="tp-company-titles">
+        <div class="tp-company-name-wrap">
+          <h1 class="tp-company-name">{{ companyName }}</h1>
+          <span *ngIf="verified" class="tp-verified-badge" title="Empresa Verificada">
+            <tp-icon name="shield-check" size="xs"></tp-icon>
+            <span>Verificada</span>
+          </span>
+        </div>
+        <div class="tp-company-meta">
+          <span class="tp-meta-item">
+            <tp-icon name="star" size="xs" customClass="tp-star-icon"></tp-icon>
+            <strong>{{ rating }}</strong> (Contratante Top)
+          </span>
+          <span class="tp-meta-dot">•</span>
+          <span class="tp-meta-item">Repasses Garantidos via PIX</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTÕES PRINCIPAIS DE AÇÃO -->
+    <div class="tp-header-action-wrap">
+      <button
+        type="button"
+        class="tp-header-boost-btn"
+        (click)="onBoostClick()"
+        aria-label="Destacar Empresa no feed"
+      >
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        <span>🚀 Destacar Empresa</span>
+      </button>
+
+      <tp-button
+        variant="primary"
+        size="md"
+        customClass="tp-publish-btn"
+        (btnClick)="onPublishClick()"
+      >
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        <span>+ Publicar Nova Vaga</span>
+      </tp-button>
+    </div>
+  </div>
+
+  <!-- DIVISOR SUTIL -->
+  <div class="tp-header-divider"></div>
+
+  <!-- LINHA DE 3 MÉTRICAS OPERACIONAIS EM TEXTO LIMPO -->
+  <div class="tp-company-metrics-grid">
+    <!-- MÉTRICA 1: VAGAS ABERTAS -->
+    <div class="tp-company-metric-item">
+      <span class="tp-cmetric-number">{{ metrics.openJobs }}</span>
+      <span class="tp-cmetric-label">Vagas Abertas</span>
+    </div>
+
+    <div class="tp-metric-separator" aria-hidden="true"></div>
+
+    <!-- MÉTRICA 2: CANDIDATOS EM ANÁLISE -->
+    <div class="tp-company-metric-item">
+      <span class="tp-cmetric-number tp-cmetric-highlight">{{ metrics.candidatesUnderReview }}</span>
+      <span class="tp-cmetric-label">Candidatos em Análise</span>
+    </div>
+
+    <div class="tp-metric-separator" aria-hidden="true"></div>
+
+    <!-- MÉTRICA 3: TURNOS CONCLUÍDOS -->
+    <div class="tp-company-metric-item">
+      <span class="tp-cmetric-number">{{ metrics.completedShifts }}</span>
+      <span class="tp-cmetric-label">Turnos Concluídos</span>
+    </div>
+  </div>
+</div>

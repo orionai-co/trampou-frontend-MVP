@@ -1,0 +1,187 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tp-achievements-card {
+  background-color: var(--tp-color-white);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: var(--tp-radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--tp-shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tp-achievements-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tp-achievements-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tp-achievements-header-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--tp-radius-md);
+  background-color: #fef3c7;
+  color: #d97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tp-achievements-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--tp-color-primary-900);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.tp-achievements-subtitle {
+  font-size: 0.75rem;
+  color: var(--tp-color-text-tertiary);
+  display: block;
+  margin-top: 1px;
+}
+
+.tp-achievements-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0284c7;
+  background-color: #e0f2fe;
+  border: 1px solid #bae6fd;
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+/* Grade de Conquistas */
+.tp-achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.tp-achievement-item {
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border-subtle);
+  border-radius: var(--tp-radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-achievement-item:hover {
+  border-color: var(--tp-color-border-hover);
+  box-shadow: var(--tp-shadow-xs);
+  transform: translateY(-1px);
+  background-color: #ffffff;
+}
+
+.tp-achievement-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tp-achievement-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--tp-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tp-icon-ach-1 {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.tp-icon-ach-2 {
+  background-color: #e0f2fe;
+  color: #0284c7;
+}
+
+.tp-icon-ach-3 {
+  background-color: #ffe4e6;
+  color: #e11d48;
+}
+
+.tp-icon-ach-4 {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.tp-achievement-unlocked-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #166534;
+  background-color: #dcfce7;
+  border: 1px solid #bbf7d0;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tp-achievement-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.tp-achievement-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--tp-color-primary-900);
+  margin: 0;
+}
+
+.tp-achievement-desc {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--tp-color-text-secondary);
+  margin: 0;
+}
+
+.tp-achievement-footer {
+  margin-top: auto;
+  padding-top: 4px;
+  border-top: 1px solid var(--tp-color-border-subtle);
+}
+
+.tp-achievement-date {
+  font-size: 0.6875rem;
+  color: var(--tp-color-text-tertiary);
+}
+
+@media (max-width: 600px) {
+  .tp-achievements-card {
+    padding: 16px;
+  }
+
+  .tp-achievements-grid {
+    grid-template-columns: 1fr;
+  }
+}

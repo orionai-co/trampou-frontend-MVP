@@ -1,0 +1,98 @@
+<div class="tp-sidebar-filters-compact" role="search" aria-label="Filtros rápidos de oportunidades">
+  
+  <!-- CABEÇALHO DO PAINEL DE FILTROS -->
+  <div class="tp-filters-header">
+    <div class="tp-filters-title-wrap">
+      <tp-icon name="sliders" size="xs" customClass="tp-filter-icon"></tp-icon>
+      <span class="tp-filters-title">Filtrar Vagas</span>
+    </div>
+    <button
+      *ngIf="hasActiveFilters()"
+      type="button"
+      class="tp-filters-reset-btn"
+      (click)="resetFilters()"
+      aria-label="Limpar todos os filtros"
+    >
+      Limpar
+    </button>
+  </div>
+
+  <!-- SEÇÃO 1: CATEGORIAS (CHIPS LEVES E MINIMALISTAS) -->
+  <div class="tp-filter-group">
+    <span class="tp-group-label">Categoria</span>
+    <div class="tp-category-chips">
+      <button
+        *ngFor="let cat of categories"
+        type="button"
+        class="tp-chip-btn"
+        [class.tp-chip-btn-active]="currentFilters.category === cat"
+        (click)="onCategoryChange(cat)"
+      >
+        {{ cat }}
+      </button>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 2: RAIO DE DISTÂNCIA (SELETOR COMPACTO) -->
+  <div class="tp-filter-group">
+    <div class="tp-group-label-row">
+      <span class="tp-group-label">Raio de Distância</span>
+      <span class="tp-radius-info">
+        {{ currentFilters.maxDistanceKm ? currentFilters.maxDistanceKm + ' km' : 'Todos' }}
+      </span>
+    </div>
+
+    <div class="tp-distance-grid">
+      <button
+        type="button"
+        class="tp-dist-btn"
+        [class.tp-dist-btn-active]="currentFilters.maxDistanceKm === 5"
+        (click)="onDistanceChange(5)"
+      >
+        5 km
+      </button>
+      <button
+        type="button"
+        class="tp-dist-btn"
+        [class.tp-dist-btn-active]="currentFilters.maxDistanceKm === 10"
+        (click)="onDistanceChange(10)"
+      >
+        10 km
+      </button>
+      <button
+        type="button"
+        class="tp-dist-btn"
+        [class.tp-dist-btn-active]="currentFilters.maxDistanceKm === 15"
+        (click)="onDistanceChange(15)"
+      >
+        15 km
+      </button>
+      <button
+        type="button"
+        class="tp-dist-btn"
+        [class.tp-dist-btn-active]="!currentFilters.maxDistanceKm"
+        (click)="onDistanceChange(undefined)"
+      >
+        Todos
+      </button>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 3: FILTRO RÁPIDO PARA HOJE / URGENTES -->
+  <div class="tp-filter-group tp-urgent-group">
+    <button
+      type="button"
+      class="tp-urgent-toggle"
+      [class.tp-urgent-toggle-active]="currentFilters.onlyTodayOrUrgent"
+      (click)="toggleTodayOrUrgent()"
+      aria-pressed="false"
+    >
+      <div class="tp-urgent-label-left">
+        <span class="tp-urgent-dot"></span>
+        <span>Apenas Urgentes / Hoje</span>
+      </div>
+      <span class="tp-toggle-check" *ngIf="currentFilters.onlyTodayOrUrgent">✓</span>
+    </button>
+  </div>
+
+</div>

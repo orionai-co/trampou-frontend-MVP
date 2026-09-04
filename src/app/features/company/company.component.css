@@ -1,0 +1,389 @@
+:host {
+  display: block;
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  background-color: var(--tp-color-background);
+}
+
+.tp-company-page-wrapper {
+  padding-top: 0;
+  padding-bottom: var(--tp-spacing-4xl);
+}
+
+.tp-company-layout-container {
+  width: 100%;
+}
+
+/* Grid de 3 Colunas: Vagas (1fr) + Contatos (280px) + Chat (380px) */
+.tp-company-dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px 380px;
+  gap: 20px;
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 24px 20px;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+/* Coluna 1: Vagas & Operação da Empresa */
+.tp-col-jobs {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tp-col-jobs tp-company-campaign-metrics {
+  margin-bottom: var(--tp-spacing-lg);
+}
+
+/* Colunas Laterais Fixas */
+.tp-col-contacts,
+.tp-col-chat {
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 110px);
+  display: flex;
+  flex-direction: column;
+}
+
+.tp-col-contacts {
+  width: 280px;
+}
+
+.tp-col-chat {
+  width: 380px;
+}
+
+/* Banner de Feedback Temporário */
+.tp-company-feedback-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background-color: var(--tp-color-success-light);
+  border: 1px solid var(--tp-color-success-border);
+  color: var(--tp-color-success-text);
+  padding: 12px 16px;
+  border-radius: var(--tp-radius-md);
+  margin-bottom: var(--tp-spacing-lg);
+  font-size: 0.875rem;
+  font-weight: 500;
+  animation: fadeInDown 200ms ease-out;
+}
+
+.tp-feedback-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tp-feedback-close {
+  background: none;
+  border: none;
+  color: var(--tp-color-success-text);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  opacity: 0.8;
+  transition: opacity var(--tp-transition-fast);
+}
+
+.tp-feedback-close:hover {
+  opacity: 1;
+}
+
+/* Abas de Navegação Interna */
+.tp-company-tabs-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--tp-color-border);
+  margin-bottom: var(--tp-spacing-xl);
+  gap: 8px;
+}
+
+.tp-company-tab-btn {
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--tp-color-text-secondary);
+  cursor: pointer;
+  position: relative;
+  transition: color var(--tp-transition-fast);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tp-company-tab-btn:hover {
+  color: var(--tp-color-primary-900);
+}
+
+.tp-company-tab-active {
+  color: var(--tp-color-primary-900);
+  font-weight: 700;
+}
+
+.tp-tab-label-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tp-tab-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background-color: var(--tp-color-surface-subtle);
+  color: var(--tp-color-text-secondary);
+}
+
+.tp-company-tab-active .tp-tab-badge {
+  background-color: var(--tp-color-accent-100);
+  color: var(--tp-color-accent-700);
+}
+
+.tp-tab-active-indicator {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--tp-color-accent-600);
+  border-radius: 2px 2px 0 0;
+}
+
+/* Lista de Cards */
+.tp-company-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Estado Vazio */
+.tp-company-empty-state {
+  background-color: var(--tp-color-surface);
+  border: 1px dashed var(--tp-color-border);
+  border-radius: var(--tp-radius-lg);
+  padding: 48px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.tp-empty-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  background-color: var(--tp-color-surface-subtle);
+  color: var(--tp-color-accent-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.tp-company-empty-state h3 {
+  font-size: 1.125rem;
+  color: var(--tp-color-primary-900);
+  margin: 0;
+}
+
+.tp-company-empty-state p {
+  font-size: 0.875rem;
+  color: var(--tp-color-text-secondary);
+  max-width: 440px;
+  margin: 0 0 8px 0;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal de Confirmação de Payout */
+.tp-payout-confirm-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tp-payout-amount-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, var(--tp-color-surface) 0%, var(--tp-color-accent-50) 100%);
+  border: 1px solid var(--tp-color-accent-200);
+  border-radius: var(--tp-radius-md);
+  padding: 16px;
+  gap: 4px;
+}
+
+.tp-pbox-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tp-color-accent-700);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tp-pbox-val {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tp-pbox-val span {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--tp-color-primary-900);
+}
+
+.tp-pbox-val small {
+  font-size: 0.75rem;
+  color: var(--tp-color-text-secondary);
+}
+
+.tp-payout-details-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  padding: 12px 14px;
+}
+
+.tp-pdetail-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 0.8125rem;
+}
+
+.tp-pdetail-lbl {
+  color: var(--tp-color-text-secondary);
+  font-weight: 500;
+}
+
+.tp-pdetail-v {
+  color: var(--tp-color-primary-900);
+  font-weight: 600;
+}
+
+.tp-pix-font {
+  font-family: monospace;
+}
+
+.tp-payout-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--tp-color-accent-700);
+  background-color: var(--tp-color-accent-50);
+  border: 1px solid var(--tp-color-accent-200);
+  padding: 8px 10px;
+  border-radius: var(--tp-radius-sm);
+  line-height: 1.35;
+}
+
+.tp-modal-footer-dual {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+  .tp-company-dashboard-grid {
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+  }
+
+  .tp-col-contacts {
+    display: none;
+  }
+
+  .tp-col-chat {
+    width: 340px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .tp-company-dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 12px 80px 12px; /* padding extra na base para a barra mobile */
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .tp-col-jobs {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* No mobile/tablet, as colunas de chat e contatos ficam ocultas por padrão na tela principal
+     e acessíveis via drawer/modal sob demanda */
+  .tp-col-contacts,
+  .tp-col-chat {
+    display: none;
+  }
+
+  /* Mobile Chat Overlay Fullscreen */
+  .tp-col-chat.tp-chat-mobile-visible {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 1200;
+    background-color: var(--tp-color-surface);
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .tp-col-chat.tp-chat-mobile-visible tp-shift-chat-sidebar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .tp-company-tab-btn {
+    padding: 10px 12px;
+    font-size: 0.875rem;
+  }
+
+  .tp-company-cards-grid {
+    gap: 12px;
+  }
+}

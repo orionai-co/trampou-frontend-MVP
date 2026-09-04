@@ -1,0 +1,265 @@
+<div class="tp-company-page-wrapper">
+  <div class="tp-company-layout-container">
+    
+    <!-- GRID DE 3 COLUNAS: VAGAS & MÉTRICAS (ESQ) + CONTATOS (MEIO) + CHAT (DIR) -->
+    <div class="tp-company-dashboard-grid">
+      
+      <!-- 1. COLUNA PRINCIPAL: HEADER, MÉTRICAS, ABAS E LISTAGEM DE VAGAS -->
+      <section class="tp-col-jobs" role="region" aria-label="Painel da Empresa Contratante">
+        
+        <!-- 1.1 CABEÇALHO OPERACIONAL DA EMPRESA -->
+        <tp-company-dashboard-header
+          [companyName]="companyService.companyProfile().name"
+          [verified]="companyService.companyProfile().verified"
+          [rating]="companyService.companyProfile().rating"
+          [metrics]="companyService.metrics()"
+          (openCreateJob)="openCreateJobModal()"
+          (openBoostCampaign)="openBoostModal()"
+        ></tp-company-dashboard-header>
+
+        <!-- BANNER DE FEEDBACK TEMPORÁRIO -->
+        <div *ngIf="feedbackMessage()" class="tp-company-feedback-banner">
+          <div class="tp-feedback-inner">
+            <tp-icon name="check-circle" size="sm"></tp-icon>
+            <span>{{ feedbackMessage() }}</span>
+          </div>
+          <button type="button" class="tp-feedback-close" (click)="dismissFeedback()" aria-label="Fechar notificação">
+            <tp-icon name="x" size="xs"></tp-icon>
+          </button>
+        </div>
+
+        <!-- 1.2 DASHBOARD DE DESEMPENHO DO IMPULSIONAMENTO & CONTEÚDO INSTITUCIONAL -->
+        <tp-company-campaign-metrics
+          (openBoostModal)="openBoostModal()"
+        ></tp-company-campaign-metrics>
+
+        <!-- 1.3 ABAS DE NAVEGAÇÃO INTERNA: VAGAS ATIVAS & HISTÓRICO -->
+        <nav class="tp-company-tabs-header" aria-label="Filtro de vagas da empresa">
+          <button
+            type="button"
+            class="tp-company-tab-btn"
+            [class.tp-company-tab-active]="activeTab() === 'active'"
+            (click)="onSelectTab('active')"
+          >
+            <div class="tp-tab-label-wrap">
+              <span>Vagas Ativas</span>
+              <span class="tp-tab-badge" *ngIf="companyService.activeJobs().length > 0">
+                {{ companyService.activeJobs().length }}
+              </span>
+            </div>
+            <div class="tp-tab-active-indicator" *ngIf="activeTab() === 'active'"></div>
+          </button>
+
+          <button
+            type="button"
+            class="tp-company-tab-btn"
+            [class.tp-company-tab-active]="activeTab() === 'history'"
+            (click)="onSelectTab('history')"
+          >
+            <div class="tp-tab-label-wrap">
+              <span>Histórico de Turnos</span>
+              <span class="tp-tab-badge" *ngIf="companyService.historyJobs().length > 0">
+                {{ companyService.historyJobs().length }}
+              </span>
+            </div>
+            <div class="tp-tab-active-indicator" *ngIf="activeTab() === 'history'"></div>
+          </button>
+        </nav>
+
+        <!-- 1.4 LISTA DE VAGAS -->
+        <div class="tp-company-list-wrapper">
+          
+          <!-- ABA: VAGAS ATIVAS -->
+          <ng-container *ngIf="activeTab() === 'active'">
+            <div *ngIf="companyService.activeJobs().length > 0" class="tp-company-cards-grid">
+              <tp-company-job-card
+                *ngFor="let job of companyService.activeJobs(); trackBy: trackByJobId"
+                [job]="job"
+                (viewCandidates)="openCandidatesModal(job)"
+                (completeJob)="openPayoutConfirmModal(job)"
+              ></tp-company-job-card>
+            </div>
+
+            <!-- Estado Vazio: Vagas Ativas -->
+            <div *ngIf="companyService.activeJobs().length === 0" class="tp-company-empty-state">
+              <div class="tp-empty-icon-wrap">
+                <tp-icon name="briefcase" size="lg"></tp-icon>
+              </div>
+              <h3>Nenhuma vaga ativa no momento</h3>
+              <p>Publique uma nova oportunidade sob demanda em menos de 1 minuto para receber candidatos qualificados.</p>
+              <tp-button variant="primary" size="md" (btnClick)="openCreateJobModal()">
+                <tp-icon name="sparkles" size="xs"></tp-icon>
+                <span>Publicar Primeira Vaga</span>
+              </tp-button>
+            </div>
+          </ng-container>
+
+          <!-- ABA: HISTÓRICO DE TURNOS -->
+          <ng-container *ngIf="activeTab() === 'history'">
+            <div *ngIf="companyService.historyJobs().length > 0" class="tp-company-cards-grid">
+              <tp-company-job-card
+                *ngFor="let job of companyService.historyJobs(); trackBy: trackByJobId"
+                [job]="job"
+                (viewCandidates)="openCandidatesModal(job)"
+              ></tp-company-job-card>
+            </div>
+
+            <!-- Estado Vazio: Histórico -->
+            <div *ngIf="companyService.historyJobs().length === 0" class="tp-company-empty-state">
+              <div class="tp-empty-icon-wrap">
+                <tp-icon name="check-circle" size="lg"></tp-icon>
+              </div>
+              <h3>Nenhum turno finalizado no histórico</h3>
+              <p>Os turnos concluídos e repasses efetuados aos profissionais aparecerão listados aqui.</p>
+            </div>
+          </ng-container>
+
+        </div>
+
+      </section>
+
+      <!-- 2. COLUNA CENTRAL: LISTA DE CONTATOS / CANDIDATOS APROVADOS -->
+      <aside class="tp-col-contacts" aria-label="Lista de Contatos e Mensagens">
+        <tp-chat-contacts-list
+          [contacts]="activeChatContacts()"
+          [selectedCandidateId]="activeChatFreelancerId()"
+          [selectedJobId]="activeChatJobId()"
+          (selectContact)="handleSelectContact($event)"
+        ></tp-chat-contacts-list>
+      </aside>
+
+      <!-- 3. COLUNA DA EXTREMA DIREITA: CHAT ATIVO COM O PROFISSIONAL -->
+      <aside
+        class="tp-col-chat"
+        [class.tp-chat-mobile-visible]="isMobileChatOpen()"
+        aria-label="Canal de Alinhamento e Chat"
+      >
+        <tp-shift-chat-sidebar
+          [jobId]="activeChatJobId()"
+          [jobTitle]="activeChatJobTitle()"
+          [companyName]="companyService.companyProfile().name"
+          [freelancerName]="activeChatFreelancerName()"
+          [freelancerId]="activeChatFreelancerId()"
+          [canPayPix]="activeChatJob()?.status !== 'completed'"
+          [isMobileOpen]="isMobileChatOpen()"
+          currentUserRole="company"
+          (closed)="closeChatSidebar()"
+          (openPayout)="openPayoutFromSidebar()"
+        ></tp-shift-chat-sidebar>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE IMPULSIONAMENTO / DESTAQUE INSTITUCIONAL -->
+  <tp-boost-campaign-modal
+    [isOpen]="isBoostModalOpen()"
+    [companyName]="companyService.companyProfile().name"
+    [companyRating]="companyService.companyProfile().rating"
+    [openJobsCount]="companyService.activeJobs().length"
+    (closed)="closeBoostModal()"
+    (campaignCreated)="handleCampaignCreated($event)"
+  ></tp-boost-campaign-modal>
+
+  <!-- MODAL DE CRIAÇÃO RÁPIDA DE VAGA (STEPPER EM 3 PASSOS) -->
+  <tp-create-job-modal
+    [isOpen]="isCreateModalOpen()"
+    (closed)="closeCreateJobModal()"
+    (jobCreated)="handleJobCreated($event)"
+  ></tp-create-job-modal>
+
+  <!-- MODAL DE SELEÇÃO E TRIAGEM RÁPIDA DE CANDIDATOS (1 CLIQUE) -->
+  <tp-candidate-selection-modal
+    [isOpen]="isCandidateModalOpen()"
+    [job]="selectedJob()"
+    (closed)="closeCandidatesModal()"
+    (candidateApproved)="handleCandidateApproved($event)"
+    (candidateRejected)="handleCandidateRejected($event)"
+    (openChat)="handleOpenCandidateChat($event)"
+    (payoutCandidate)="openPayoutConfirmModal($event.job, $event.candidate)"
+    (viewProfile)="openCandidateProfileDirect($event.candidate, $event.job)"
+  ></tp-candidate-selection-modal>
+
+  <!-- MODAL DE PERFIL COMPLETO DO CANDIDATO -->
+  <tp-candidate-profile-modal
+    [isOpen]="isCandidateProfileModalOpen()"
+    [candidate]="profileCandidate()"
+    [job]="profileJob()"
+    (closed)="closeCandidateProfileDirect()"
+    (approve)="handleProfileCandidateApproved($event)"
+    (reject)="handleProfileCandidateRejected($event)"
+  ></tp-candidate-profile-modal>
+
+  <!-- MODAL DE CONFIRMAÇÃO DE VALIDAÇÃO DE PRESENÇA E LIBERAÇÃO PIX -->
+  <tp-modal
+    [isOpen]="isConfirmPayoutModalOpen()"
+    title="Validar Presença & Liberar PIX"
+    subtitle="Confirme o encerramento do serviço e transferência instantânea do pagamento"
+    maxWidth="480px"
+    [hasFooter]="true"
+    (closed)="closePayoutConfirmModal()"
+  >
+    <div *ngIf="jobPendingPayout()" class="tp-payout-confirm-body">
+      <div class="tp-payout-amount-box">
+        <span class="tp-pbox-label">Valor a ser transferido</span>
+        <div class="tp-pbox-val">
+          <span>R$ {{ jobPendingPayout()?.paymentAmount }},00</span>
+          <small>PIX Instantâneo Garantido</small>
+        </div>
+      </div>
+
+      <div class="tp-payout-details-grid">
+        <div class="tp-pdetail-item">
+          <span class="tp-pdetail-lbl">Turno</span>
+          <span class="tp-pdetail-v">{{ jobPendingPayout()?.title }}</span>
+        </div>
+        <div class="tp-pdetail-item">
+          <span class="tp-pdetail-lbl">Profissional</span>
+          <span class="tp-pdetail-v">{{ candidatePendingPayout()?.name || 'Profissional Aprovado' }}</span>
+        </div>
+        <div class="tp-pdetail-item">
+          <span class="tp-pdetail-lbl">Chave PIX Cadastrada</span>
+          <span class="tp-pdetail-v tp-pix-font">{{ candidatePendingPayout()?.pixKeyPreview || '***.842.190-**' }}</span>
+        </div>
+      </div>
+
+      <div class="tp-payout-notice">
+        <tp-icon name="shield-check" size="xs"></tp-icon>
+        <span>Ao confirmar, o pagamento é transferido na hora e o chat efêmero deste turno é encerrado.</span>
+      </div>
+    </div>
+
+    <div tpModalFooter class="tp-modal-footer-dual">
+      <tp-button variant="outline" size="sm" (btnClick)="closePayoutConfirmModal()">
+        Cancelar
+      </tp-button>
+      <tp-button variant="primary" size="sm" customClass="tp-confirm-pix-btn" (btnClick)="confirmPayoutAndCompleteShift()">
+        <tp-icon name="check" size="xs"></tp-icon>
+        <span>Confirmar & Pagar PIX</span>
+      </tp-button>
+    </div>
+  </tp-modal>
+
+  <!-- MODAL DE COMPROVANTE PIX INSTANTÂNEO -->
+  <tp-pix-receipt-modal
+    [isOpen]="isReceiptModalOpen()"
+    [receiptData]="receiptData()"
+    [showRatingAction]="true"
+    (closed)="closeReceiptModal()"
+    (openRating)="openRatingModal()"
+  ></tp-pix-receipt-modal>
+
+  <!-- MODAL DE AVALIAÇÃO MÚTUA (EMPRESA -> PROFISSIONAL) -->
+  <tp-rating-modal
+    [isOpen]="isRatingModalOpen()"
+    [shiftId]="ratingShiftId()"
+    [shiftTitle]="ratingShiftTitle()"
+    reviewerRole="company"
+    [reviewerName]="companyService.companyProfile().name"
+    [targetId]="ratingTargetId()"
+    [targetName]="ratingTargetName()"
+    (closed)="closeRatingModal()"
+    (reviewSubmitted)="handleReviewSubmitted()"
+  ></tp-rating-modal>
+
+</div>

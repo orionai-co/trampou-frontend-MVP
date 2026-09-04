@@ -1,0 +1,16 @@
+<button
+  [type]="type"
+  [disabled]="disabled || loading"
+  [class]="'tp-btn tp-btn-' + variant + ' tp-btn-' + size + (fullWidth ? ' tp-btn-full' : '') + (loading ? ' tp-btn-loading' : '')"
+  (click)="onClick($event)"
+>
+  <tp-spinner
+    *ngIf="loading"
+    [size]="size === 'sm' ? 'xs' : 'sm'"
+    [color]="variant === 'primary' || variant === 'destructive' ? 'white' : 'accent'"
+    class="tp-btn-spinner"
+  ></tp-spinner>
+  <span class="tp-btn-content" [class.tp-btn-invisible]="loading">
+    <ng-content></ng-content>
+  </span>
+</button>

@@ -1,0 +1,54 @@
+<div class="tp-container tp-page-wrapper">
+  <div class="tp-page-header">
+    <div>
+      <div class="tp-page-badge">
+        <tp-badge variant="brand" [dot]="true">Perfil Profissional & Habilidades</tp-badge>
+      </div>
+      <h1 class="tp-page-title">Meu Perfil</h1>
+      <p class="tp-page-description">
+        Gerencie suas funções dominadas, níveis de qualificação, raio de atuação e documentos.
+      </p>
+    </div>
+    <div class="tp-page-actions">
+      <tp-button variant="outline" size="sm">
+        <tp-icon name="user" size="xs"></tp-icon>
+        Editar Perfil
+      </tp-button>
+    </div>
+  </div>
+
+  <div class="tp-placeholder-card-wrap">
+    <tp-card padding="lg">
+      <div class="tp-profile-preview-card">
+        <div class="tp-profile-avatar-wrap">
+          <div class="tp-profile-avatar">
+            <span>{{ userProfile.avatarInitials() }}</span>
+          </div>
+          <div class="tp-profile-verified">
+            <tp-icon name="shield-check" size="xs"></tp-icon>
+          </div>
+        </div>
+        <div class="tp-profile-info">
+          <h2>{{ userProfile.name() }}</h2>
+          <p>{{ userProfile.currentUser().primaryRole }} • {{ userProfile.currentUser().location.city }}, {{ userProfile.currentUser().location.state }}</p>
+          <div class="tp-profile-skills-row">
+            <tp-badge
+              *ngFor="let skill of userProfile.currentUser().skills"
+              [variant]="skill.variant"
+            >
+              {{ skill.role }} ({{ skill.levelName }})
+            </tp-badge>
+          </div>
+        </div>
+      </div>
+
+      <div class="tp-profile-divider"></div>
+
+      <div class="tp-placeholder-notice">
+        <p>
+          A estrutura e o design de perfil com múltiplos níveis de habilidade já estão formatados. O formulário interativo de edição e envio de evidências será desenvolvido na etapa correspondente.
+        </p>
+      </div>
+    </tp-card>
+  </div>
+</div>

@@ -1,0 +1,107 @@
+:host {
+  display: block;
+  width: 100%;
+  margin-top: auto;
+}
+
+.tp-footer {
+  background-color: var(--tp-color-white);
+  border-top: 1px solid var(--tp-color-border);
+  padding: var(--tp-spacing-2xl) 0 var(--tp-spacing-xl);
+  color: var(--tp-color-text-secondary);
+  font-size: var(--tp-font-size-xs);
+}
+
+.tp-footer-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tp-spacing-xl);
+}
+
+.tp-footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tp-spacing-xs);
+}
+
+.tp-footer-logo-row {
+  display: flex;
+  align-items: center;
+  gap: var(--tp-spacing-sm);
+}
+
+.tp-footer-logo-text {
+  font-size: var(--tp-font-size-base);
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-primary-900);
+  letter-spacing: -0.02em;
+}
+
+.tp-footer-badge {
+  font-size: 10px;
+  font-weight: var(--tp-font-weight-semibold);
+  background-color: var(--tp-color-accent-100);
+  color: var(--tp-color-accent-700);
+  padding: 1px 6px;
+  border-radius: var(--tp-radius-full);
+}
+
+.tp-footer-tagline {
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-tertiary);
+}
+
+.tp-footer-links-group {
+  display: flex;
+  align-items: center;
+}
+
+.tp-footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tp-spacing-lg);
+}
+
+.tp-footer-link {
+  color: var(--tp-color-text-secondary);
+  text-decoration: none;
+  transition: color var(--tp-transition-fast);
+  font-weight: var(--tp-font-weight-medium);
+}
+
+.tp-footer-link:hover {
+  color: var(--tp-color-primary-900);
+}
+
+.tp-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--tp-spacing-md);
+  padding-top: var(--tp-spacing-lg);
+  border-top: 1px solid var(--tp-color-border-subtle);
+}
+
+.tp-footer-copy {
+  color: var(--tp-color-text-tertiary);
+  font-size: 11px;
+}
+
+.tp-footer-security {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--tp-color-text-tertiary);
+  font-size: 11px;
+}
+
+@media (max-width: 860px) {
+  .tp-footer {
+    padding-bottom: calc(var(--tp-spacing-3xl) + 64px);
+  }
+  .tp-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

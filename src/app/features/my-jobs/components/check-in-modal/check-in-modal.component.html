@@ -1,0 +1,66 @@
+<tp-modal
+  [isOpen]="isOpen"
+  title="Check-in no Local de Trabalho"
+  subtitle="Confirme sua chegada ao estabelecimento para validar o início do turno"
+  maxWidth="480px"
+  [hasFooter]="true"
+  (closed)="onClose()"
+>
+  <div *ngIf="job" class="tp-checkin-body">
+    <!-- Card de Resumo do Trabalho -->
+    <div class="tp-checkin-summary-box">
+      <div class="tp-checkin-header-row">
+        <span class="tp-checkin-company">{{ job.companyName }}</span>
+        <span class="tp-checkin-pay">R$ {{ job.payment.amount }}</span>
+      </div>
+
+      <h4 class="tp-checkin-title">{{ job.title }}</h4>
+
+      <div class="tp-checkin-meta-list">
+        <div class="tp-checkin-meta-item">
+          <tp-icon name="map-pin" size="xs" customClass="tp-checkin-icon"></tp-icon>
+          <span>{{ job.location.address }} ({{ job.location.neighborhood }})</span>
+        </div>
+
+        <div class="tp-checkin-meta-item">
+          <tp-icon name="clock" size="xs" customClass="tp-checkin-icon"></tp-icon>
+          <span>{{ job.schedule.start }} às {{ job.schedule.end }} ({{ job.schedule.totalHours }}h)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instruções Rápidas de Chegada -->
+    <div *ngIf="job.instructions && job.instructions.length > 0" class="tp-checkin-instructions">
+      <span class="tp-instructions-label">
+        <tp-icon name="alert-circle" size="xs"></tp-icon>
+        <span>Orientações da Empresa:</span>
+      </span>
+      <ul class="tp-instructions-list">
+        <li *ngFor="let inst of job.instructions">{{ inst }}</li>
+      </ul>
+    </div>
+
+    <!-- Aviso de Localização / Geofence -->
+    <div class="tp-checkin-notice">
+      <tp-icon name="shield-check" size="xs"></tp-icon>
+      <span>Sua localização GPS será validada no momento da confirmação.</span>
+    </div>
+  </div>
+
+  <!-- Footer do Modal -->
+  <div tpModalFooter class="tp-checkin-footer">
+    <tp-button variant="outline" size="sm" (btnClick)="onClose()">
+      Cancelar
+    </tp-button>
+
+    <tp-button
+      variant="primary"
+      size="md"
+      [loading]="isSubmitting()"
+      (btnClick)="onConfirm()"
+    >
+      <tp-icon name="check" size="xs"></tp-icon>
+      <span>Confirmar Check-in</span>
+    </tp-button>
+  </div>
+</tp-modal>

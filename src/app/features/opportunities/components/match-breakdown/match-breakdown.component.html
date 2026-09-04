@@ -1,0 +1,98 @@
+<div
+  *ngIf="isOpen && data"
+  class="tp-match-backdrop tp-match-overlay"
+  (click)="onBackdropClick($event)"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="'Detalhamento do Match de ' + data.totalMatchScore + '%'"
+>
+  <div class="tp-match-modal tp-match-panel" (click)="$event.stopPropagation()">
+    
+    <!-- MOBILE DRAG HANDLE -->
+    <div class="tp-match-sheet-handle" aria-hidden="true"></div>
+
+    <!-- 1. HEADER DO EXPLICATIVO -->
+    <header class="tp-match-header">
+      <div class="tp-match-title-wrap">
+        <div class="tp-match-score-badge">
+          <tp-icon name="sparkles" size="xs"></tp-icon>
+          <span>✦ {{ data.totalMatchScore }}% Match</span>
+        </div>
+
+        <div class="tp-match-title-text">
+          <h3 class="tp-match-title">Por que esta vaga combina com você?</h3>
+          <span class="tp-match-target-name">{{ data.jobTitleOrCompanyName }}</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="tp-match-close-btn"
+        (click)="onClose($event)"
+        aria-label="Fechar explicação do Match"
+      >
+        <tp-icon name="x" size="xs"></tp-icon>
+      </button>
+    </header>
+
+    <!-- RESUMO / HEADLINE DE COMPATIBILIDADE -->
+    <div class="tp-match-summary-card">
+      <tp-icon name="check-circle" size="xs" customClass="tp-summary-icon"></tp-icon>
+      <p class="tp-match-summary-text">
+        {{ data.summaryHeadline }}
+      </p>
+    </div>
+
+    <!-- 2. LISTA DOS 4 PILARES DE AVALIAÇÃO -->
+    <div class="tp-match-criteria-list">
+      <div
+        *ngFor="let crit of data.criteria"
+        class="tp-match-criterion-item"
+      >
+        <div class="tp-criterion-header">
+          <div class="tp-criterion-label-wrap">
+            <div class="tp-criterion-icon-pill">
+              <tp-icon [name]="getSafeIcon(crit.icon)" size="xs"></tp-icon>
+            </div>
+            <strong class="tp-criterion-label">{{ crit.label }}</strong>
+          </div>
+
+          <span
+            class="tp-criterion-score-tag"
+            [class.tp-score-perfect]="crit.scorePercentage >= 95"
+            [class.tp-score-good]="crit.scorePercentage < 95"
+          >
+            {{ crit.scorePercentage }}%
+          </span>
+        </div>
+
+        <p class="tp-criterion-desc">
+          {{ crit.description }}
+        </p>
+
+        <!-- Barra de Progresso Discreta -->
+        <div class="tp-criterion-progress-track">
+          <div
+            class="tp-criterion-progress-bar"
+            [style.width.%]="crit.scorePercentage"
+            [class.tp-bar-perfect]="crit.scorePercentage >= 95"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. AVISO DE TRANSPARÊNCIA INSTITUCIONAL -->
+    <footer class="tp-match-transparency-footer">
+      <div class="tp-transparency-box">
+        <tp-icon name="shield-check" size="sm" customClass="tp-transparency-icon"></tp-icon>
+        <div class="tp-transparency-text">
+          <strong>Transparência & Neutralidade Algorítmica</strong>
+          <span>
+            O Match do TRAMPOU é 100% neutro e calculado pelo seu histórico e habilidades reais. Patrocínios e destaques não influenciam esta pontuação.
+          </span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+</div>

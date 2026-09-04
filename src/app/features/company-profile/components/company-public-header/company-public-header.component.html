@@ -1,0 +1,56 @@
+<header class="tp-company-header-card" *ngIf="company">
+  <div class="tp-company-header-main">
+    <!-- Logo / Avatar -->
+    <div class="tp-company-avatar">
+      <img *ngIf="company.logoUrl" [src]="company.logoUrl" [alt]="company.name" />
+      <span *ngIf="!company.logoUrl">{{ company.avatarInitials || 'EP' }}</span>
+    </div>
+
+    <!-- Informações da Empresa -->
+    <div class="tp-company-info-col">
+      <div class="tp-company-title-row">
+        <h1 class="tp-company-name">{{ company.name }}</h1>
+        <span *ngIf="company.verified" class="tp-company-verified-badge" title="Empresa Verificada">
+          <tp-icon name="shield-check" size="sm"></tp-icon>
+          <span>Verificado</span>
+        </span>
+      </div>
+
+      <div class="tp-company-meta-row">
+        <span class="tp-company-handle">{{ company.handle }}</span>
+        <span class="tp-company-sep">•</span>
+        <span class="tp-company-category">{{ company.category }}</span>
+        <span class="tp-company-sep">•</span>
+        <span class="tp-company-location">
+          <tp-icon name="map-pin" size="xs"></tp-icon>
+          <span>{{ company.location.neighborhood }}, {{ company.location.city }} ({{ company.location.distanceKm }} km)</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ações de Relacionamento -->
+  <div class="tp-company-actions-group">
+    <button
+      type="button"
+      class="tp-btn-relationship"
+      [class.tp-btn-relationship-active]="isFavorited"
+      (click)="onToggleFavorite()"
+      [attr.aria-pressed]="isFavorited"
+    >
+      <tp-icon name="star" size="xs" [customClass]="isFavorited ? 'tp-star-filled' : ''"></tp-icon>
+      <span>{{ isFavorited ? 'Favoritada' : 'Favoritar' }}</span>
+    </button>
+
+    <button
+      type="button"
+      class="tp-btn-relationship"
+      [class.tp-btn-relationship-active]="isFollowing"
+      (click)="onToggleFollow()"
+      [attr.aria-pressed]="isFollowing"
+    >
+      <tp-icon name="bell" size="xs"></tp-icon>
+      <span>{{ isFollowing ? 'Acompanhando' : 'Acompanhar' }}</span>
+    </button>
+  </div>
+</header>

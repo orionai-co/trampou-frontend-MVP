@@ -1,0 +1,48 @@
+<div class="tp-reputation-card" *ngIf="reputation">
+  <div class="tp-reputation-header-row">
+    <div class="tp-rep-title-wrap">
+      <tp-icon name="shield-check" size="sm" customClass="tp-rep-icon"></tp-icon>
+      <h3 class="tp-rep-title">Reputação Bilateral & Confiabilidade</h3>
+    </div>
+    <span class="tp-rep-tag-verified">Dados Auditados via PIX</span>
+  </div>
+
+  <div class="tp-reputation-grid">
+    <!-- 1. Avaliação Média -->
+    <div class="tp-rep-stat-item">
+      <span class="tp-rep-label">Avaliação Média</span>
+      <div class="tp-rep-val tp-rep-val-stars">
+        <tp-icon name="star" size="sm" customClass="tp-star-gold"></tp-icon>
+        <strong>{{ reputation.averageRating.toFixed(2) }}</strong>
+      </div>
+      <small class="tp-rep-subtext">{{ reputation.totalReviews }} avaliações de freelancers</small>
+    </div>
+
+    <!-- 2. Repasses PIX -->
+    <div class="tp-rep-stat-item">
+      <span class="tp-rep-label">Repasses PIX</span>
+      <div class="tp-rep-val tp-rep-val-success">
+        <strong>{{ reputation.onTimePaymentRate }}%</strong>
+      </div>
+      <small class="tp-rep-subtext">No prazo ao término do turno</small>
+    </div>
+
+    <!-- 3. Taxa de Retorno -->
+    <div class="tp-rep-stat-item">
+      <span class="tp-rep-label">Taxa de Retorno</span>
+      <div class="tp-rep-val tp-rep-val-accent">
+        <strong>{{ reputation.rehireReturnRate }}%</strong>
+      </div>
+      <small class="tp-rep-subtext">Profissionais que voltariam</small>
+    </div>
+
+    <!-- 4. Turnos Cumpridos -->
+    <div class="tp-rep-stat-item">
+      <span class="tp-rep-label">Turnos Cumpridos</span>
+      <div class="tp-rep-val tp-rep-val-primary">
+        <strong>{{ formatNumber(reputation.totalCompletedShifts) }}</strong>
+      </div>
+      <small class="tp-rep-subtext">Histórico comprovado na plataforma</small>
+    </div>
+  </div>
+</div>

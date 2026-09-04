@@ -1,0 +1,54 @@
+<div class="tp-container tp-page-wrapper">
+  <div class="tp-page-header">
+    <div>
+      <div class="tp-page-badge">
+        <tp-badge variant="accent" [dot]="true">Histórico & Serviços Ativos</tp-badge>
+      </div>
+      <h1 class="tp-page-title">Meus Trabalhos</h1>
+      <p class="tp-page-description">
+        Acompanhe suas candidaturas enviadas, serviços confirmados, check-in/check-out e pagamentos.
+      </p>
+    </div>
+  </div>
+
+  <div class="tp-placeholder-card-wrap">
+    <tp-card padding="lg">
+      <div class="tp-placeholder-content">
+        <div class="tp-placeholder-icon">
+          <tp-icon name="briefcase" size="xl"></tp-icon>
+        </div>
+        <h2>Nenhum serviço agendado no momento</h2>
+        <p>
+          Assim que você demonstrar interesse em oportunidades do feed e for confirmado pela empresa contratante, seus trabalhos aparecerão listados aqui com status em tempo real.
+        </p>
+        <div class="tp-placeholder-steps">
+          <div class="tp-step-item">
+            <span class="tp-step-num">1</span>
+            <span>Interesse Enviado</span>
+          </div>
+          <tp-icon name="chevron-right" size="xs" customClass="tp-step-arrow"></tp-icon>
+          <div class="tp-step-item">
+            <span class="tp-step-num">2</span>
+            <span>Confirmado</span>
+          </div>
+          <tp-icon name="chevron-right" size="xs" customClass="tp-step-arrow"></tp-icon>
+          <div class="tp-step-item">
+            <span class="tp-step-num">3</span>
+            <span>Check-in Local</span>
+          </div>
+          <tp-icon name="chevron-right" size="xs" customClass="tp-step-arrow"></tp-icon>
+          <div class="tp-step-item">
+            <span class="tp-step-num">4</span>
+            <span>Concluído & Pago</span>
+          </div>
+        </div>
+        <a routerLink="/oportunidades">
+          <tp-button variant="primary" size="md">
+            <tp-icon name="search" size="xs"></tp-icon>
+            Explorar Oportunidades no Feed
+          </tp-button>
+        </a>
+      </div>
+    </tp-card>
+  </div>
+</div>

@@ -1,0 +1,122 @@
+<header class="tp-header">
+  <div class="tp-container tp-header-container">
+    <!-- Logo & Marca -->
+    <div class="tp-header-brand-wrap">
+      <a routerLink="/oportunidades" class="tp-header-logo tp-brand-link" aria-label="TRAMPOU - Início">
+        <div class="tp-header-logo-icon tp-brand-icon">
+          <tp-icon name="sparkles" size="sm"></tp-icon>
+        </div>
+        <span class="tp-brand-name tp-brand-title">TRAMPOU</span>
+      </a>
+    </div>
+
+    <!-- Links Principais de Navegação (Desktop) -->
+    <nav class="tp-header-nav tp-header-nav-links" aria-label="Navegação Principal" *ngIf="!isSearchOpen()">
+      <a routerLink="/oportunidades" routerLinkActive="tp-nav-link-active" class="tp-nav-link">
+        <tp-icon name="search" size="sm"></tp-icon>
+        <span>Oportunidades</span>
+      </a>
+
+      <a routerLink="/meus-trabalhos" routerLinkActive="tp-nav-link-active" class="tp-nav-link">
+        <tp-icon name="briefcase" size="sm"></tp-icon>
+        <span>Meus Trabalhos</span>
+      </a>
+
+      <a routerLink="/avisos" routerLinkActive="tp-nav-link-active" class="tp-nav-link tp-nav-link-notifications">
+        <tp-icon name="bell" size="sm"></tp-icon>
+        <span>Avisos</span>
+        @if (unreadCount() > 0) {
+          <span class="tp-nav-badge">{{ unreadCount() }}</span>
+        }
+      </a>
+
+      <a routerLink="/perfil" routerLinkActive="tp-nav-link-active" class="tp-nav-link">
+        <tp-icon name="user" size="sm"></tp-icon>
+        <span>Meu Perfil</span>
+      </a>
+    </nav>
+
+    <!-- Barra de Busca Expansível no Header (quando ativa) -->
+    <div *ngIf="isSearchOpen()" class="tp-header-search-bar" (click)="$event.stopPropagation()">
+      <div class="tp-search-input-wrapper">
+        <tp-icon name="search" size="xs" customClass="tp-search-prefix-icon"></tp-icon>
+        <input #searchInput type="text" class="tp-input-shadcn" placeholder="Buscar empresa..." [value]="searchTerm()"
+          (input)="onSearchInput($event)" (keyup.enter)="executeSearch()" (keyup.escape)="closeSearch()"
+          aria-label="Buscar empresa..." />
+        @if (searchTerm()) {
+        <button type="button" class="tp-search-clear-btn" (click)="clearSearch()" aria-label="Limpar busca">
+          <tp-icon name="x" size="xs"></tp-icon>
+        </button>
+        }
+      </div>
+      <button type="button" class="tp-search-close-btn" (click)="closeSearch()" aria-label="Fechar busca">
+        <tp-icon name="x" size="sm"></tp-icon>
+      </button>
+    </div>
+
+    <!-- Ações do Header (Direita) -->
+    <div class="tp-header-actions">
+      <!-- Botão Circular de Busca (Lupa) -->
+      <button *ngIf="!isSearchOpen()" type="button" class="tp-header-search-trigger-btn"
+        [class.tp-search-active-btn]="isSearchOpen() || !!searchTerm()" (click)="toggleSearch($event)"
+        aria-label="Buscar oportunidades" title="Buscar oportunidades">
+        <tp-icon name="search" size="sm"></tp-icon>
+        <span class="tp-search-active-dot" *ngIf="searchTerm()"></span>
+      </button>
+
+      <!-- Alternância de Contexto (Profissional <-> Empresa) -->
+      <a *ngIf="!isCompanyView()" routerLink="/empresa" class="tp-context-switch-btn"
+        title="Acessar painel de contratação da Empresa">
+        <tp-icon name="users" size="xs"></tp-icon>
+        <span>Sou Empresa</span>
+      </a>
+
+      <a *ngIf="isCompanyView()" routerLink="/oportunidades" class="tp-context-switch-btn tp-context-switch-pro"
+        title="Voltar para visão do Profissional">
+        <tp-icon name="user" size="xs"></tp-icon>
+        <span>Visão Profissional</span>
+      </a>
+
+      <!-- Avatar / Menu do Usuário (Alinhado ao Centro) -->
+      <div class="tp-user-menu-wrapper">
+        <button type="button" class="tp-user-avatar-btn" (click)="toggleUserMenu($event)"
+          [attr.aria-expanded]="isUserMenuOpen()" aria-label="Menu do Usuário">
+          <div class="tp-user-avatar">
+            <span class="tp-avatar-initials">{{ userProfile.avatarInitials() }}</span>
+          </div>
+          <span class="tp-user-name">{{ userProfile.shortName() }}</span>
+          <tp-icon name="chevron-down" size="xs" customClass="tp-user-chevron"></tp-icon>
+        </button>
+
+        <!-- Dropdown Simples do Usuário -->
+        <div *ngIf="isUserMenuOpen()" class="tp-user-dropdown" (click)="$event.stopPropagation()">
+          <div class="tp-dropdown-header">
+            <strong>{{ userProfile.name() }}</strong>
+            <small>{{ userProfile.email() }}</small>
+            <div class="tp-dropdown-badge-wrap">
+              <tp-badge variant="success" [dot]="true" size="sm">{{ userProfile.statusLabel() }}</tp-badge>
+            </div>
+          </div>
+          <div class="tp-dropdown-divider"></div>
+          <a routerLink="/perfil" class="tp-dropdown-item" (click)="closeUserMenu()">
+            <tp-icon name="user" size="xs"></tp-icon>
+            <span>Ver Meu Perfil</span>
+          </a>
+          <a routerLink="/meus-trabalhos" class="tp-dropdown-item" (click)="closeUserMenu()">
+            <tp-icon name="briefcase" size="xs"></tp-icon>
+            <span>Histórico de Serviços</span>
+          </a>
+          <a routerLink="/design-system" class="tp-dropdown-item" (click)="closeUserMenu()">
+            <tp-icon name="sparkles" size="xs"></tp-icon>
+            <span>Guia Design System</span>
+          </a>
+          <div class="tp-dropdown-divider"></div>
+          <button type="button" class="tp-dropdown-item tp-dropdown-logout" (click)="closeUserMenu()">
+            <tp-icon name="x-circle" size="xs"></tp-icon>
+            <span>Sair da Conta</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

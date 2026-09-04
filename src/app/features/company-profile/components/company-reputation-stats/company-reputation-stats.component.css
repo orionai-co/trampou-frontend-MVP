@@ -1,0 +1,131 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tp-reputation-card {
+  background-color: var(--tp-color-white);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: var(--tp-radius-lg);
+  padding: var(--tp-spacing-lg) var(--tp-spacing-xl);
+  box-shadow: var(--tp-shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tp-spacing-md);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tp-reputation-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tp-spacing-md);
+  flex-wrap: wrap;
+}
+
+.tp-rep-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tp-rep-icon {
+  color: var(--tp-color-accent-600);
+}
+
+.tp-rep-title {
+  font-size: var(--tp-font-size-md);
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-primary-900);
+  margin: 0;
+}
+
+.tp-rep-tag-verified {
+  font-size: 11px;
+  font-weight: 600;
+  color: #047857;
+  background-color: #d1fae5;
+  border: 1px solid #a7f3d0;
+  padding: 3px 10px;
+  border-radius: var(--tp-radius-full);
+}
+
+.tp-reputation-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+  box-sizing: border-box;
+}
+
+.tp-rep-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px 8px;
+  min-width: 0;
+}
+
+.tp-rep-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.tp-rep-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tp-rep-val-stars {
+  color: var(--tp-color-primary-900);
+}
+
+.tp-star-gold {
+  color: #eab308;
+}
+
+.tp-rep-val-success {
+  color: #059669;
+}
+
+.tp-rep-val-accent {
+  color: #0284c7;
+}
+
+.tp-rep-val-primary {
+  color: var(--tp-color-primary-900);
+}
+
+.tp-rep-subtext {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .tp-reputation-card {
+    padding: 16px 14px;
+  }
+
+  .tp-reputation-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 10px;
+  }
+
+  .tp-rep-val {
+    font-size: 1.35rem;
+  }
+}

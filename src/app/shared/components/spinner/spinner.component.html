@@ -1,0 +1,27 @@
+<svg
+  class="tp-spinner"
+  [class]="'tp-spinner-' + size + ' tp-spinner-' + color"
+  [attr.width]="dimension"
+  [attr.height]="dimension"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  role="status"
+  aria-label="Carregando"
+>
+  <circle
+    class="tp-spinner-track"
+    cx="12"
+    cy="12"
+    r="10"
+    stroke="currentColor"
+    stroke-width="3"
+  ></circle>
+  <path
+    class="tp-spinner-head"
+    d="M12 2a10 10 0 0 1 10 10"
+    stroke="currentColor"
+    stroke-width="3"
+    stroke-linecap="round"
+  ></path>
+</svg>

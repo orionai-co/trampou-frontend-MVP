@@ -1,0 +1,91 @@
+:host {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  :host {
+    display: block;
+  }
+}
+
+.tp-mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--tp-color-border);
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  z-index: 100;
+  box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.05);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tp-mobile-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--tp-color-text-secondary);
+  text-decoration: none;
+  min-height: 48px;
+  transition: all var(--tp-transition-fast);
+  user-select: none;
+  position: relative;
+}
+
+.tp-tab-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tp-tab-label {
+  font-size: 11px;
+  font-weight: var(--tp-font-weight-medium);
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+
+.tp-mobile-tab:active {
+  transform: scale(0.94);
+}
+
+.tp-mobile-tab-active {
+  color: var(--tp-color-accent-600) !important;
+}
+
+.tp-mobile-tab-active .tp-tab-label {
+  font-weight: var(--tp-font-weight-bold);
+}
+
+.tp-mobile-tab-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  border-radius: var(--tp-radius-full);
+  background-color: var(--tp-color-accent-500);
+}
+
+.tp-mobile-badge-dot {
+  position: absolute;
+  top: -1px;
+  right: -2px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--tp-radius-full);
+  background-color: var(--tp-color-accent-500);
+  border: 1.5px solid var(--tp-color-white);
+}

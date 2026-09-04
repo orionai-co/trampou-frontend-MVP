@@ -1,0 +1,125 @@
+<section class="tp-campaign-metrics-card" aria-label="Dashboard de Desempenho de Impulsionamento">
+  <!-- CABEÇALHO DO DASHBOARD -->
+  <header class="tp-metrics-header">
+    <div class="tp-metrics-title-wrap">
+      <div class="tp-metrics-badge-icon">
+        <tp-icon name="sparkles" size="sm"></tp-icon>
+      </div>
+      <div>
+        <div class="tp-title-row">
+          <h2 class="tp-metrics-title">Desempenho do Destaque Institucional</h2>
+          <span class="tp-campaign-status-tag" *ngIf="campaignService.hasActiveCampaign()">
+            <span class="tp-status-pulse"></span>
+            <span>Campanha Ativa • {{ campaignService.daysRemaining() }} dias restantes</span>
+          </span>
+          <span class="tp-campaign-inactive-tag" *ngIf="!campaignService.hasActiveCampaign()">
+            <span>Nenhuma campanha ativa</span>
+          </span>
+        </div>
+        <p class="tp-metrics-subtitle">
+          Métricas consolidadas de alcance hiperlocal, engajamento com o vídeo e atração de talentos qualificados.
+        </p>
+      </div>
+    </div>
+
+    <div class="tp-metrics-action-wrap">
+      <button
+        type="button"
+        class="tp-boost-action-btn"
+        (click)="onBoostClick()"
+        aria-label="Gerenciar ou Criar Impulsionamento"
+      >
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        <span>{{ campaignService.hasActiveCampaign() ? 'Novo Impulsionamento' : '🚀 Destacar Empresa' }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- GRID DE MÉTRICAS (QUANDO HÁ CAMPANHA ATIVA) -->
+  <div class="tp-metrics-grid" *ngIf="campaignService.hasActiveCampaign()">
+    <!-- MÉTRICA 1: ALCANCE / PESSOAS -->
+    <div class="tp-metric-box">
+      <div class="tp-mbox-top">
+        <span class="tp-mbox-label">Alcance Total</span>
+        <div class="tp-mbox-icon tp-icon-sky">
+          <tp-icon name="eye" size="xs"></tp-icon>
+        </div>
+      </div>
+      <div class="tp-mbox-val">
+        <strong>{{ formatNumber(campaignService.currentMetrics().impressions) }}</strong>
+        <span>pessoas</span>
+      </div>
+      <div class="tp-mbox-footer">
+        <span class="tp-mbox-sub">Raio de {{ campaignService.activeCampaign()?.targeting?.radiusKm || 10 }} km em SP</span>
+      </div>
+    </div>
+
+    <!-- MÉTRICA 2: VIEWS DO VÍDEO -->
+    <div class="tp-metric-box">
+      <div class="tp-mbox-top">
+        <span class="tp-mbox-label">Visualizações do Vídeo</span>
+        <div class="tp-mbox-icon tp-icon-purple">
+          <tp-icon name="play" size="xs"></tp-icon>
+        </div>
+      </div>
+      <div class="tp-mbox-val">
+        <strong>{{ formatNumber(campaignService.currentMetrics().videoViews) }}</strong>
+        <span>views</span>
+      </div>
+      <div class="tp-mbox-footer">
+        <span class="tp-mbox-sub">Taxa de visualização: 66%</span>
+      </div>
+    </div>
+
+    <!-- MÉTRICA 3: VISITAS AO PERFIL -->
+    <div class="tp-metric-box">
+      <div class="tp-mbox-top">
+        <span class="tp-mbox-label">Visitas ao Perfil</span>
+        <div class="tp-mbox-icon tp-icon-blue">
+          <tp-icon name="users" size="xs"></tp-icon>
+        </div>
+      </div>
+      <div class="tp-mbox-val">
+        <strong>{{ formatNumber(campaignService.currentMetrics().profileVisits) }}</strong>
+        <span>visitas</span>
+      </div>
+      <div class="tp-mbox-footer">
+        <span class="tp-mbox-sub">Conheceram estrutura e vagas</span>
+      </div>
+    </div>
+
+    <!-- MÉTRICA 4: CANDIDATURAS ATRAÍDAS -->
+    <div class="tp-metric-box tp-mbox-highlight">
+      <div class="tp-mbox-top">
+        <span class="tp-mbox-label">Candidaturas Atraídas</span>
+        <div class="tp-mbox-icon tp-icon-green">
+          <tp-icon name="briefcase" size="xs"></tp-icon>
+        </div>
+      </div>
+      <div class="tp-mbox-val">
+        <strong>{{ formatNumber(campaignService.currentMetrics().applicationsCount) }}</strong>
+        <span>profissionais</span>
+      </div>
+      <div class="tp-mbox-footer">
+        <span class="tp-mbox-sub tp-sub-green">✦ Conversão qualificada</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ESTADO SEM CAMPANHA ATIVA -->
+  <div class="tp-metrics-empty" *ngIf="!campaignService.hasActiveCampaign()">
+    <div class="tp-empty-inner">
+      <div class="tp-empty-icon-pill">
+        <tp-icon name="sparkles" size="md"></tp-icon>
+      </div>
+      <div class="tp-empty-text">
+        <h3>Aumente em até 4x o volume de candidatos qualificados</h3>
+        <p>Ative um impulsionamento institucional para colocar o vídeo e as vagas da sua empresa no topo do feed.</p>
+      </div>
+      <tp-button variant="primary" size="md" (btnClick)="onBoostClick()">
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        <span>Criar Primeiro Impulsionamento</span>
+      </tp-button>
+    </div>
+  </div>
+</section>

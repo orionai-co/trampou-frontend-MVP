@@ -1,0 +1,32 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+.tp-spinner {
+  animation: tp-spin 0.8s linear infinite;
+}
+.tp-spinner-track {
+  opacity: 0.2;
+}
+.tp-spinner-head {
+  opacity: 1;
+}
+
+/* Cores */
+.tp-spinner-primary { color: var(--tp-color-primary-900); }
+.tp-spinner-accent { color: var(--tp-color-accent-600); }
+.tp-spinner-white { color: var(--tp-color-white); }
+.tp-spinner-current { color: currentColor; }
+
+/* Tamanhos */
+.tp-spinner-xs { width: 14px; height: 14px; }
+.tp-spinner-sm { width: 18px; height: 18px; }
+.tp-spinner-md { width: 24px; height: 24px; }
+.tp-spinner-lg { width: 32px; height: 32px; }
+
+@keyframes tp-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

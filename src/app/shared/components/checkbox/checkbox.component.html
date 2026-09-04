@@ -1,0 +1,15 @@
+<label class="tp-checkbox-label" [class.tp-checkbox-disabled]="disabled">
+  <input
+    type="checkbox"
+    [checked]="checked()"
+    [disabled]="disabled"
+    class="tp-checkbox-native"
+    (change)="onToggle($event)"
+  />
+  <span class="tp-checkbox-box" [class.tp-checkbox-checked]="checked()">
+    <tp-icon *ngIf="checked()" name="check" size="xs" customClass="tp-checkbox-icon"></tp-icon>
+  </span>
+  <span class="tp-checkbox-text">
+    <ng-content></ng-content>
+  </span>
+</label>

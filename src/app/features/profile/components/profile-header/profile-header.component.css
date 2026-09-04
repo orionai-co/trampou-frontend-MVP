@@ -1,0 +1,219 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tp-profile-header-card {
+  background-color: var(--tp-color-white);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: var(--tp-radius-lg);
+  padding: var(--tp-spacing-lg) var(--tp-spacing-xl);
+  box-shadow: var(--tp-shadow-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tp-spacing-lg);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tp-profile-user-row {
+  display: flex;
+  align-items: center;
+  gap: var(--tp-spacing-md);
+}
+
+.tp-profile-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--tp-radius-full);
+  background: linear-gradient(135deg, var(--tp-color-primary-900), var(--tp-color-primary-700));
+  color: var(--tp-color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--tp-font-size-lg);
+  font-weight: var(--tp-font-weight-bold);
+  flex-shrink: 0;
+  box-shadow: var(--tp-shadow-sm);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.tp-profile-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.tp-profile-name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--tp-spacing-sm);
+  flex-wrap: wrap;
+}
+
+.tp-profile-name {
+  font-size: 1.35rem;
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-primary-900);
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+
+.tp-profile-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tp-profile-sub-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-secondary);
+  flex-wrap: wrap;
+}
+
+.tp-profile-role {
+  font-weight: var(--tp-font-weight-medium);
+  color: var(--tp-color-text-primary);
+}
+
+.tp-profile-sep {
+  color: var(--tp-color-border-hover);
+}
+
+.tp-profile-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--tp-color-text-tertiary);
+}
+
+/* Container das Métricas sem background de moldura */
+.tp-profile-metrics-grid,
+.tp-reputation-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px 0 0 0;
+  border-top: 1px solid #f1f5f9; /* Divisor sutil superior separando da bio */
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+/* Item de Métrica Clean (Sem aparência de card) */
+.tp-metric-card,
+.tp-rep-metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 4px 8px;
+  text-align: center;
+  min-width: 0;
+}
+
+.tp-metric-label,
+.tp-rep-metric-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.tp-metric-value,
+.tp-rep-metric-val {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tp-star-gold {
+  color: #eab308;
+}
+
+.tp-val-stars {
+  color: var(--tp-color-primary-900);
+}
+
+.tp-val-punctual {
+  color: var(--tp-color-success);
+}
+
+.tp-val-jobs {
+  color: var(--tp-color-accent-700);
+}
+
+.tp-val-cancel {
+  color: var(--tp-color-success);
+}
+
+.tp-metric-subtext,
+.tp-rep-metric-sub {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.tp-rep-divider {
+  display: none;
+}
+
+/* Responsividade Mobile (Grid 2x2 Clean) */
+@media (max-width: 640px) {
+  .tp-profile-header-card {
+    padding: 16px 14px;
+    border-radius: var(--tp-radius-md);
+  }
+
+  .tp-profile-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 1rem;
+  }
+
+  .tp-profile-name {
+    font-size: 1.15rem;
+  }
+
+  .tp-profile-metrics-grid,
+  .tp-reputation-metrics-strip {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px 10px;
+    padding-top: 14px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+
+  .tp-metric-card,
+  .tp-rep-metric-item {
+    padding: 4px 6px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .tp-metric-value,
+  .tp-rep-metric-val {
+    font-size: 1.35rem;
+  }
+}

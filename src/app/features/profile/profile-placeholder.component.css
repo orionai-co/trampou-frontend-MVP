@@ -1,0 +1,103 @@
+.tp-page-wrapper {
+  padding-top: var(--tp-spacing-xl);
+  padding-bottom: var(--tp-spacing-3xl);
+}
+
+.tp-page-header {
+  margin-bottom: var(--tp-spacing-xl);
+}
+
+.tp-page-badge {
+  margin-bottom: var(--tp-spacing-xs);
+}
+
+.tp-page-title {
+  font-size: var(--tp-font-size-2xl);
+  color: var(--tp-color-primary-900);
+  margin-bottom: var(--tp-spacing-2xs);
+}
+
+.tp-page-description {
+  font-size: var(--tp-font-size-sm);
+  color: var(--tp-color-text-secondary);
+  max-width: 600px;
+}
+
+.tp-placeholder-card-wrap {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.tp-profile-preview-card {
+  display: flex;
+  align-items: center;
+  gap: var(--tp-spacing-xl);
+  flex-wrap: wrap;
+}
+
+.tp-profile-avatar-wrap {
+  position: relative;
+}
+
+.tp-profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--tp-radius-full);
+  background-color: var(--tp-color-primary-900);
+  color: var(--tp-color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--tp-font-size-xl);
+  font-weight: var(--tp-font-weight-bold);
+  box-shadow: var(--tp-shadow-md);
+}
+
+.tp-profile-verified {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--tp-radius-full);
+  background-color: var(--tp-color-accent-500);
+  color: var(--tp-color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--tp-color-white);
+}
+
+.tp-profile-info h2 {
+  font-size: var(--tp-font-size-xl);
+  color: var(--tp-color-primary-900);
+  margin-bottom: 2px;
+}
+
+.tp-profile-info p {
+  font-size: var(--tp-font-size-sm);
+  color: var(--tp-color-text-secondary);
+  margin-bottom: var(--tp-spacing-md);
+}
+
+.tp-profile-skills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tp-spacing-sm);
+}
+
+.tp-profile-divider {
+  height: 1px;
+  background-color: var(--tp-color-border-subtle);
+  margin: var(--tp-spacing-xl) 0;
+}
+
+.tp-placeholder-notice {
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px dashed var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  padding: var(--tp-spacing-md);
+  text-align: center;
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-secondary);
+}

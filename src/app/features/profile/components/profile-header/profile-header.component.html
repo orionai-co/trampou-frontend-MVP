@@ -1,0 +1,72 @@
+<header class="tp-profile-header-card" *ngIf="activeProfile">
+  <!-- Identificação Principal -->
+  <div class="tp-profile-user-row">
+    <div class="tp-profile-avatar">
+      <span>{{ activeProfile.avatarInitials }}</span>
+    </div>
+
+    <div class="tp-profile-info-col">
+      <div class="tp-profile-name-row">
+        <h2 class="tp-profile-name">{{ activeProfile.name }}</h2>
+        <div class="tp-profile-badges">
+          <tp-badge variant="brand" size="sm">
+            Nível {{ activeProfile.level }}
+          </tp-badge>
+          <tp-badge *ngIf="activeProfile.verified || activeProfile.isVerified" variant="accent" size="sm" [dot]="true">
+            <tp-icon name="shield-check" size="xs"></tp-icon>
+            <span>Verificado</span>
+          </tp-badge>
+        </div>
+      </div>
+
+      <div class="tp-profile-sub-info">
+        <span class="tp-profile-role">{{ activeProfile.primaryRole || 'Profissional sob Demanda' }}</span>
+        <span class="tp-profile-sep">•</span>
+        <span class="tp-profile-location">
+          <tp-icon name="map-pin" size="xs"></tp-icon>
+          <span>{{ activeProfile.location.neighborhood }}, {{ activeProfile.location.city }}</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Faixa de Métricas de Reputação e Confiabilidade Operacional -->
+  <div class="tp-profile-metrics-grid tp-reputation-metrics-strip">
+    <!-- 1. Avaliação Média -->
+    <div class="tp-metric-card tp-rep-metric-item">
+      <span class="tp-metric-label tp-rep-metric-label">Avaliação</span>
+      <div class="tp-metric-value tp-rep-metric-val tp-val-stars">
+        <tp-icon name="star" size="xs" customClass="tp-star-gold"></tp-icon>
+        <strong>{{ activeProfile.rating.toFixed(1) }}</strong>
+      </div>
+      <small class="tp-metric-subtext tp-rep-metric-sub">{{ totalReviewsCount }} avaliações</small>
+    </div>
+
+    <!-- 2. Pontualidade -->
+    <div class="tp-metric-card tp-rep-metric-item">
+      <span class="tp-metric-label tp-rep-metric-label">Pontualidade</span>
+      <div class="tp-metric-value tp-rep-metric-val tp-val-punctual">
+        <strong>{{ punctualityRate }}%</strong>
+      </div>
+      <small class="tp-metric-subtext tp-rep-metric-sub">Taxa no horário</small>
+    </div>
+
+    <!-- 3. Confiabilidade / Turnos Cumpridos -->
+    <div class="tp-metric-card tp-rep-metric-item">
+      <span class="tp-metric-label tp-rep-metric-label">Confiabilidade</span>
+      <div class="tp-metric-value tp-rep-metric-val tp-val-jobs">
+        <strong>{{ attendanceRate }}%</strong>
+      </div>
+      <small class="tp-metric-subtext tp-rep-metric-sub">{{ completedShifts }}/{{ completedShifts }} cumpridos</small>
+    </div>
+
+    <!-- 4. Cancelamentos -->
+    <div class="tp-metric-card tp-rep-metric-item">
+      <span class="tp-metric-label tp-rep-metric-label">Cancelamentos</span>
+      <div class="tp-metric-value tp-rep-metric-val tp-val-cancel">
+        <strong>{{ cancellationRate }}%</strong>
+      </div>
+      <small class="tp-metric-subtext tp-rep-metric-sub">Presença garantida</small>
+    </div>
+  </div>
+</header>

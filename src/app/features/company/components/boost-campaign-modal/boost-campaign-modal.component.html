@@ -1,0 +1,212 @@
+<tp-modal
+  [isOpen]="isOpen"
+  title="🚀 Impulsionar Empresa no Feed"
+  subtitle="Ganhe visibilidade prioritária para os melhores profissionais da sua região"
+  maxWidth="900px"
+  [hasFooter]="true"
+  (closed)="onClose()"
+>
+  <div class="tp-boost-modal-layout">
+    
+    <!-- COLUNA ESQUERDA: CONFIGURAÇÕES DA CAMPANHA -->
+    <div class="tp-boost-form-col">
+
+      <!-- 1. TIPO DE DESTAQUE -->
+      <div class="tp-boost-section">
+        <label class="tp-boost-label">1. Objetivo do Impulsionamento</label>
+        <div class="tp-boost-type-grid">
+          <button
+            type="button"
+            class="tp-type-option-card"
+            [class.tp-type-selected]="selectedType() === 'featured_company'"
+            (click)="selectType('featured_company')"
+          >
+            <div class="tp-type-icon-wrap">
+              <tp-icon name="sparkles" size="sm"></tp-icon>
+            </div>
+            <div class="tp-type-info">
+              <strong>Apresentar Empresa & Cultura</strong>
+              <small>Vídeo em destaque no topo do feed para todos os talentos</small>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            class="tp-type-option-card"
+            [class.tp-type-selected]="selectedType() === 'boost_job'"
+            (click)="selectType('boost_job')"
+          >
+            <div class="tp-type-icon-wrap">
+              <tp-icon name="briefcase" size="sm"></tp-icon>
+            </div>
+            <div class="tp-type-info">
+              <strong>Impulsionar Vagas Abertas</strong>
+              <small>Notificação push e prioridade para fechar turnos urgentes</small>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 2. HEADLINE / FRASE DE DESTAQUE -->
+      <div class="tp-boost-section">
+        <label class="tp-boost-label" for="campaignHeadline">
+          2. Headline do Card
+          <span class="tp-char-hint">{{ headline().length }}/120</span>
+        </label>
+        <textarea
+          id="campaignHeadline"
+          class="tp-boost-textarea"
+          rows="2"
+          maxlength="120"
+          [ngModel]="headline()"
+          (ngModelChange)="updateHeadline($event)"
+          placeholder="Ex: Conheça nosso espaço, nossa equipe e como é trabalhar nos nossos turnos..."
+        ></textarea>
+      </div>
+
+      <!-- 3. SELEÇÃO DO VÍDEO -->
+      <div class="tp-boost-section">
+        <label class="tp-boost-label">3. Vídeo Institucional</label>
+        <div class="tp-video-selector-grid">
+          <div
+            *ngFor="let vid of availableVideos; let i = index"
+            class="tp-video-thumb-option"
+            [class.tp-video-option-selected]="selectedVideoIndex() === i"
+            (click)="selectVideo(i)"
+          >
+            <img [src]="vid.thumbnail" [alt]="vid.title" />
+            <span class="tp-video-option-duration">{{ vid.duration }}</span>
+            <span class="tp-video-option-name">{{ vid.title }}</span>
+            <span class="tp-video-check-mark" *ngIf="selectedVideoIndex() === i">
+              <tp-icon name="check" size="xs"></tp-icon>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. RAIO DE ALCANCE GEOGRÁFICO -->
+      <div class="tp-boost-section">
+        <label class="tp-boost-label">4. Raio de Alcance Geográfico</label>
+        <div class="tp-radius-pills-row">
+          <button
+            *ngFor="let rad of radiusOptions"
+            type="button"
+            class="tp-radius-pill"
+            [class.tp-radius-selected]="selectedRadius() === rad.value"
+            (click)="selectRadius(rad.value)"
+          >
+            <span>{{ rad.label }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. DURAÇÃO E VALOR SIMULADO -->
+      <div class="tp-boost-section">
+        <label class="tp-boost-label">5. Período & Investimento</label>
+        <div class="tp-plans-grid">
+          <button
+            *ngFor="let plan of plans"
+            type="button"
+            class="tp-plan-card"
+            [class.tp-plan-selected]="selectedDuration() === plan.durationDays"
+            [class.tp-plan-popular]="plan.isPopular"
+            (click)="selectDuration(plan.durationDays)"
+          >
+            <span class="tp-plan-popular-badge" *ngIf="plan.isPopular">Mais Escolhido</span>
+            <span class="tp-plan-days">{{ plan.durationDays }} Dias</span>
+            <div class="tp-plan-price-wrap">
+              <small>R$</small>
+              <strong class="tp-plan-val">{{ plan.price }}</strong>
+            </div>
+            <span class="tp-plan-reach">👁️ {{ plan.estimatedReach }}</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COLUNA DIREITA: LIVE PREVIEW DO CARD PATROCINADO -->
+    <div class="tp-boost-preview-col">
+      <div class="tp-preview-sticky-wrap">
+        <div class="tp-preview-header-tag">
+          <tp-icon name="eye" size="xs"></tp-icon>
+          <span>Pré-visualização em Tempo Real no Feed</span>
+        </div>
+
+        <!-- Mini Card Simulado -->
+        <div class="tp-mini-preview-card">
+          <div class="tp-mini-card-header">
+            <div class="tp-mini-avatar">
+              <span>EP</span>
+            </div>
+            <div class="tp-mini-info">
+              <div class="tp-mini-name-row">
+                <span class="tp-mini-name">{{ companyName }}</span>
+                <tp-icon name="shield-check" size="xs" customClass="tp-mini-verified"></tp-icon>
+              </div>
+              <span class="tp-mini-meta">{{ companyHandle }} • {{ selectedRadius() }} km • ★ {{ companyRating }}</span>
+            </div>
+            <span class="tp-mini-sponsored-tag">Patrocinado</span>
+          </div>
+
+          <div class="tp-mini-video-preview">
+            <img [src]="currentVideo().thumbnail" alt="Preview de vídeo" />
+            <div class="tp-mini-video-overlay">
+              <span class="tp-mini-play-tag">
+                <tp-icon name="play" size="xs"></tp-icon>
+                <span>{{ currentVideo().duration }}</span>
+              </span>
+              <span class="tp-mini-tag-pill">Vídeo Institucional</span>
+            </div>
+          </div>
+
+          <p class="tp-mini-headline">
+            "{{ headline() }}"
+          </p>
+
+          <div class="tp-mini-footer">
+            <span class="tp-mini-match">✦ 96% Match Operacional</span>
+            <div class="tp-mini-cta-btn">
+              <span>Conhecer Empresa ({{ openJobsCount }} vagas)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tp-preview-guarantee">
+          <tp-icon name="shield-check" size="sm"></tp-icon>
+          <div class="tp-guarantee-text">
+            <strong>Garantia de Entrega Trampou</strong>
+            <span>Seu conteúdo é exibido prioritariamente para profissionais verificados com disponibilidade confirmada.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER DO MODAL -->
+  <div tpModalFooter class="tp-boost-modal-footer">
+    <div class="tp-footer-summary">
+      <span class="tp-summary-lbl">Total do Impulsionamento:</span>
+      <strong class="tp-summary-val">R$ {{ selectedPlan().price }},00</strong>
+      <span class="tp-summary-days">({{ selectedPlan().durationDays }} dias de veiculação)</span>
+    </div>
+
+    <div class="tp-footer-actions">
+      <tp-button variant="outline" size="md" (btnClick)="onClose()">
+        Cancelar
+      </tp-button>
+
+      <tp-button
+        variant="primary"
+        size="md"
+        customClass="tp-btn-confirm-boost"
+        (btnClick)="confirmCampaign()"
+      >
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        <span>Confirmar & Ativar Campanha</span>
+      </tp-button>
+    </div>
+  </div>
+</tp-modal>

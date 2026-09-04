@@ -1,0 +1,107 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tp-input-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tp-spacing-xs);
+}
+
+.tp-input-label {
+  font-size: var(--tp-font-size-xs);
+  font-weight: var(--tp-font-weight-semibold);
+  color: var(--tp-color-text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.tp-input-required {
+  color: var(--tp-color-danger);
+  margin-left: 2px;
+}
+
+.tp-input-container {
+  display: flex;
+  align-items: center;
+  gap: var(--tp-spacing-sm);
+  background-color: var(--tp-color-white);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  padding: 0 var(--tp-spacing-md);
+  height: 44px;
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-input-container:hover:not(.tp-input-disabled) {
+  border-color: var(--tp-color-border-hover);
+}
+
+.tp-input-focused {
+  border-color: var(--tp-color-accent-500) !important;
+  box-shadow: var(--tp-focus-ring);
+}
+
+.tp-input-error {
+  border-color: var(--tp-color-danger) !important;
+}
+
+.tp-input-focused.tp-input-error {
+  box-shadow: var(--tp-focus-ring-danger);
+}
+
+.tp-input-field {
+  flex: 1;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--tp-font-family);
+  font-size: var(--tp-font-size-sm);
+  color: var(--tp-color-text-primary);
+}
+
+.tp-input-field::placeholder {
+  color: var(--tp-color-text-tertiary);
+}
+
+.tp-input-prefix-icon,
+.tp-input-suffix-icon {
+  color: var(--tp-color-text-tertiary);
+}
+
+.tp-input-clear-btn,
+.tp-input-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  color: var(--tp-color-text-tertiary);
+  border-radius: var(--tp-radius-xs);
+  transition: color var(--tp-transition-fast);
+}
+
+.tp-input-clear-btn:hover,
+.tp-input-toggle-btn:hover {
+  color: var(--tp-color-primary-900);
+}
+
+.tp-input-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-danger);
+  margin-top: 2px;
+}
+
+.tp-input-hint {
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-tertiary);
+  margin-top: 2px;
+}
+
+.tp-input-disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

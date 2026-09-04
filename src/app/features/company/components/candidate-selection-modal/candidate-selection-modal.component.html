@@ -1,0 +1,193 @@
+<tp-modal
+  [isOpen]="isOpen"
+  title="Seleção e Triagem de Candidatos"
+  subtitle="Avalie o perfil e aprove os profissionais com 1 clique para o turno"
+  maxWidth="640px"
+  [hasFooter]="true"
+  (closed)="close()"
+>
+  <div *ngIf="job" class="tp-cand-modal-body">
+    <!-- RESUMO DO TURNO SELECIONADO -->
+    <div class="tp-cand-job-header">
+      <div class="tp-cand-job-title-row">
+        <div>
+          <h3 class="tp-cand-job-title">{{ job.title }}</h3>
+          <span class="tp-cand-job-meta">
+            {{ job.date }} • {{ job.schedule.start }} às {{ job.schedule.end }} • R$ {{ job.paymentAmount }}
+          </span>
+        </div>
+
+        <div class="tp-cand-slots-badge">
+          <span class="tp-cslots-count">
+            <strong>{{ job.slots.filled }}</strong> / {{ job.slots.total }}
+          </span>
+          <span class="tp-cslots-txt">vagas preenchidas</span>
+        </div>
+      </div>
+
+      <!-- ALERTA QUANDO VAGAS ESTIVEREM ESGOTADAS -->
+      <div *ngIf="isSlotsFull" class="tp-slots-full-notice">
+        <tp-icon name="check-circle" size="xs"></tp-icon>
+        <span>Todas as vagas desta oportunidade já foram preenchidas!</span>
+      </div>
+    </div>
+
+    <!-- LISTA DE CANDIDATOS -->
+    <div class="tp-cand-list" *ngIf="candidates.length > 0">
+      <div
+        *ngFor="let candidate of candidates; trackBy: trackByCandidateId"
+        class="tp-cand-item"
+        [class.tp-cand-approved]="candidate.status === 'approved'"
+        [class.tp-cand-rejected]="candidate.status === 'rejected'"
+      >
+        <!-- AVATAR & DADOS PRINCIPAIS -->
+        <div class="tp-cand-main-info">
+          <div
+            class="tp-cand-avatar tp-cand-clickable"
+            (click)="openCandidateProfile(candidate)"
+            (keydown.enter)="openCandidateProfile(candidate)"
+            tabindex="0"
+            role="button"
+            title="Ver perfil completo de reputação de {{ candidate.name }}"
+          >
+            <span>{{ candidate.avatarInitials }}</span>
+          </div>
+
+          <div class="tp-cand-details">
+            <div class="tp-cand-name-row">
+              <span
+                class="tp-cand-name tp-cand-clickable"
+                (click)="openCandidateProfile(candidate)"
+                (keydown.enter)="openCandidateProfile(candidate)"
+                tabindex="0"
+                role="button"
+                title="Ver perfil completo de reputação de {{ candidate.name }}"
+              >
+                {{ candidate.name }}
+              </span>
+              <span class="tp-cand-level-tag">Nível {{ candidate.level }}</span>
+              <span class="tp-cand-match-tag">
+                <tp-icon name="sparkles" size="xs"></tp-icon>
+                <span>{{ candidate.matchPercentage }}% Match</span>
+              </span>
+              <button
+                type="button"
+                class="tp-cand-view-profile-btn"
+                (click)="openCandidateProfile(candidate)"
+                title="Ver perfil completo de reputação"
+              >
+                <tp-icon name="user" size="xs"></tp-icon>
+                <span>Ver Perfil</span>
+              </button>
+            </div>
+
+            <!-- METADADOS DE CONFIANÇA -->
+            <div class="tp-cand-stats-row">
+              <span class="tp-cand-stat">
+                <tp-icon name="star" size="xs" customClass="tp-star-icon"></tp-icon>
+                <strong>{{ candidate.rating }}</strong> ({{ candidate.reviewsCount }} avaliações)
+              </span>
+              <span class="tp-cstat-dot">•</span>
+              <span class="tp-cand-stat">
+                <tp-icon name="clock" size="xs"></tp-icon>
+                <span>{{ candidate.punctualityRate }}% Pontualidade</span>
+              </span>
+              <span class="tp-cstat-dot">•</span>
+              <span class="tp-cand-stat tp-cand-pix">
+                <span>PIX: {{ candidate.pixKeyPreview }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AÇÕES DE DECISÃO DE 1 CLIQUE -->
+        <div class="tp-cand-actions">
+          <!-- QUANDO AGUARDANDO DECISÃO (APPLIED) -->
+          <ng-container *ngIf="candidate.status === 'applied'">
+            <button
+              type="button"
+              class="tp-decision-btn tp-decision-reject"
+              (click)="onReject(candidate)"
+              title="Recusar candidato"
+            >
+              <tp-icon name="x" size="xs"></tp-icon>
+              <span>Recusar</span>
+            </button>
+
+            <button
+              type="button"
+              class="tp-decision-btn tp-decision-approve"
+              [disabled]="isSlotsFull"
+              (click)="onApprove(candidate)"
+              title="Aprovar e garantir vaga no turno"
+            >
+              <tp-icon name="check" size="xs"></tp-icon>
+              <span>Aprovar</span>
+            </button>
+          </ng-container>
+
+          <!-- QUANDO JÁ APROVADO -->
+          <div *ngIf="candidate.status === 'approved'" class="tp-cand-approved-actions">
+            <div class="tp-cand-status-badge tp-status-approved">
+              <tp-icon name="check-circle" size="xs"></tp-icon>
+              <span>Aprovado</span>
+            </div>
+
+            <button
+              type="button"
+              class="tp-action-mini-btn tp-chat-mini-btn"
+              (click)="onOpenChat(candidate)"
+              title="Abrir chat efêmero com o profissional"
+            >
+              <tp-icon name="sparkles" size="xs"></tp-icon>
+              <span>Abrir Chat</span>
+            </button>
+
+            <button
+              *ngIf="job.status !== 'completed'"
+              type="button"
+              class="tp-action-mini-btn tp-pay-mini-btn"
+              (click)="onPayout(candidate)"
+              title="Validar presença e liberar pagamento PIX"
+            >
+              <tp-icon name="shield-check" size="xs"></tp-icon>
+              <span>Pagar PIX</span>
+            </button>
+          </div>
+
+          <!-- QUANDO RECUSADO -->
+          <div *ngIf="candidate.status === 'rejected'" class="tp-cand-status-badge tp-status-rejected">
+            <tp-icon name="x-circle" size="xs"></tp-icon>
+            <span>Recusado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESTADO VAZIO: SEM CANDIDATOS -->
+    <div *ngIf="candidates.length === 0" class="tp-cand-empty">
+      <div class="tp-cand-empty-icon">
+        <tp-icon name="users" size="lg"></tp-icon>
+      </div>
+      <h4>Nenhum profissional inscrito ainda</h4>
+      <p>Assim que os freelancers do Trampou se candidatarem à vaga, eles aparecerão aqui para sua triagem.</p>
+    </div>
+  </div>
+
+  <div tpModalFooter>
+    <tp-button variant="outline" size="sm" (btnClick)="close()">
+      Fechar
+    </tp-button>
+  </div>
+</tp-modal>
+
+<!-- MODAL DE PERFIL COMPLETO DO CANDIDATO -->
+<tp-candidate-profile-modal
+  [isOpen]="isProfileModalOpen"
+  [candidate]="selectedCandidateForProfile"
+  [job]="job"
+  [isSlotsFull]="isSlotsFull"
+  (closed)="closeCandidateProfile()"
+  (approve)="onProfileApprove($event)"
+  (reject)="onProfileReject($event)"
+></tp-candidate-profile-modal>

@@ -1,0 +1,236 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  [attr.width]="dimension"
+  [attr.height]="dimension"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  [class]="'tp-icon tp-icon-' + size + ' ' + customClass"
+  aria-hidden="true"
+>
+  <!-- Search -->
+  <ng-container *ngIf="name === 'search'">
+    <circle cx="11" cy="11" r="8"></circle>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </ng-container>
+
+  <!-- Map Pin / Localização -->
+  <ng-container *ngIf="name === 'map-pin'">
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+    <circle cx="12" cy="10" r="3"></circle>
+  </ng-container>
+
+  <!-- Calendar -->
+  <ng-container *ngIf="name === 'calendar'">
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+    <line x1="16" y1="2" x2="16" y2="6"></line>
+    <line x1="8" y1="2" x2="8" y2="6"></line>
+    <line x1="3" y1="10" x2="21" y2="10"></line>
+  </ng-container>
+
+  <!-- Clock / Horário -->
+  <ng-container *ngIf="name === 'clock'">
+    <circle cx="12" cy="12" r="10"></circle>
+    <polyline points="12 6 12 12 16 14"></polyline>
+  </ng-container>
+
+  <!-- Banknote / Remuneração -->
+  <ng-container *ngIf="name === 'banknote'">
+    <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+    <circle cx="12" cy="12" r="2"></circle>
+    <path d="M6 12h.01M18 12h.01"></path>
+  </ng-container>
+
+  <!-- Briefcase / Função -->
+  <ng-container *ngIf="name === 'briefcase'">
+    <rect width="20" height="14" x="2" y="7" rx="2" ry="2"></rect>
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+  </ng-container>
+
+  <!-- User / Profissional -->
+  <ng-container *ngIf="name === 'user'">
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+    <circle cx="12" cy="7" r="4"></circle>
+  </ng-container>
+
+  <!-- Users / Equipe -->
+  <ng-container *ngIf="name === 'users'">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+    <circle cx="9" cy="7" r="4"></circle>
+    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+  </ng-container>
+
+  <!-- Check -->
+  <ng-container *ngIf="name === 'check'">
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </ng-container>
+
+  <!-- Check Circle -->
+  <ng-container *ngIf="name === 'check-circle'">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+  </ng-container>
+
+  <!-- Alert Circle -->
+  <ng-container *ngIf="name === 'alert-circle'">
+    <circle cx="12" cy="12" r="10"></circle>
+    <line x1="12" y1="8" x2="12" y2="12"></line>
+    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+  </ng-container>
+
+  <!-- Alert Triangle -->
+  <ng-container *ngIf="name === 'alert-triangle'">
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+    <line x1="12" y1="9" x2="12" y2="13"></line>
+    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+  </ng-container>
+
+  <!-- X / Close -->
+  <ng-container *ngIf="name === 'x'">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </ng-container>
+
+  <!-- X Circle -->
+  <ng-container *ngIf="name === 'x-circle'">
+    <circle cx="12" cy="12" r="10"></circle>
+    <line x1="15" y1="9" x2="9" y2="15"></line>
+    <line x1="9" y1="9" x2="15" y2="15"></line>
+  </ng-container>
+
+  <!-- Chevrons -->
+  <ng-container *ngIf="name === 'chevron-right'">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </ng-container>
+  <ng-container *ngIf="name === 'chevron-left'">
+    <polyline points="15 18 9 12 15 6"></polyline>
+  </ng-container>
+  <ng-container *ngIf="name === 'chevron-down'">
+    <polyline points="6 9 12 15 18 9"></polyline>
+  </ng-container>
+  <ng-container *ngIf="name === 'chevron-up'">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </ng-container>
+
+  <!-- Star / Reputação -->
+  <ng-container *ngIf="name === 'star'">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+  </ng-container>
+
+  <!-- Filter -->
+  <ng-container *ngIf="name === 'filter'">
+    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+  </ng-container>
+
+  <!-- Arrow Right -->
+  <ng-container *ngIf="name === 'arrow-right'">
+    <line x1="5" y1="12" x2="19" y2="12"></line>
+    <polyline points="12 5 19 12 12 19"></polyline>
+  </ng-container>
+
+  <!-- Eye -->
+  <ng-container *ngIf="name === 'eye'">
+    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
+  </ng-container>
+
+  <!-- Shield Check / Confiança -->
+  <ng-container *ngIf="name === 'shield-check'">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path>
+    <path d="m9 12 2 2 4-4"></path>
+  </ng-container>
+
+  <!-- Bell / Notificações -->
+  <ng-container *ngIf="name === 'bell'">
+    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+  </ng-container>
+
+  <!-- Sparkles / Match & Compatibilidade -->
+  <ng-container *ngIf="name === 'sparkles'">
+    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+  </ng-container>
+
+  <!-- Message Square / Chat & Conversas -->
+  <ng-container *ngIf="name === 'message-square'">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </ng-container>
+
+  <!-- Share-2 / Compartilhar -->
+  <ng-container *ngIf="name === 'share-2'">
+    <circle cx="18" cy="5" r="3"></circle>
+    <circle cx="6" cy="12" r="3"></circle>
+    <circle cx="18" cy="19" r="3"></circle>
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+  </ng-container>
+
+  <!-- Bookmark / Salvar -->
+  <ng-container *ngIf="name === 'bookmark'">
+    <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"></path>
+  </ng-container>
+
+  <!-- Sliders / Filtros de Ajuste -->
+  <ng-container *ngIf="name === 'sliders'">
+    <line x1="4" y1="21" x2="4" y2="14"></line>
+    <line x1="4" y1="10" x2="4" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="12"></line>
+    <line x1="12" y1="8" x2="12" y2="3"></line>
+    <line x1="20" y1="21" x2="20" y2="16"></line>
+    <line x1="20" y1="12" x2="20" y2="3"></line>
+    <line x1="1" y1="14" x2="7" y2="14"></line>
+    <line x1="9" y1="8" x2="15" y2="8"></line>
+    <line x1="17" y1="16" x2="23" y2="16"></line>
+  </ng-container>
+
+  <!-- Zap / Rápido / Urgência -->
+  <ng-container *ngIf="name === 'zap'">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+  </ng-container>
+
+  <!-- Award / Conquistas / Prêmios -->
+  <ng-container *ngIf="name === 'award'">
+    <circle cx="12" cy="8" r="7"></circle>
+    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+  </ng-container>
+
+  <!-- Heart / Favorito / Recomendado -->
+  <ng-container *ngIf="name === 'heart'">
+    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+  </ng-container>
+
+  <!-- Plus / Adicionar -->
+  <ng-container *ngIf="name === 'plus'">
+    <line x1="12" y1="5" x2="12" y2="19"></line>
+    <line x1="5" y1="12" x2="19" y2="12"></line>
+  </ng-container>
+
+  <!-- Play / Vídeo -->
+  <ng-container *ngIf="name === 'play'">
+    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+  </ng-container>
+
+  <!-- Pause -->
+  <ng-container *ngIf="name === 'pause'">
+    <rect x="6" y="4" width="4" height="16"></rect>
+    <rect x="14" y="4" width="4" height="16"></rect>
+  </ng-container>
+
+  <!-- Volume-2 / Com Áudio -->
+  <ng-container *ngIf="name === 'volume-2'">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+  </ng-container>
+
+  <!-- Volume-x / Mudo -->
+  <ng-container *ngIf="name === 'volume-x'">
+    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+    <line x1="23" y1="9" x2="17" y2="15"></line>
+    <line x1="17" y1="9" x2="23" y2="15"></line>
+  </ng-container>
+</svg>

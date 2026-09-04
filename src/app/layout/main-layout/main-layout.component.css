@@ -1,0 +1,28 @@
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.tp-shell-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--tp-color-background);
+  position: relative;
+}
+
+.tp-shell-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+/* Em telas móveis, adiciona padding inferior na área principal para que o conteúdo nunca fique oculto sob a Bottom Navigation */
+@media (max-width: 860px) {
+  .tp-shell-main {
+    padding-bottom: calc(64px + var(--tp-spacing-md));
+  }
+}

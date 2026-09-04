@@ -1,0 +1,119 @@
+<section class="tp-pix-settings-card" aria-label="Configuração de Recebimento PIX">
+  <div class="tp-section-top-row">
+    <div class="tp-section-heading-wrap">
+      <div class="tp-pix-icon-circle">
+        <tp-icon name="shield-check" size="sm"></tp-icon>
+      </div>
+      <div>
+        <h3 class="tp-section-title">Chave PIX de Recebimento</h3>
+      </div>
+    </div>
+
+    <tp-button variant="outline" size="sm" (btnClick)="openEditModal()">
+      <tp-icon name="sliders" size="xs"></tp-icon>
+      <span>Editar Chave</span>
+    </tp-button>
+  </div>
+
+  <!-- Banner de Feedback de Atualização -->
+  <div *ngIf="feedbackMessage()" class="tp-pix-feedback-alert">
+    <tp-icon name="check-circle" size="xs"></tp-icon>
+    <span>{{ feedbackMessage() }}</span>
+  </div>
+
+  <!-- Box de Exibição da Chave Ativa -->
+  <div class="tp-pix-display-box">
+    <div class="tp-pix-left-info">
+      <span class="tp-pix-type-badge">{{ pixTypeLabel }}</span>
+      <strong class="tp-pix-key-text">{{ pixKey.key || 'Nenhuma chave cadastrada' }}</strong>
+    </div>
+
+    <div class="tp-pix-guarantee-pill">
+      <span class="tp-pix-dot"></span>
+      <span>Transferência Instantânea</span>
+    </div>
+  </div>
+</section>
+
+<!-- Modal de Edição da Chave PIX -->
+<tp-modal
+  [isOpen]="isModalOpen()"
+  title="Editar Chave PIX de Recebimento"
+  subtitle="Informe os dados da sua conta para repasse automático dos pagamentos"
+  maxWidth="480px"
+  [hasFooter]="true"
+  (closed)="closeEditModal()"
+>
+  <div class="tp-pix-modal-form">
+    <!-- Seletor de Tipo de Chave PIX -->
+    <div class="tp-form-field">
+      <label class="tp-form-label">Tipo de Chave</label>
+      <div class="tp-key-type-buttons">
+        <button
+          type="button"
+          class="tp-type-btn"
+          [class.tp-type-btn-active]="selectedType() === 'phone'"
+          (click)="selectType('phone')"
+        >
+          Celular
+        </button>
+        <button
+          type="button"
+          class="tp-type-btn"
+          [class.tp-type-btn-active]="selectedType() === 'cpf'"
+          (click)="selectType('cpf')"
+        >
+          CPF
+        </button>
+        <button
+          type="button"
+          class="tp-type-btn"
+          [class.tp-type-btn-active]="selectedType() === 'email'"
+          (click)="selectType('email')"
+        >
+          E-mail
+        </button>
+        <button
+          type="button"
+          class="tp-type-btn"
+          [class.tp-type-btn-active]="selectedType() === 'random'"
+          (click)="selectType('random')"
+        >
+          Aleatória
+        </button>
+      </div>
+    </div>
+
+    <!-- Input da Chave PIX -->
+    <div class="tp-form-field">
+      <label class="tp-form-label" for="pixKeyInput">{{ inputLabel }}</label>
+      <tp-input
+        id="pixKeyInput"
+        [placeholder]="inputPlaceholder"
+        prefixIcon="banknote"
+        [clearable]="true"
+        [ngModel]="keyInput()"
+        (ngModelChange)="onKeyInputChange($event)"
+        [errorMessage]="errorMessage()"
+      ></tp-input>
+      <small class="tp-input-help-text">Certifique-se de que a chave pertence a uma conta bancária em seu nome.</small>
+    </div>
+  </div>
+
+  <!-- Rodapé do Modal -->
+  <div tpModalFooter class="tp-modal-footer-content">
+    <tp-button variant="outline" size="sm" (btnClick)="closeEditModal()">
+      Cancelar
+    </tp-button>
+
+    <tp-button
+      variant="primary"
+      size="sm"
+      [disabled]="!isValid()"
+      (btnClick)="savePixKey()"
+    >
+      <tp-icon name="check" size="xs"></tp-icon>
+      <span>Salvar Chave PIX</span>
+    </tp-button>
+  </div>
+</tp-modal>

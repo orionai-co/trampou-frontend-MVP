@@ -1,0 +1,56 @@
+<div class="tp-container tp-page-wrapper">
+  <div class="tp-page-header">
+    <div>
+      <div class="tp-page-badge">
+        <tp-badge variant="brand" [dot]="true">Área da Empresa & Contratante</tp-badge>
+      </div>
+      <h1 class="tp-page-title">Painel de Contratação</h1>
+      <p class="tp-page-description">
+        Publique demandas pontuais para eventos, receba rodadas de profissionais qualificados e confirme equipes rapidamente.
+      </p>
+    </div>
+    <div class="tp-page-actions">
+      <tp-button variant="primary" size="md">
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        Publicar Oportunidade
+      </tp-button>
+    </div>
+  </div>
+
+  <div class="tp-placeholder-card-wrap">
+    <tp-card padding="lg">
+      <div class="tp-placeholder-content">
+        <div class="tp-placeholder-icon">
+          <tp-icon name="users" size="xl"></tp-icon>
+        </div>
+        <h2>Estrutura de Contratação Preparada</h2>
+        <p>
+          O shell de navegação já suporta a alternância fluida entre a visão do <strong>Profissional</strong> e a da <strong>Empresa Contratante</strong>. As telas de publicação, seleção em rodadas e acompanhamento de presença serão implementadas em suas respectivas etapas.
+        </p>
+        <div class="tp-company-benefits">
+          <div class="tp-benefit-card">
+            <tp-icon name="shield-check" size="md"></tp-icon>
+            <strong>Profissionais Verificados</strong>
+            <small>Habilidades e níveis comprovados por função</small>
+          </div>
+          <div class="tp-benefit-card">
+            <tp-icon name="clock" size="md"></tp-icon>
+            <strong>Confirmação Rápida</strong>
+            <small>Rodadas de candidatos em poucos minutos</small>
+          </div>
+          <div class="tp-benefit-card">
+            <tp-icon name="check-circle" size="md"></tp-icon>
+            <strong>Gestão de Presença</strong>
+            <small>Check-in e check-out via geolocalização</small>
+          </div>
+        </div>
+        <a routerLink="/oportunidades">
+          <tp-button variant="outline" size="md">
+            <tp-icon name="arrow-right" size="xs"></tp-icon>
+            Retornar ao Feed do Profissional
+          </tp-button>
+        </a>
+      </div>
+    </tp-card>
+  </div>
+</div>

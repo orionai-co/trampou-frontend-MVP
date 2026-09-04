@@ -1,0 +1,88 @@
+<section class="tp-media-card" *ngIf="media" aria-label="Vídeo e Galeria de Fotos da Empresa">
+  <div class="tp-media-header">
+    <div class="tp-media-title-wrap">
+      <tp-icon name="eye" size="sm" customClass="tp-media-icon"></tp-icon>
+      <div>
+        <h3 class="tp-media-title">Estrutura & Ambiente de Trabalho</h3>
+        <p class="tp-media-subtitle">Veja fotos reais do espaço, das cozinhas e das equipes em ação.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vídeo Widescreen em Destaque Real HTML5 -->
+  <div class="tp-video-container">
+    <div class="tp-video-wrapper" (click)="toggleVideoPlay()">
+      <video
+        #videoPlayer
+        class="tp-gallery-video"
+        [src]="media.videoUrl || 'https://assets.mixkit.co/videos/preview/mixkit-restaurant-kitchen-staff-working-42998-large.mp4'"
+        [poster]="media.videoThumbnail"
+        [muted]="isMuted()"
+        playsinline
+        loop
+        (timeupdate)="onTimeUpdate()"
+        (ended)="onVideoEnded()"
+      ></video>
+
+      <div class="tp-video-overlay" [class.tp-overlay-faded]="isPlayingVideo()">
+        <button
+          type="button"
+          class="tp-video-play-btn"
+          (click)="$event.stopPropagation(); toggleVideoPlay()"
+          [attr.aria-label]="isPlayingVideo() ? 'Pausar vídeo institucional' : 'Assistir vídeo institucional'"
+        >
+          <tp-icon [name]="isPlayingVideo() ? 'pause' : 'play'" size="sm"></tp-icon>
+          <span>{{ isPlayingVideo() ? 'Pausar' : ('Assistir • ' + media.videoDuration) }}</span>
+        </button>
+
+        <div class="tp-video-overlay-right">
+          <button 
+            type="button" 
+            class="tp-video-audio-btn" 
+            (click)="$event.stopPropagation(); toggleMute()"
+            [attr.aria-label]="isMuted() ? 'Ativar som' : 'Desativar som'"
+          >
+            <tp-icon [name]="isMuted() ? 'volume-x' : 'volume-2'" size="xs"></tp-icon>
+          </button>
+          <span class="tp-video-badge">
+            <tp-icon name="sparkles" size="xs"></tp-icon>
+            <span>Conheça nossa estrutura</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Barra de progresso sutil -->
+      <div class="tp-video-progress-bar" *ngIf="isPlayingVideo() || progressPercent() > 0">
+        <div class="tp-video-progress-fill" [style.width.%]="progressPercent()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Galeria de Fotos / Miniaturas -->
+  <div class="tp-photos-strip" *ngIf="media.photos && media.photos.length > 0">
+    <div
+      *ngFor="let photo of media.photos; let i = index"
+      class="tp-photo-item"
+      (click)="selectPhoto(photo)"
+      [attr.tabindex]="0"
+      (keydown.enter)="selectPhoto(photo)"
+      role="button"
+      [attr.aria-label]="'Ampliar foto ' + (i + 1)"
+    >
+      <img [src]="photo" [alt]="'Ambiente da empresa ' + (i + 1)" loading="lazy" />
+      <div class="tp-photo-hover-overlay">
+        <tp-icon name="search" size="xs"></tp-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Simples de Foto Ampliada (Lightbox) -->
+  <div class="tp-lightbox-backdrop" *ngIf="selectedPhoto()" (click)="closePhotoModal()">
+    <div class="tp-lightbox-content" (click)="$event.stopPropagation()">
+      <button type="button" class="tp-lightbox-close" (click)="closePhotoModal()" aria-label="Fechar imagem">
+        <tp-icon name="x" size="sm"></tp-icon>
+      </button>
+      <img [src]="selectedPhoto()!" alt="Foto ampliada do ambiente" />
+    </div>
+  </div>
+</section>

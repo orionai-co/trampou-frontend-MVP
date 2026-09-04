@@ -1,0 +1,56 @@
+<section class="tp-reviews-card" aria-label="Avaliações Recebidas">
+  <div class="tp-reviews-header-row">
+    <div class="tp-reviews-heading-wrap">
+      <div class="tp-reviews-icon-circle">
+        <tp-icon name="star" size="sm" customClass="tp-star-gold"></tp-icon>
+      </div>
+      <div>
+        <h3 class="tp-reviews-title">Extrato de Avaliações Recebidas</h3>
+        <p class="tp-reviews-subtitle">
+          Feedbacks e notas registradas por contratantes ao término dos seus turnos.
+        </p>
+      </div>
+    </div>
+
+    <span class="tp-reviews-count-pill" *ngIf="reviews && reviews.length > 0">
+      {{ reviews.length }} avaliações
+    </span>
+  </div>
+
+  <!-- Lista de Avaliações -->
+  <div class="tp-reviews-items-container" *ngIf="reviews && reviews.length > 0">
+    <article *ngFor="let rev of reviews; trackBy: trackByReviewId" class="tp-review-entry">
+      <div class="tp-review-top-bar">
+        <div class="tp-review-company-info">
+          <strong class="tp-review-company-name">{{ rev.companyName }}</strong>
+          <span class="tp-review-verified">
+            <tp-icon name="shield-check" size="xs"></tp-icon>
+          </span>
+          <span class="tp-review-job-badge">{{ rev.jobTitle }}</span>
+        </div>
+
+        <div class="tp-review-rating-tag">
+          <tp-icon name="star" size="xs" customClass="tp-star-gold"></tp-icon>
+          <strong>{{ rev.rating.toFixed(1) }}</strong>
+        </div>
+      </div>
+
+      <p class="tp-review-comment">
+        "{{ rev.comment }}"
+      </p>
+
+      <div class="tp-review-footer">
+        <time class="tp-review-date">{{ rev.date }}</time>
+      </div>
+    </article>
+  </div>
+
+  <!-- Estado Vazio -->
+  <div class="tp-reviews-empty" *ngIf="!reviews || reviews.length === 0">
+    <div class="tp-empty-icon-wrap">
+      <tp-icon name="star" size="md"></tp-icon>
+    </div>
+    <h4>Nenhuma avaliação recebida ainda</h4>
+    <p>Ao concluir seus primeiros turnos, as notas e comentários dos contratantes aparecerão listados aqui.</p>
+  </div>
+</section>

@@ -1,0 +1,199 @@
+:host {
+  display: contents;
+}
+
+.tp-chat-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 480px;
+}
+
+/* Banner de Aviso Efêmero */
+.tp-chat-ephemeral-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--tp-color-accent-50);
+  border: 1px solid var(--tp-color-accent-200);
+  border-radius: var(--tp-radius-sm);
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  color: var(--tp-color-accent-700);
+  line-height: 1.35;
+}
+
+.tp-chat-lock-icon {
+  color: var(--tp-color-accent-600);
+  flex-shrink: 0;
+}
+
+/* Container de Mensagens com Scroll */
+.tp-chat-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 4px;
+  background-color: var(--tp-color-surface-subtle);
+  border-radius: var(--tp-radius-md);
+  border: 1px solid var(--tp-color-border-subtle);
+}
+
+.tp-chat-messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Mensagens do Sistema */
+.tp-msg-system {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.tp-system-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(15, 23, 42, 0.05);
+  color: var(--tp-color-text-secondary);
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  text-align: center;
+  max-width: 90%;
+}
+
+/* Bolhas de Mensagem */
+.tp-chat-msg-row {
+  display: flex;
+  width: 100%;
+}
+
+.tp-msg-outgoing {
+  justify-content: flex-end;
+}
+
+.tp-msg-incoming {
+  justify-content: flex-start;
+}
+
+.tp-msg-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 78%;
+  gap: 2px;
+}
+
+.tp-msg-sender-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  color: var(--tp-color-text-tertiary);
+  padding: 0 4px;
+}
+
+.tp-msg-outgoing .tp-msg-sender-meta {
+  justify-content: flex-end;
+}
+
+.tp-msg-sender-name {
+  font-weight: 600;
+}
+
+.tp-msg-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.tp-msg-bubble p {
+  margin: 0;
+  color: inherit;
+}
+
+/* Estilo Enviada (Outgoing - Azul TRAMPOU) */
+.tp-msg-outgoing .tp-msg-bubble {
+  background-color: var(--tp-color-primary-900);
+  color: #ffffff;
+  border-bottom-right-radius: 2px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.1);
+}
+
+/* Estilo Recebida (Incoming - Branco/Cinza Claro) */
+.tp-msg-incoming .tp-msg-bubble {
+  background-color: var(--tp-color-surface);
+  color: var(--tp-color-text-primary);
+  border: 1px solid var(--tp-color-border);
+  border-bottom-left-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* Respostas Rápidas */
+.tp-chat-quick-replies {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tp-quick-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--tp-color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tp-quick-pills-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.tp-quick-pill {
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background-color: var(--tp-color-surface);
+  border: 1px solid var(--tp-color-border);
+  color: var(--tp-color-text-secondary);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-quick-pill:hover {
+  background-color: var(--tp-color-accent-100);
+  border-color: var(--tp-color-accent-500);
+  color: var(--tp-color-accent-700);
+}
+
+/* Footer de Input */
+.tp-chat-input-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.tp-chat-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  font-size: 0.875rem;
+  font-family: inherit;
+  background-color: var(--tp-color-surface);
+  color: var(--tp-color-text-primary);
+  transition: border-color var(--tp-transition-fast), box-shadow var(--tp-transition-fast);
+}
+
+.tp-chat-input:focus {
+  outline: none;
+  border-color: var(--tp-color-accent-500);
+  box-shadow: var(--tp-focus-ring);
+}

@@ -1,0 +1,76 @@
+:host {
+  display: inline-flex;
+  vertical-align: middle;
+}
+.tp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: var(--tp-font-weight-semibold);
+  letter-spacing: 0.01em;
+  border-radius: var(--tp-radius-full);
+  white-space: nowrap;
+  transition: all var(--tp-transition-fast);
+}
+
+/* Sizes */
+.tp-badge-sm {
+  font-size: var(--tp-font-size-2xs);
+  padding: 2px 8px;
+  line-height: 1.2;
+}
+.tp-badge-md {
+  font-size: var(--tp-font-size-xs);
+  padding: 4px 10px;
+  line-height: 1.3;
+}
+
+/* Dot */
+.tp-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--tp-radius-full);
+  background-color: currentColor;
+  flex-shrink: 0;
+}
+
+/* Variants */
+.tp-badge-brand {
+  background-color: var(--tp-color-primary-900);
+  color: var(--tp-color-white);
+}
+
+.tp-badge-accent {
+  background-color: var(--tp-color-accent-100);
+  color: var(--tp-color-accent-700);
+}
+
+.tp-badge-neutral {
+  background-color: var(--tp-color-surface-subtle);
+  color: var(--tp-color-text-secondary);
+  border: 1px solid var(--tp-color-border);
+}
+
+.tp-badge-success {
+  background-color: var(--tp-color-success-light);
+  color: var(--tp-color-success-text);
+  border: 1px solid var(--tp-color-success-border);
+}
+
+.tp-badge-warning {
+  background-color: var(--tp-color-warning-light);
+  color: var(--tp-color-warning-text);
+  border: 1px solid var(--tp-color-warning-border);
+}
+
+.tp-badge-danger {
+  background-color: var(--tp-color-danger-light);
+  color: var(--tp-color-danger-text);
+  border: 1px solid var(--tp-color-danger-border);
+}
+
+.tp-badge-outline {
+  background-color: transparent;
+  color: var(--tp-color-text-secondary);
+  border: 1px solid var(--tp-color-border);
+}

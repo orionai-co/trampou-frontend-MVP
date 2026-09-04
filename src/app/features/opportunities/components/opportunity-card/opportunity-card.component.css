@@ -1,0 +1,462 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* 1. Estrutura Vertical Contínua e Aberta */
+.tp-stream-post {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  background-color: var(--tp-color-white);
+  transition: background-color var(--tp-transition-fast);
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  outline: none;
+  position: relative;
+}
+
+.tp-stream-post:hover {
+  background-color: rgba(248, 250, 252, 0.7);
+}
+
+.tp-stream-post:focus-visible {
+  background-color: var(--tp-color-accent-50);
+}
+
+.tp-stream-post-applied {
+  border-left: 3px solid var(--tp-color-success);
+  background-color: #fafdfa;
+}
+
+/* 2. Header do Post: Avatar + Autor + Badges no Topo */
+.tp-post-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+}
+
+.tp-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.tp-post-avatar-col {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tp-post-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--tp-radius-full);
+  background: linear-gradient(135deg, var(--tp-color-primary-900), var(--tp-color-primary-700));
+  color: var(--tp-color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--tp-font-weight-bold);
+  font-size: var(--tp-font-size-xs);
+  box-shadow: var(--tp-shadow-xs);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+}
+
+.tp-avatar-text {
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.tp-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.tp-author-name-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  line-height: 1.2;
+}
+
+.tp-company-name {
+  font-size: 0.9375rem;
+  font-weight: var(--tp-font-weight-semibold);
+  color: var(--tp-color-text-primary);
+  white-space: nowrap;
+}
+
+.tp-verified-icon {
+  color: var(--tp-color-accent-600);
+  display: inline-flex;
+  align-items: center;
+}
+
+.tp-handle-text {
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-secondary);
+  font-family: inherit;
+}
+
+.tp-sep {
+  color: var(--tp-color-border-hover);
+  font-size: var(--tp-font-size-xs);
+}
+
+.tp-time-text {
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-secondary);
+}
+
+.tp-rating-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--tp-color-text-secondary);
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border-subtle);
+  border-radius: var(--tp-radius-full);
+  padding: 1px 7px;
+  width: fit-content;
+}
+
+.tp-star-gold {
+  color: #eab308;
+}
+
+.tp-header-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.tp-match-badge-btn {
+  cursor: pointer;
+  transition: transform var(--tp-transition-fast), box-shadow var(--tp-transition-fast);
+  user-select: none;
+}
+
+.tp-match-badge-btn:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.25);
+}
+
+/* 3. Corpo do Post: Conteúdo Ocupa 100% da Largura */
+.tp-post-content-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.tp-post-title {
+  font-size: 1.25rem;
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-primary-900);
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  transition: color var(--tp-transition-fast);
+}
+
+.tp-stream-post:hover .tp-post-title {
+  color: var(--tp-color-accent-700);
+}
+
+.tp-post-description {
+  font-size: var(--tp-font-size-sm);
+  line-height: 1.5;
+  color: var(--tp-color-text-secondary);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 4. Quadro de Detalhes Operacionais (Attachment) */
+.tp-post-attachment {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #f8fafc;
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  padding: 12px 14px;
+  margin-top: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tp-attachment-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.tp-att-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tp-att-marker {
+  font-size: 13px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.tp-att-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.tp-att-text strong {
+  font-size: var(--tp-font-size-xs);
+  font-weight: var(--tp-font-weight-semibold);
+  color: var(--tp-color-primary-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tp-att-detail {
+  font-size: 11px;
+  color: var(--tp-color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Linha de Pagamento em Destaque & Urgência */
+.tp-att-pay-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid rgba(226, 232, 240, 0.9);
+  gap: 8px;
+}
+
+.tp-pay-value-wrap {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.tp-pay-currency {
+  font-size: 1.25rem;
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-accent-500);
+  letter-spacing: -0.01em;
+}
+
+.tp-pay-amount {
+  font-size: 1.85rem;
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-primary-900);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.tp-pay-type {
+  font-size: 0.85rem;
+  font-weight: var(--tp-font-weight-normal);
+  color: var(--tp-color-text-secondary);
+  margin-left: 2px;
+}
+
+/* 5. Rodapé do Post: Botão de Ação Full-Width */
+.tp-post-footer-row,
+.tp-opportunity-actions {
+  display: flex;
+  width: 100%;
+  margin-top: 12px;
+  box-sizing: border-box;
+}
+
+.tp-main-action-wrap {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tp-btn-apply,
+.tp-apply-btn-prominent,
+.tp-opportunity-actions tp-button,
+.tp-main-action-wrap tp-button {
+  width: 100%;
+  display: flex;
+}
+
+.tp-btn-apply ::ng-deep .tp-btn,
+.tp-apply-btn-prominent ::ng-deep .tp-btn,
+.tp-opportunity-actions ::ng-deep .tp-btn,
+.tp-main-action-wrap ::ng-deep .tp-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: var(--tp-font-weight-bold);
+  min-height: 44px;
+  font-size: 14px;
+  border-radius: var(--tp-radius-md);
+  letter-spacing: 0.01em;
+}
+
+.tp-applied-badge-done {
+  width: 100%;
+  justify-content: center;
+  padding: 10px 16px;
+  display: flex;
+  box-sizing: border-box;
+}
+
+/* =========================================================================
+   6. RESPONSIVIDADE (MOBILE < 768PX)
+   ========================================================================= */
+@media (max-width: 768px) {
+  .tp-stream-post {
+    flex-direction: column;
+    padding: 16px 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .tp-post-header-row {
+    width: 100%;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .tp-header-left {
+    gap: 8px;
+    width: 100%;
+    align-items: center;
+  }
+
+  .tp-post-avatar-col {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .tp-post-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 11px;
+  }
+
+  .tp-header-badges {
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 2px;
+  }
+
+  .tp-post-content-col {
+    width: 100%;
+    margin-top: 6px;
+  }
+
+  .tp-post-title {
+    font-size: 1.15rem;
+    width: 100%;
+  }
+
+  .tp-post-description {
+    width: 100%;
+  }
+
+  .tp-post-attachment {
+    padding: 12px;
+    margin-top: 4px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .tp-attachment-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .tp-att-text {
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .tp-att-pay-row {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tp-pay-amount {
+    font-size: 1.75rem;
+  }
+
+  .tp-pay-currency {
+    font-size: 1.2rem;
+  }
+
+  .tp-post-footer-row,
+  .tp-opportunity-actions {
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  .tp-main-action-wrap {
+    width: 100%;
+  }
+
+  .tp-main-action-wrap ::ng-deep .tp-btn {
+    width: 100%;
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  .tp-applied-badge-done {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .tp-stream-post {
+    padding: 14px 10px;
+  }
+
+  .tp-post-title {
+    font-size: 1.1rem;
+  }
+
+  .tp-pay-amount {
+    font-size: 1.75rem;
+  }
+}

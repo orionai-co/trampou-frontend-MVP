@@ -1,0 +1,153 @@
+<div class="tp-feed-page-wrapper">
+  <div class="tp-container tp-feed-layout-container">
+    
+    <!-- =========================================================================
+         COLUNA PRINCIPAL: FEED PROTAGONISTA
+         ========================================================================= -->
+    <main class="tp-feed-timeline-col" role="region" aria-label="Feed protagonista de oportunidades">
+
+      <!-- 1. HERO BANNER INSTITUCIONAL (CARD FLUTUANTE INDEPENDENTE) -->
+      <app-hero-banner></app-hero-banner>
+
+      <!-- 2. SUPERFÍCIE PRINCIPAL DO FEED DE VAGAS (CARD BRANCO INDEPENDENTE COM ABAS E CARDS) -->
+      <div class="tp-feed-surface">
+        <!-- BANNER DE SUCESSO DE CANDIDATURA (SE ATIVO) -->
+        <div *ngIf="lastAppliedTitle()" class="tp-timeline-banner-success">
+          <div class="tp-banner-inner">
+            <tp-icon name="check-circle" size="sm"></tp-icon>
+            <div>
+              <strong>Interesse enviado com sucesso!</strong>
+              <span>Você entrou na rodada de confirmação para <em>"{{ lastAppliedTitle() }}"</em>.</span>
+            </div>
+          </div>
+          <button type="button" class="tp-banner-close" (click)="dismissSuccessBanner()" aria-label="Fechar notificação">
+            <tp-icon name="x" size="xs"></tp-icon>
+          </button>
+        </div>
+
+        <!-- BARRA DE ABAS DO FEED -->
+        <nav class="tp-timeline-tabs-header tp-feed-tabs-bar" aria-label="Filtros rápidos do feed">
+          <button
+            type="button"
+            class="tp-stream-tab-btn tp-tab-btn"
+            [class.tp-stream-tab-active]="activeTab() === 'for_you'"
+            [class.active]="activeTab() === 'for_you'"
+            (click)="onSelectTab('for_you')"
+          >
+            <div class="tp-tab-label-wrap">
+              <span>Para Você</span>
+              <span class="tp-tab-count tp-tab-badge" *ngIf="opportunities().length > 0">{{ opportunities().length }}</span>
+            </div>
+            <div class="tp-tab-active-indicator" *ngIf="activeTab() === 'for_you'"></div>
+          </button>
+
+          <button
+            type="button"
+            class="tp-stream-tab-btn tp-tab-btn"
+            [class.tp-stream-tab-active]="activeTab() === 'urgent'"
+            [class.active]="activeTab() === 'urgent'"
+            (click)="onSelectTab('urgent')"
+          >
+            <div class="tp-tab-label-wrap">
+              <span>Urgentes (Hoje)</span>
+              <span class="tp-tab-urgent-badge tp-dot-urgent" *ngIf="urgentCount() > 0"></span>
+            </div>
+            <div class="tp-tab-active-indicator" *ngIf="activeTab() === 'urgent'"></div>
+          </button>
+
+          <button
+            type="button"
+            class="tp-stream-tab-btn tp-tab-btn"
+            [class.tp-stream-tab-active]="activeTab() === 'closest'"
+            [class.active]="activeTab() === 'closest'"
+            (click)="onSelectTab('closest')"
+          >
+            <div class="tp-tab-label-wrap">
+              <span>Mais Próximos</span>
+            </div>
+            <div class="tp-tab-active-indicator" *ngIf="activeTab() === 'closest'"></div>
+          </button>
+        </nav>
+
+        <!-- INDICADOR DE FILTROS ATIVOS -->
+        <div *ngIf="hasActiveSecondaryFilters()" class="tp-active-filter-strip">
+          <span>
+            Filtrando: <strong>{{ filters().category !== 'Todas' ? filters().category : '' }}</strong>
+            <span *ngIf="filters().maxDistanceKm"> • até {{ filters().maxDistanceKm }} km</span>
+            <span *ngIf="filters().searchQuery"> • "{{ filters().searchQuery }}"</span>
+          </span>
+          <button type="button" class="tp-reset-filter-btn" (click)="resetAllFilters()">
+            Limpar Filtros
+          </button>
+        </div>
+
+        <!-- ESTADO DE CARREGAMENTO -->
+        <div *ngIf="isLoading()" class="tp-timeline-loading">
+          <tp-spinner size="lg" color="accent"></tp-spinner>
+          <p>Carregando linha do tempo de oportunidades...</p>
+        </div>
+
+        <!-- LISTA DE CARDS -->
+        <section *ngIf="!isLoading() && opportunities().length > 0" class="tp-timeline-posts-list tp-feed-cards-list" aria-label="Lista de oportunidades">
+          <ng-container *ngFor="let opp of opportunities(); let i = index; trackBy: trackByOppId">
+            <tp-opportunity-card
+              [opportunity]="opp"
+              (viewDetails)="openDetails(opp)"
+              (apply)="openDetails(opp)"
+              (openMatch)="openMatchModal($event)"
+            ></tp-opportunity-card>
+
+            <!-- Card de Empresa em Destaque intercalado após a 2ª vaga -->
+            <tp-featured-company-card
+              *ngIf="i === 1 && featuredCompany()"
+              [company]="featuredCompany()!"
+              (exploreCompany)="onExploreCompany($event)"
+              (openMatch)="openMatchModal($event)"
+            ></tp-featured-company-card>
+          </ng-container>
+        </section>
+
+        <!-- ESTADO VAZIO -->
+        <div *ngIf="!isLoading() && opportunities().length === 0" class="tp-timeline-empty-state">
+          <div class="tp-empty-icon-circle">
+            <tp-icon name="search" size="lg"></tp-icon>
+          </div>
+          <h3>Nenhum trampo encontrado</h3>
+          <p>
+            Não encontramos oportunidades para os critérios selecionados no momento. Tente ampliar o raio ou mudar a aba.
+          </p>
+          <tp-button variant="primary" size="md" (btnClick)="resetAllFilters()">
+            <tp-icon name="sparkles" size="xs"></tp-icon>
+            <span>Mostrar Todas as Oportunidades</span>
+          </tp-button>
+        </div>
+      </div>
+    </main>
+
+    <!-- SIDEBAR DIREITA: FILTROS -->
+    <aside class="tp-feed-sidebar-col" role="complementary" aria-label="Painel de filtros">
+      <tp-opportunity-filters
+        [currentFilters]="filters()"
+        [appliedCount]="opportunityService.appliedCount()"
+        (filtersChange)="onFiltersChange($event)"
+      ></tp-opportunity-filters>
+    </aside>
+
+  </div>
+
+  <!-- MODAL DE DETALHES -->
+  <tp-opportunity-details-modal
+    [isOpen]="isModalOpen()"
+    [opportunity]="selectedOpportunity()"
+    (closed)="closeDetails()"
+    (applied)="handleApplyFromModal($event)"
+  ></tp-opportunity-details-modal>
+
+  <!-- MODAL DE EXPLICATIVO DE MATCH (CENTRALIZADO NA RAIZ DO FEED) -->
+  <tp-match-breakdown
+    *ngIf="selectedMatchData()"
+    [data]="selectedMatchData()!"
+    (closeModal)="closeMatchModal()"
+    (closed)="closeMatchModal()"
+  ></tp-match-breakdown>
+</div>

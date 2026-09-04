@@ -1,0 +1,79 @@
+<tp-modal
+  [isOpen]="isOpen"
+  [title]="modalTitle"
+  [subtitle]="modalSubtitle"
+  maxWidth="520px"
+  [hasFooter]="true"
+  (closed)="close()"
+>
+  <div class="tp-rating-modal-body">
+    
+    <!-- SELETOR DE ESTRELAS -->
+    <div class="tp-rating-stars-section">
+      <span class="tp-rating-stars-label">Como foi sua experiência no turno?</span>
+      
+      <div class="tp-stars-row" (mouseleave)="clearHover()">
+        <button
+          type="button"
+          *ngFor="let star of [1, 2, 3, 4, 5]"
+          class="tp-star-btn"
+          [class.tp-star-active]="star <= (hoveredRating() || selectedRating())"
+          (click)="setRating(star)"
+          (mouseenter)="setHover(star)"
+          [attr.aria-label]="star + ' estrelas'"
+        >
+          <tp-icon name="star" size="lg" customClass="tp-interactive-star"></tp-icon>
+        </button>
+      </div>
+
+      <span class="tp-rating-score-text">{{ ratingLabel }}</span>
+    </div>
+
+    <!-- CHIPS RÁPIDOS DE FEEDBACK / DESTAQUES -->
+    <div class="tp-rating-tags-section">
+      <label class="tp-tags-label">Destaques positivos:</label>
+      <div class="tp-rating-tags-grid">
+        <button
+          type="button"
+          *ngFor="let tag of availableTags"
+          class="tp-rtag-chip"
+          [class.tp-rtag-selected]="isTagSelected(tag)"
+          (click)="toggleTag(tag)"
+        >
+          <tp-icon name="check" size="xs" *ngIf="isTagSelected(tag)"></tp-icon>
+          <span>{{ tag }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CAMPO DE COMENTÁRIO OPCIONAL -->
+    <div class="tp-rating-comment-section">
+      <label class="tp-comment-label" for="ratingComment">Observações adicionais (opcional):</label>
+      <textarea
+        id="ratingComment"
+        rows="3"
+        class="tp-rating-textarea"
+        placeholder="Escreva um breve comentário sobre a pontualidade, atendimento ou postura..."
+        [ngModel]="commentText()"
+        (ngModelChange)="commentText.set($event)"
+      ></textarea>
+    </div>
+
+  </div>
+
+  <div tpModalFooter class="tp-rating-modal-footer">
+    <tp-button variant="outline" size="sm" (btnClick)="close()">
+      Pular / Fechar
+    </tp-button>
+
+    <tp-button
+      variant="primary"
+      size="sm"
+      customClass="tp-rating-submit-btn"
+      (btnClick)="submit()"
+    >
+      <tp-icon name="sparkles" size="xs"></tp-icon>
+      <span>Enviar Avaliação</span>
+    </tp-button>
+  </div>
+</tp-modal>

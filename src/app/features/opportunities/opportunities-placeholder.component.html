@@ -1,0 +1,61 @@
+<div class="tp-container tp-page-wrapper">
+  <div class="tp-page-header">
+    <div>
+      <div class="tp-page-badge">
+        <tp-badge variant="brand" [dot]="true">Feed de Trabalhos Sob Demanda</tp-badge>
+      </div>
+      <h1 class="tp-page-title">Oportunidades Disponíveis</h1>
+      <p class="tp-page-description">
+        Descubra trabalhos compatíveis com seu perfil, localização e disponibilidade em tempo real.
+      </p>
+    </div>
+    <div class="tp-page-actions">
+      <tp-button variant="outline" size="sm">
+        <tp-icon name="filter" size="xs"></tp-icon>
+        Filtrar Raio (15 km)
+      </tp-button>
+    </div>
+  </div>
+
+  <div class="tp-placeholder-card-wrap">
+    <tp-card padding="lg">
+      <div class="tp-placeholder-content">
+        <div class="tp-placeholder-icon">
+          <tp-icon name="sparkles" size="xl"></tp-icon>
+        </div>
+        <h2>O Feed do TRAMPOU está pronto para ser construído</h2>
+        <p>
+          O <strong>Shell da Aplicação</strong> e o <strong>Design System</strong> oficial estão 100% integrados e ativos.
+          As oportunidades reais, rodadas de contratação rápida e cards do feed serão implementados na próxima etapa.
+        </p>
+        <div class="tp-placeholder-features">
+          <div class="tp-feature-pill">
+            <tp-icon name="check-circle" size="xs"></tp-icon>
+            <span>Navegação Desktop & Mobile Ativa</span>
+          </div>
+          <div class="tp-feature-pill">
+            <tp-icon name="check-circle" size="xs"></tp-icon>
+            <span>Tokens Visuais Branco + Azul</span>
+          </div>
+          <div class="tp-feature-pill">
+            <tp-icon name="check-circle" size="xs"></tp-icon>
+            <span>Rotas e Shell Responsivo</span>
+          </div>
+        </div>
+        <div class="tp-placeholder-cta-row">
+          <a routerLink="/meus-trabalhos">
+            <tp-button variant="secondary" size="md">
+              Ver Meus Trabalhos
+              <tp-icon name="arrow-right" size="xs"></tp-icon>
+            </tp-button>
+          </a>
+          <a routerLink="/design-system">
+            <tp-button variant="outline" size="md">
+              Abrir Showcase do Design System
+            </tp-button>
+          </a>
+        </div>
+      </div>
+    </tp-card>
+  </div>
+</div>

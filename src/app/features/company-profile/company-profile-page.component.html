@@ -1,0 +1,95 @@
+<div class="tp-company-page-wrapper">
+  <div class="tp-container tp-company-container">
+
+    <!-- BARRA DE VOLTAR -->
+    <div class="tp-top-nav-bar">
+      <button type="button" class="tp-back-btn" (click)="goBack()">
+        <tp-icon name="arrow-right" size="xs" customClass="tp-icon-back"></tp-icon>
+        <span>Voltar para Oportunidades</span>
+      </button>
+    </div>
+
+    <!-- BANNER DE SUCESSO DE CANDIDATURA -->
+    <div *ngIf="lastAppliedTitle()" class="tp-timeline-banner-success">
+      <div class="tp-banner-inner">
+        <tp-icon name="check-circle" size="sm"></tp-icon>
+        <div>
+          <strong>Candidatura enviada com sucesso!</strong>
+          <span>Você confirmou interesse para a vaga <em>"{{ lastAppliedTitle() }}"</em>.</span>
+        </div>
+      </div>
+      <button type="button" class="tp-banner-close" (click)="dismissSuccessBanner()" aria-label="Fechar aviso">
+        <tp-icon name="x" size="xs"></tp-icon>
+      </button>
+    </div>
+
+    <!-- ESTADO DE CARREGAMENTO -->
+    <div *ngIf="isLoading()" class="tp-company-loading">
+      <tp-spinner size="lg" color="accent"></tp-spinner>
+      <p>Carregando perfil institucional da empresa...</p>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL DO PERFIL -->
+    <main *ngIf="!isLoading() && company()" class="tp-company-content-stack">
+
+      <!-- 1. HEADER DA EMPRESA -->
+      <tp-company-public-header
+        [company]="company()!"
+        [isFavorited]="isFavorited()"
+        [isFollowing]="isFollowing()"
+        (toggleFavorite)="onToggleFavorite()"
+        (toggleFollow)="onToggleFollow()"
+      ></tp-company-public-header>
+
+      <!-- 2. GRADE DE REPUTAÇÃO BILATERAL & CONFIABILIDADE -->
+      <tp-company-reputation-stats
+        [reputation]="company()!.reputation"
+      ></tp-company-reputation-stats>
+
+      <!-- 3. VÍDEO INSTITUCIONAL & GALERIA DE FOTOS -->
+      <tp-company-media-gallery
+        [media]="company()!.media"
+      ></tp-company-media-gallery>
+
+      <!-- 4. SOBRE A EMPRESA & DIFERENCIAIS DE TRABALHO -->
+      <section class="tp-about-company-card" aria-label="Sobre a empresa e cultura">
+        <div class="tp-about-header">
+          <tp-icon name="user" size="sm" customClass="tp-about-icon"></tp-icon>
+          <h3 class="tp-about-title">Sobre a Empresa & Como é Trabalhar Aqui</h3>
+        </div>
+
+        <p class="tp-about-text">
+          {{ company()!.about }}
+        </p>
+
+        <!-- Diferenciais de Cultura / Trabalho -->
+        <div class="tp-culture-highlights" *ngIf="company()!.cultureHighlights.length > 0">
+          <h4 class="tp-culture-title">Diferenciais Operacionais Oferecidos:</h4>
+          <div class="tp-culture-badges-grid">
+            <div *ngFor="let item of company()!.cultureHighlights" class="tp-culture-badge-item">
+              <tp-icon name="check" size="xs" customClass="tp-check-icon"></tp-icon>
+              <span>{{ item }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. VAGAS ABERTAS NESTA EMPRESA -->
+      <tp-company-open-jobs
+        [jobs]="openJobs()"
+        [companyName]="company()!.name"
+        (viewJobDetails)="openJobDetails($event)"
+        (applyJob)="openJobDetails($event)"
+      ></tp-company-open-jobs>
+    </main>
+
+  </div>
+
+  <!-- MODAL DE DETALHES DA VAGA -->
+  <tp-opportunity-details-modal
+    [isOpen]="isModalOpen()"
+    [opportunity]="selectedOpportunity()"
+    (closed)="closeJobDetails()"
+    (applied)="handleApplyFromModal($event)"
+  ></tp-opportunity-details-modal>
+</div>

@@ -1,0 +1,36 @@
+<div class="tp-profile-page-wrapper">
+  <div class="tp-profile-container">
+    <!-- 1. Header com 4 Métricas de Confiabilidade -->
+    <tp-profile-header
+      [user]="profileService.user()"
+      [reliability]="profileService.reliability()"
+    ></tp-profile-header>
+
+    <!-- 2. Barra de Progressão de Nível (GAMIFICAÇÃO) -->
+    <tp-profile-career-progress
+      [careerLevel]="profileService.careerLevel()"
+    ></tp-profile-career-progress>
+
+    <!-- 3. Chave PIX -->
+    <tp-pix-settings
+      [pixKey]="profileService.user().pixKey"
+      (pixKeyChange)="onPixKeyChange($event)"
+    ></tp-pix-settings>
+
+    <!-- 4. Painel de Conquistas & Emblemas (PROVA DE EXPERIÊNCIA) -->
+    <tp-profile-achievements
+      [achievements]="profileService.achievements()"
+    ></tp-profile-achievements>
+
+    <!-- 5. Habilidades & Áreas de Atuação -->
+    <tp-skills-selector
+      [skills]="profileService.skills()"
+      (skillsChange)="onSkillsChange($event)"
+    ></tp-skills-selector>
+
+    <!-- 6. Extrato de Avaliações Recebidas -->
+    <tp-reviews-list
+      [reviews]="profileService.reviews()"
+    ></tp-reviews-list>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<div class="tp-skills-container tp-skills-card" aria-label="Habilidades e Áreas de Atuação">
+  <!-- Header do Card -->
+  <div class="tp-skills-header tp-skills-header-row">
+    <div class="tp-skills-title-wrap tp-skills-heading-wrap">
+      <div class="tp-skills-icon-circle">
+        <tp-icon name="sparkles" size="sm" class="tp-skills-icon"></tp-icon>
+      </div>
+      <div>
+        <h3 class="tp-skills-title">Habilidades & Áreas de Atuação</h3>
+        <p class="tp-skills-subtitle">
+          Selecione ou digite suas especialidades para potencializar o match com vagas ideais.
+        </p>
+      </div>
+    </div>
+    <span class="tp-skills-badge tp-skills-counter-badge">{{ selectedSkillsCount() }} selecionadas</span>
+  </div>
+
+  <!-- Lista de Chips (Sugeridas + Personalizadas) -->
+  <div class="tp-skills-chips-grid">
+    @for (skill of allSkills(); track skill.id) {
+      <button
+        type="button"
+        class="tp-skill-chip tp-skill-chip-btn"
+        [class.tp-skill-chip-selected]="skill.selected"
+        [class.tp-skill-chip-active]="skill.selected"
+        [class.tp-skill-chip-custom]="skill.isCustom"
+        (click)="toggleSkill(skill.id)"
+        [attr.aria-pressed]="skill.selected"
+      >
+        @if (skill.selected) {
+          <div class="tp-chip-check-circle">
+            <tp-icon name="check" size="xs"></tp-icon>
+          </div>
+        }
+        <span class="tp-skill-chip-name">{{ skill.name }}</span>
+        @if (skill.isCustom) {
+          <span 
+            class="tp-skill-remove-btn" 
+            (click)="$event.stopPropagation(); removeCustomSkill(skill.id)"
+            title="Remover habilidade personalizada"
+            aria-label="Remover habilidade personalizada"
+          >
+            ×
+          </span>
+        }
+      </button>
+    }
+  </div>
+
+  <!-- Campo para Adicionar Habilidade Personalizada -->
+  <div class="tp-add-custom-skill-form">
+    <div class="tp-custom-skill-input-wrapper">
+      <tp-icon name="plus" size="xs" class="tp-input-prefix-icon"></tp-icon>
+      <input
+        type="text"
+        class="tp-input-custom-skill"
+        placeholder="Escreva outra habilidade (ex: Bartender Flair, Sommelier...)"
+        [value]="newSkillName()"
+        (input)="onNewSkillInput($event)"
+        (keydown.enter)="addCustomSkill()"
+        maxlength="100"
+      />
+    </div>
+    <button
+      type="button"
+      class="tp-btn-add-skill"
+      [disabled]="!newSkillName().trim()"
+      (click)="addCustomSkill()"
+    >
+      Adicionar
+    </button>
+  </div>
+</div>

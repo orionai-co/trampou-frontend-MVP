@@ -1,0 +1,381 @@
+<div class="ds-container">
+  <!-- Header do Design System -->
+  <header class="ds-header">
+    <div class="tp-container">
+      <div class="ds-header-content">
+        <div class="ds-brand-lockup">
+          <div class="ds-logo-mark">
+            <tp-icon name="sparkles" size="lg"></tp-icon>
+          </div>
+          <div>
+            <h1 class="ds-brand-title">TRAMPOU</h1>
+            <p class="ds-brand-subtitle">Design System & Identidade Visual Oficial</p>
+          </div>
+        </div>
+        <div class="ds-header-badges">
+          <tp-badge variant="brand" [dot]="true">Angular 19 Standalone</tp-badge>
+          <tp-badge variant="accent">Tokens Ativos</tp-badge>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="tp-container ds-main">
+    <!-- 1. Paleta de Cores & Identidade -->
+    <section class="ds-section">
+      <div class="ds-section-header">
+        <h2>1. Paleta de Cores & Identidade da Marca</h2>
+        <p>Predominância de <strong>Branco + Azul</strong> (Azul Escuro Estrutural e Azul Claro para Interação), sem excessos.</p>
+      </div>
+
+      <div class="ds-grid ds-grid-4">
+        <!-- Azul Escuro -->
+        <tp-card padding="md">
+          <div class="ds-color-swatch ds-swatch-primary"></div>
+          <div class="ds-color-info">
+            <strong>Azul Escuro (Marca)</strong>
+            <code>--tp-color-primary-900</code>
+            <small>Identidade, títulos, ações primárias</small>
+          </div>
+        </tp-card>
+
+        <!-- Azul Claro -->
+        <tp-card padding="md">
+          <div class="ds-color-swatch ds-swatch-accent"></div>
+          <div class="ds-color-info">
+            <strong>Azul Claro (Interação)</strong>
+            <code>--tp-color-accent-500</code>
+            <small>Interação frequente, links, foco, badges</small>
+          </div>
+        </tp-card>
+
+        <!-- Branco / Superfície -->
+        <tp-card padding="md">
+          <div class="ds-color-swatch ds-swatch-white"></div>
+          <div class="ds-color-info">
+            <strong>Branco (Superfície)</strong>
+            <code>--tp-color-surface</code>
+            <small>Base limpa, cards, áreas de conteúdo</small>
+          </div>
+        </tp-card>
+
+        <!-- Background Neutro -->
+        <tp-card padding="md">
+          <div class="ds-color-swatch ds-swatch-bg"></div>
+          <div class="ds-color-info">
+            <strong>Background Suave</strong>
+            <code>--tp-color-background</code>
+            <small>Fundo geral com leveza e contraste</small>
+          </div>
+        </tp-card>
+      </div>
+
+      <!-- Cores Semânticas -->
+      <div class="ds-grid ds-grid-4 ds-mt-md">
+        <tp-card padding="sm">
+          <div class="ds-semantic-badge ds-semantic-success">
+            <tp-icon name="check-circle" size="sm"></tp-icon>
+            <span>Sucesso (Confirmado / Concluído)</span>
+          </div>
+        </tp-card>
+        <tp-card padding="sm">
+          <div class="ds-semantic-badge ds-semantic-warning">
+            <tp-icon name="alert-triangle" size="sm"></tp-icon>
+            <span>Atenção (Prazos Próximos)</span>
+          </div>
+        </tp-card>
+        <tp-card padding="sm">
+          <div class="ds-semantic-badge ds-semantic-danger">
+            <tp-icon name="x-circle" size="sm"></tp-icon>
+            <span>Erro / Perigo (Cancelamento)</span>
+          </div>
+        </tp-card>
+        <tp-card padding="sm">
+          <div class="ds-semantic-badge ds-semantic-info">
+            <tp-icon name="alert-circle" size="sm"></tp-icon>
+            <span>Informação (Dicas / Avisos)</span>
+          </div>
+        </tp-card>
+      </div>
+    </section>
+
+    <!-- 2. Tipografia & Destaque de Valores -->
+    <section class="ds-section">
+      <div class="ds-section-header">
+        <h2>2. Tipografia & Hierarquia do Feed</h2>
+        <p>Fonte moderna (Inter) com ênfase visual rápida para valores de remuneração e funções.</p>
+      </div>
+
+      <tp-card padding="lg">
+        <div class="ds-typography-demo">
+          <div>
+            <span class="ds-typo-label">Destaque de Remuneração (Feed)</span>
+            <div class="tp-currency-value">
+              <span class="tp-currency-symbol">R$</span>
+              <span>180,00</span>
+              <small style="font-size: 13px; font-weight: 500; color: var(--tp-color-text-secondary);">/ diária</small>
+            </div>
+          </div>
+
+          <div class="ds-divider"></div>
+
+          <div class="ds-grid ds-grid-3">
+            <div>
+              <span class="ds-typo-label">H1 - Título Principal</span>
+              <h1>Garçom para Evento</h1>
+            </div>
+            <div>
+              <span class="ds-typo-label">H2 - Subtítulo / Seção</span>
+              <h2>Detalhes da Vaga</h2>
+            </div>
+            <div>
+              <span class="ds-typo-label">H3 - Cabeçalho de Card</span>
+              <h3>Requisitos Mínimos</h3>
+            </div>
+          </div>
+        </div>
+      </tp-card>
+    </section>
+
+    <!-- 3. Botões & Ações -->
+    <section class="ds-section">
+      <div class="ds-section-header">
+        <h2>3. Botões (TpButton)</h2>
+        <p>Padrões de interação com estados de hover, loading e variantes semânticas.</p>
+      </div>
+
+      <tp-card padding="lg">
+        <div class="ds-buttons-group">
+          <div class="ds-btn-row">
+            <tp-button variant="primary" (btnClick)="simulateAction('Tenho interesse')">
+              <tp-icon name="check" size="sm"></tp-icon>
+              Tenho interesse
+            </tp-button>
+
+            <tp-button variant="secondary" (btnClick)="simulateAction('Ação Secundária')">
+              <tp-icon name="eye" size="sm"></tp-icon>
+              Ver Detalhes
+            </tp-button>
+
+            <tp-button variant="outline" (btnClick)="simulateAction('Filtros')">
+              <tp-icon name="filter" size="sm"></tp-icon>
+              Filtros
+            </tp-button>
+
+            <tp-button variant="ghost" (btnClick)="simulateAction('Ação Discreta')">
+              Mais Opções
+            </tp-button>
+
+            <tp-button variant="destructive" (btnClick)="simulateAction('Cancelar')">
+              <tp-icon name="x" size="sm"></tp-icon>
+              Cancelar
+            </tp-button>
+          </div>
+
+          <div class="ds-divider"></div>
+
+          <div class="ds-btn-row">
+            <tp-button variant="primary" size="sm">Botão Pequeno</tp-button>
+            <tp-button variant="primary" size="md">Botão Médio</tp-button>
+            <tp-button variant="primary" size="lg">Botão Grande</tp-button>
+            <tp-button variant="primary" [loading]="isLoading()" (btnClick)="toggleLoading()">
+              {{ isLoading() ? 'Processando' : 'Testar Loading' }}
+            </tp-button>
+            <tp-button variant="primary" [disabled]="true">Desabilitado</tp-button>
+          </div>
+
+          <div class="ds-divider"></div>
+
+          <div>
+            <span class="ds-typo-label">Spinners Isolados (TpSpinner)</span>
+            <div style="display: flex; gap: var(--tp-spacing-lg); align-items: center; margin-top: 8px;">
+              <tp-spinner size="xs" color="primary"></tp-spinner>
+              <tp-spinner size="sm" color="accent"></tp-spinner>
+              <tp-spinner size="md" color="primary"></tp-spinner>
+              <tp-spinner size="lg" color="accent"></tp-spinner>
+            </div>
+          </div>
+        </div>
+      </tp-card>
+    </section>
+
+    <!-- 4. Badges & Status do Sistema -->
+    <section class="ds-section">
+      <div class="ds-section-header">
+        <h2>4. Badges & Status Operacionais (TpBadge)</h2>
+        <p>Identificadores visuais limpos e discretos para o ciclo de vida do trabalho.</p>
+      </div>
+
+      <tp-card padding="lg">
+        <div class="ds-badges-flow">
+          <tp-badge variant="brand" [dot]="true">Disponível Agora</tp-badge>
+          <tp-badge variant="accent" [dot]="true">Match 95%</tp-badge>
+          <tp-badge variant="neutral">Aguardando Confirmação</tp-badge>
+          <tp-badge variant="success" [dot]="true">Confirmado</tp-badge>
+          <tp-badge variant="warning">Prazo Próximo (30m)</tp-badge>
+          <tp-badge variant="danger">Cancelado</tp-badge>
+          <tp-badge variant="outline">Concluído</tp-badge>
+        </div>
+      </tp-card>
+    </section>
+
+    <!-- 5. Cards Genéricos & Interatividade -->
+    <section class="ds-section">
+      <div class="ds-section-header">
+        <h2>5. Estrutura de Cards (TpCard)</h2>
+        <p>Base modular para os futuros cards de oportunidades do feed.</p>
+      </div>
+
+      <div class="ds-grid ds-grid-2">
+        <!-- Card Padrão -->
+        <tp-card [hasHeader]="true" [hasFooter]="true" padding="md">
+          <div tpCardHeader class="ds-card-header-flex">
+            <div>
+              <tp-badge variant="brand">Nível Avançado</tp-badge>
+              <h3 style="margin-top: 6px;">Garçom para Evento Corporativo</h3>
+            </div>
+            <div class="tp-currency-value">
+              <span class="tp-currency-symbol">R$</span>
+              <span>150</span>
+            </div>
+          </div>
+
+          <div class="ds-card-meta-list">
+            <div class="ds-meta-item">
+              <tp-icon name="map-pin" size="sm"></tp-icon>
+              <span>Vila Olímpia, São Paulo (3.2 km)</span>
+            </div>
+            <div class="ds-meta-item">
+              <tp-icon name="calendar" size="sm"></tp-icon>
+              <span>Sábado, 25 de Outubro</span>
+            </div>
+            <div class="ds-meta-item">
+              <tp-icon name="clock" size="sm"></tp-icon>
+              <span>18:00 às 00:00 (6 horas)</span>
+            </div>
+          </div>
+
+          <div tpCardFooter class="ds-card-footer-flex">
+            <tp-badge variant="accent" [dot]="true">Alta Compatibilidade</tp-badge>
+            <tp-button variant="primary" size="sm" (btnClick)="openDemoModal()">
+              Ver Oportunidade
+            </tp-button>
+          </div>
+        </tp-card>
+
+        <!-- Card Interativo (Hover elevation) -->
+        <tp-card [interactive]="true" padding="md" (cardClick)="openDemoModal()">
+          <div class="ds-card-header-flex">
+            <div>
+              <tp-badge variant="success" [dot]="true">Confirmado</tp-badge>
+              <h3 style="margin-top: 6px;">Recepcionista / Credenciamento</h3>
+            </div>
+            <div class="tp-currency-value">
+              <span class="tp-currency-symbol">R$</span>
+              <span>160</span>
+            </div>
+          </div>
+
+          <p style="margin: 12px 0; font-size: 14px;">
+            Card com comportamento interativo (hover suave e elevação) ideal para o feed de descoberta.
+          </p>
+
+          <div class="ds-meta-item" style="color: var(--tp-color-accent-600); font-weight: 600;">
+            <tp-icon name="sparkles" size="sm"></tp-icon>
+            <span>Clique para abrir o Modal de Demonstração</span>
+          </div>
+        </tp-card>
+      </div>
+    </section>
+
+    <!-- 6. Formulários & Inputs -->
+    <section class="ds-section">
+      <div class="ds-section-header">
+        <h2>6. Formulários & Controles (TpInput & TpCheckbox)</h2>
+        <p>Entradas limpas, ícones de apoio, suporte a busca com botão de limpar e validações.</p>
+      </div>
+
+      <tp-card padding="lg">
+        <div class="ds-grid ds-grid-3">
+          <tp-input
+            label="Busca de Oportunidades"
+            placeholder="Ex: Garçom, Recepção..."
+            prefixIcon="search"
+            [clearable]="true"
+            [(ngModel)]="searchQuery"
+          ></tp-input>
+
+          <tp-input
+            label="Localização / Raio de Deslocamento"
+            placeholder="Ex: São Paulo - SP"
+            prefixIcon="map-pin"
+            [(ngModel)]="locationQuery"
+          ></tp-input>
+
+          <tp-input
+            label="Campo com Erro / Validação"
+            placeholder="Valor inválido..."
+            prefixIcon="alert-circle"
+            errorMessage="Este requisito é obrigatório."
+            [(ngModel)]="errorSample"
+          ></tp-input>
+        </div>
+
+        <div class="ds-divider"></div>
+
+        <div class="ds-checkbox-row">
+          <tp-checkbox [(ngModel)]="agreeTerms">
+            Disponível para chamadas imediatas neste raio
+          </tp-checkbox>
+
+          <tp-checkbox [disabled]="true" [ngModel]="true">
+            Documentação validada pelo Administrador (Fixado)
+          </tp-checkbox>
+        </div>
+      </tp-card>
+    </section>
+
+    <!-- 7. Coleção de Ícones SVG Nativos -->
+    <section class="ds-section">
+      <div class="ds-section-header">
+        <h2>7. Sistema de Ícones Nativos (TpIcon)</h2>
+        <p>Ícones essenciais renderizados via SVG nativo sem bibliotecas externas pesadas.</p>
+      </div>
+
+      <tp-card padding="md">
+        <div class="ds-icons-grid">
+          <div class="ds-icon-box" *ngFor="let icon of iconList">
+            <tp-icon [name]="icon" size="md"></tp-icon>
+            <span>{{ icon }}</span>
+          </div>
+        </div>
+      </tp-card>
+    </section>
+  </main>
+
+  <!-- Modal de Exemplo -->
+  <tp-modal
+    [isOpen]="isModalOpen()"
+    title="Demonstração do Modal (TpModal)"
+    subtitle="Componente genérico acessível com foco gerenciado e animação suave"
+    [hasFooter]="true"
+    (closed)="closeDemoModal()"
+  >
+    <div>
+      <p style="margin-bottom: 16px;">
+        Este modal exemplifica o padrão visual para visualização de detalhes, confirmação de candidaturas e diálogos do sistema.
+      </p>
+      <div style="background: var(--tp-color-surface-subtle); padding: 12px; border-radius: var(--tp-radius-md);">
+        <div class="ds-meta-item">
+          <tp-icon name="shield-check" size="sm"></tp-icon>
+          <span>Totalmente responsivo e controlado via Signals/Events</span>
+        </div>
+      </div>
+    </div>
+
+    <div tpModalFooter>
+      <tp-button variant="outline" (btnClick)="closeDemoModal()">Fechar</tp-button>
+      <tp-button variant="primary" (btnClick)="closeDemoModal()">Confirmar Ação</tp-button>
+    </div>
+  </tp-modal>
+</div>

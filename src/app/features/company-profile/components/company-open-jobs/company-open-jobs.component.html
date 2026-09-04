@@ -1,0 +1,34 @@
+<section class="tp-company-jobs-section" aria-label="Vagas Abertas na Empresa">
+  <div class="tp-company-jobs-header">
+    <div class="tp-company-jobs-title-wrap">
+      <tp-icon name="briefcase" size="sm" customClass="tp-jobs-icon"></tp-icon>
+      <div>
+        <h3 class="tp-company-jobs-title">
+          Vagas Abertas em {{ companyName || 'Destaque' }}
+        </h3>
+        <p class="tp-company-jobs-subtitle">
+          Candidate-se diretamente para turnos confirmados nesta empresa com pagamento garantido via PIX.
+        </p>
+      </div>
+    </div>
+    <span class="tp-company-jobs-count-badge">
+      {{ jobs.length }} {{ jobs.length === 1 ? 'vaga aberta' : 'vagas abertas' }}
+    </span>
+  </div>
+
+  <!-- Lista de Cards de Oportunidade -->
+  <div class="tp-company-jobs-list" *ngIf="jobs.length > 0">
+    <tp-opportunity-card
+      *ngFor="let job of jobs; trackBy: trackByJobId"
+      [opportunity]="job"
+      (viewDetails)="onViewDetails(job)"
+      (apply)="onApply(job)"
+    ></tp-opportunity-card>
+  </div>
+
+  <!-- Estado Vazio se não houver vagas no momento -->
+  <div class="tp-company-jobs-empty" *ngIf="jobs.length === 0">
+    <tp-icon name="calendar" size="md"></tp-icon>
+    <p>Não há turnos abertos para esta empresa no momento. Acompanhe a empresa para receber alertas assim que novas vagas surgirem.</p>
+  </div>
+</section>

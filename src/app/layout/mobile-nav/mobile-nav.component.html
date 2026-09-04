@@ -1,0 +1,57 @@
+<nav class="tp-mobile-nav" aria-label="Navegação Mobile">
+  <a
+    routerLink="/oportunidades"
+    routerLinkActive="tp-mobile-tab-active"
+    class="tp-mobile-tab"
+  >
+    <div class="tp-tab-icon-wrap">
+      <tp-icon name="search" size="md"></tp-icon>
+    </div>
+    <span class="tp-tab-label">Vagas</span>
+  </a>
+
+  <a
+    routerLink="/meus-trabalhos"
+    routerLinkActive="tp-mobile-tab-active"
+    class="tp-mobile-tab"
+  >
+    <div class="tp-tab-icon-wrap">
+      <tp-icon name="briefcase" size="md"></tp-icon>
+    </div>
+    <span class="tp-tab-label">Trabalhos</span>
+  </a>
+
+  <a
+    routerLink="/empresa"
+    routerLinkActive="tp-mobile-tab-active"
+    class="tp-mobile-tab tp-mobile-tab-empresa"
+  >
+    <div class="tp-tab-icon-wrap">
+      <tp-icon name="users" size="md"></tp-icon>
+    </div>
+    <span class="tp-tab-label">Empresa</span>
+  </a>
+
+  <a
+    routerLink="/avisos"
+    routerLinkActive="tp-mobile-tab-active"
+    class="tp-mobile-tab"
+  >
+    <div class="tp-tab-icon-wrap">
+      <tp-icon name="bell" size="md"></tp-icon>
+      <span class="tp-mobile-badge-dot" *ngIf="notificationsService.unreadCount() > 0"></span>
+    </div>
+    <span class="tp-tab-label">Avisos</span>
+  </a>
+
+  <a
+    routerLink="/perfil"
+    routerLinkActive="tp-mobile-tab-active"
+    class="tp-mobile-tab"
+  >
+    <div class="tp-tab-icon-wrap">
+      <tp-icon name="user" size="md"></tp-icon>
+    </div>
+    <span class="tp-tab-label">Perfil</span>
+  </a>
+</nav>

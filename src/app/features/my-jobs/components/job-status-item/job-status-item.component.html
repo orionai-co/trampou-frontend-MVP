@@ -1,0 +1,181 @@
+<article class="tp-job-item" [class.tp-job-item-confirmed]="job.status === 'accepted'">
+  
+  <!-- =========================================================================
+       1. ESTADO: CONFIRMADOS (ATIVOS)
+       ========================================================================= -->
+  <ng-container *ngIf="job.status === 'accepted'">
+    <!-- Cabeçalho do Item Confirmado -->
+    <header class="tp-job-header-row">
+      <div class="tp-schedule-tag">
+        <tp-icon name="clock" size="xs" customClass="tp-sched-icon"></tp-icon>
+        <strong>{{ job.date }} • {{ job.schedule.start }} às {{ job.schedule.end }}</strong>
+        <span class="tp-sched-hours">({{ job.schedule.totalHours }}h)</span>
+      </div>
+
+      <div class="tp-job-pay-val">
+        <span class="tp-pay-currency">R$</span>
+        <span>{{ job.payment.amount }}</span>
+      </div>
+    </header>
+
+    <!-- Corpo do Item Confirmado -->
+    <div class="tp-job-body">
+      <div class="tp-job-title-company">
+        <h3 class="tp-job-title">{{ job.title }}</h3>
+        <span class="tp-job-company-tag">{{ job.companyName }}</span>
+      </div>
+
+      <!-- Endereço com Link para Mapa -->
+      <div class="tp-job-address-row">
+        <tp-icon name="map-pin" size="xs" customClass="tp-addr-icon"></tp-icon>
+        <span class="tp-addr-text">{{ job.location.address }} ({{ job.location.neighborhood }})</span>
+        <a
+          *ngIf="job.location.mapUrl"
+          [href]="job.location.mapUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="tp-map-link"
+          title="Abrir no Google Maps"
+          (click)="$event.stopPropagation()"
+        >
+          <span>Ver mapa</span>
+          <tp-icon name="arrow-right" size="xs"></tp-icon>
+        </a>
+      </div>
+    </div>
+
+    <!-- Ações do Item Confirmado -->
+    <footer class="tp-job-actions-row">
+      <button
+        type="button"
+        class="tp-secondary-action-link tp-danger-link"
+        (click)="onWithdraw()"
+      >
+        Não poderei comparecer
+      </button>
+
+      <div class="tp-primary-action-wrap">
+        <!-- Chat Efêmero Pós-Aprovação -->
+        <button
+          type="button"
+          class="tp-btn-chat"
+          (click)="onOpenChat()"
+          title="Abrir canal de alinhamento com a empresa"
+        >
+          <tp-icon name="message-square" size="xs"></tp-icon>
+          <span>Abrir Chat</span>
+        </button>
+
+        <!-- Caso Check-in já tenha sido realizado -->
+        <tp-badge
+          *ngIf="job.checkInStatus === 'checked_in'"
+          variant="success"
+          size="md"
+          [dot]="true"
+        >
+          <tp-icon name="check-circle" size="xs"></tp-icon>
+          <span>Check-in Realizado ({{ job.checkInTime || 'Confirmado' }})</span>
+        </tp-badge>
+
+        <!-- Caso seja para Hoje e ainda não fez check-in -->
+        <tp-button
+          *ngIf="job.isToday && job.checkInStatus !== 'checked_in'"
+          variant="primary"
+          size="sm"
+          (btnClick)="onCheckIn()"
+        >
+          <tp-icon name="map-pin" size="xs"></tp-icon>
+          <span>Fazer Check-in</span>
+        </tp-button>
+
+        <!-- Caso seja para outro dia -->
+        <tp-button
+          *ngIf="!job.isToday && job.checkInStatus !== 'checked_in'"
+          variant="outline"
+          size="sm"
+          (btnClick)="onViewInstructions()"
+        >
+          <tp-icon name="eye" size="xs"></tp-icon>
+          <span>Instruções de Chegada</span>
+        </tp-button>
+      </div>
+    </footer>
+  </ng-container>
+
+  <!-- =========================================================================
+       2. ESTADO: EM ANÁLISE (AGUARDANDO RODADA)
+       ========================================================================= -->
+  <ng-container *ngIf="job.status === 'pending'">
+    <header class="tp-job-header-row">
+      <div class="tp-pending-meta">
+        <h3 class="tp-job-title">{{ job.title }}</h3>
+        <span class="tp-job-company-tag">{{ job.companyName }} • {{ job.location.neighborhood }}</span>
+      </div>
+
+      <div class="tp-job-pay-val">
+        <span class="tp-pay-currency">R$</span>
+        <span>{{ job.payment.amount }}</span>
+      </div>
+    </header>
+
+    <div class="tp-pending-status-bar">
+      <div class="tp-pending-time-pill">
+        <tp-icon name="clock" size="xs"></tp-icon>
+        <span>{{ job.responseTimeRemaining || 'Aguardando rodada de confirmação' }}</span>
+      </div>
+
+      <button
+        type="button"
+        class="tp-secondary-action-link tp-cancel-link"
+        (click)="onCancelApplication()"
+      >
+        Cancelar candidatura
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- =========================================================================
+       3. ESTADO: HISTÓRICO (CONCLUÍDO E PAGO VIA PIX)
+       ========================================================================= -->
+  <ng-container *ngIf="job.status === 'completed'">
+    <header class="tp-job-header-row">
+      <div class="tp-history-meta">
+        <div class="tp-history-date-row">
+          <span class="tp-history-date">{{ job.date }}</span>
+          <span class="tp-sep">·</span>
+          <span class="tp-history-company">{{ job.companyName }}</span>
+        </div>
+        <h3 class="tp-job-title tp-history-title">{{ job.title }}</h3>
+      </div>
+
+      <div class="tp-history-badge-wrap">
+        <tp-badge variant="success" size="sm" [dot]="true">
+          <span>PIX Recebido • R$ {{ job.payment.amount }},00</span>
+        </tp-badge>
+      </div>
+    </header>
+
+    <footer class="tp-history-footer">
+      <button
+        type="button"
+        class="tp-secondary-action-link tp-receipt-link"
+        (click)="onViewReceipt()"
+      >
+        <tp-icon name="shield-check" size="xs"></tp-icon>
+        <span>Ver comprovante PIX</span>
+      </button>
+
+      <button
+        type="button"
+        class="tp-rate-company-btn"
+        (click)="onOpenRating()"
+        title="Avaliar a empresa contratante"
+      >
+        <tp-icon name="star" size="xs"></tp-icon>
+        <span>Avaliar Contratante</span>
+      </button>
+    </footer>
+  </ng-container>
+
+</article>
+

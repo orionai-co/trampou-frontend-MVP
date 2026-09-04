@@ -1,0 +1,33 @@
+<div class="tp-container tp-page-wrapper">
+  <div class="tp-page-header">
+    <div>
+      <div class="tp-page-badge">
+        <tp-badge variant="accent" [dot]="true">Avisos & Alertas em Tempo Real</tp-badge>
+      </div>
+      <h1 class="tp-page-title">Notificações e Avisos</h1>
+      <p class="tp-page-description">
+        Alertas de confirmação de trabalhos, chamadas imediatas e avisos operacionais.
+      </p>
+    </div>
+  </div>
+
+  <div class="tp-placeholder-card-wrap">
+    <tp-card padding="lg">
+      <div class="tp-placeholder-content">
+        <div class="tp-placeholder-icon">
+          <tp-icon name="bell" size="xl"></tp-icon>
+        </div>
+        <h2>Nenhum novo aviso no momento</h2>
+        <p>
+          Quando uma empresa confirmar sua candidatura ou surgir uma oportunidade urgente no seu raio de atuação, você será notificado instantaneamente aqui.
+        </p>
+        <a routerLink="/oportunidades">
+          <tp-button variant="primary" size="md">
+            <tp-icon name="search" size="xs"></tp-icon>
+            Ver Oportunidades
+          </tp-button>
+        </a>
+      </div>
+    </tp-card>
+  </div>
+</div>

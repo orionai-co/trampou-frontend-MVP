@@ -1,0 +1,152 @@
+<aside
+  class="tp-chat-sidebar-card"
+  [class.tp-sidebar-mobile-open]="isMobileOpen"
+  aria-label="Painel de Chat Efêmero Integrado"
+>
+  <!-- BARRA DE MARCA TRAMPOU (MOBILE APENAS) -->
+  <div class="tp-mobile-chat-brand-header">
+    <div class="tp-brand-logo-wrap">
+      <tp-icon name="sparkles" size="sm"></tp-icon>
+      <span class="tp-brand-text">TRAMPOU</span>
+    </div>
+  </div>
+
+  <!-- ESTADO 1: CHAT ATIVO SELECIONADO -->
+  <ng-container *ngIf="hasActiveChat; else emptyStateTpl">
+    
+    <!-- CABEÇALHO DO CHAT DOCKED -->
+    <header class="tp-csidebar-header">
+      <div class="tp-csidebar-user-row">
+        <div class="tp-csidebar-avatar">
+          <span>{{ initials }}</span>
+        </div>
+
+        <div class="tp-csidebar-info">
+          <div class="tp-csidebar-name-row">
+            <h4 class="tp-csidebar-name">{{ counterpartName }}</h4>
+            <span class="tp-csidebar-role-badge">{{ counterpartRoleLabel }}</span>
+          </div>
+          <span class="tp-csidebar-job-tag" [title]="jobTitle">{{ jobTitle }}</span>
+        </div>
+
+        <button
+          type="button"
+          class="tp-csidebar-close-btn"
+          (click)="close()"
+          title="Minimizar / Fechar painel lateral"
+          aria-label="Fechar painel de conversa"
+        >
+          <tp-icon name="x" size="xs"></tp-icon>
+        </button>
+      </div>
+
+      <!-- STATUS BADGE EFÊMERO -->
+      <div class="tp-csidebar-ephemeral-tag">
+        <tp-icon name="shield-check" size="xs"></tp-icon>
+        <span>Chat Efêmero • Ativo até o fim do turno</span>
+      </div>
+    </header>
+
+    <!-- ÁREA DE MENSAGENS COM ROLAGEM -->
+    <div #messagesContainer class="tp-csidebar-messages-feed">
+      <div *ngIf="currentRoom()" class="tp-csidebar-msg-list">
+        
+        <div
+          *ngFor="let msg of currentRoom()?.messages"
+          class="tp-csidebar-msg-row"
+          [class.tp-cmsg-outgoing]="msg.senderRole === currentUserRole"
+          [class.tp-cmsg-incoming]="msg.senderRole !== currentUserRole"
+          [class.tp-cmsg-system]="msg.senderId === 'system'"
+        >
+          <!-- Mensagem do Sistema -->
+          <div *ngIf="msg.senderId === 'system'" class="tp-csystem-bubble">
+            <tp-icon name="alert-circle" size="xs"></tp-icon>
+            <span>{{ msg.text }}</span>
+          </div>
+
+          <!-- Mensagem de Usuário -->
+          <div *ngIf="msg.senderId !== 'system'" class="tp-cmsg-bubble-wrap">
+            <div class="tp-cmsg-meta">
+              <span class="tp-cmsg-sender">{{ msg.senderName }}</span>
+              <span class="tp-cmsg-time">{{ msg.timestamp }}</span>
+            </div>
+            
+            <div class="tp-cmsg-bubble">
+              <p>{{ msg.text }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PÍLULAS DE RESPOSTA RÁPIDA -->
+    <div class="tp-csidebar-quick-replies">
+      <div class="tp-cquick-scroll">
+        <button
+          type="button"
+          *ngFor="let reply of quickReplies"
+          class="tp-cquick-pill"
+          (click)="onQuickReplyClick(reply)"
+        >
+          {{ reply }}
+        </button>
+      </div>
+    </div>
+
+    <!-- INPUT DE MENSAGEM -->
+    <div class="tp-csidebar-input-row">
+      <input
+        type="text"
+        class="tp-csidebar-input"
+        [placeholder]="inputPlaceholder"
+        [ngModel]="messageText()"
+        (ngModelChange)="messageText.set($event)"
+        (keyup.enter)="sendMessage()"
+      />
+
+      <tp-button
+        variant="primary"
+        size="sm"
+        customClass="tp-csidebar-send-btn"
+        [disabled]="!messageText() || !messageText().trim()"
+        (btnClick)="sendMessage()"
+      >
+        <tp-icon name="chevron-right" size="xs"></tp-icon>
+      </tp-button>
+    </div>
+
+    <!-- AÇÃO RÁPIDA: PAGAR PIX / FINALIZAR TURNO -->
+    <footer *ngIf="canPayPix" class="tp-csidebar-footer-action">
+      <tp-button
+        variant="primary"
+        size="sm"
+        customClass="tp-csidebar-pix-btn"
+        (btnClick)="onPayoutClick()"
+      >
+        <tp-icon name="shield-check" size="xs"></tp-icon>
+        <span>Validar Presença & Pagar PIX</span>
+      </tp-button>
+    </footer>
+
+  </ng-container>
+
+  <!-- ESTADO 2: VAZIO (NENHUM CHAT SELECIONADO) -->
+  <ng-template #emptyStateTpl>
+    <div class="tp-csidebar-empty-state">
+      <div class="tp-csidebar-empty-icon-wrap">
+        <tp-icon name="sparkles" size="lg"></tp-icon>
+      </div>
+
+      <h4 class="tp-csidebar-empty-title">Nenhum chat selecionado</h4>
+      <p class="tp-csidebar-empty-desc">
+        {{ emptyStateDescription }}
+      </p>
+
+      <div class="tp-csidebar-empty-tip">
+        <tp-icon name="shield-check" size="xs"></tp-icon>
+        <span>O canal é efêmero e gerado instantaneamente no aceite.</span>
+      </div>
+    </div>
+  </ng-template>
+</aside>

@@ -1,0 +1,459 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tp-featured-company-card {
+  background-color: var(--tp-color-white);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: var(--tp-radius-lg);
+  padding: var(--tp-spacing-lg) var(--tp-spacing-xl);
+  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tp-spacing-md);
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  transition: transform var(--tp-transition-fast), box-shadow var(--tp-transition-fast), border-color var(--tp-transition-fast);
+  background: linear-gradient(180deg, #ffffff 0%, #fafcff 100%);
+}
+
+.tp-featured-company-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  border-color: rgba(14, 165, 233, 0.35);
+}
+
+/* =========================================================================
+   1. HEADER
+   ========================================================================= */
+.tp-feat-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--tp-spacing-md);
+}
+
+.tp-feat-company-info {
+  display: flex;
+  align-items: center;
+  gap: var(--tp-spacing-md);
+  min-width: 0;
+  flex: 1;
+}
+
+.tp-feat-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--tp-radius-md);
+  background: linear-gradient(135deg, var(--tp-color-primary-900), var(--tp-color-primary-700));
+  color: var(--tp-color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--tp-font-size-md);
+  font-weight: var(--tp-font-weight-bold);
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: var(--tp-shadow-xs);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+}
+
+.tp-feat-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tp-feat-meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.tp-feat-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tp-feat-name {
+  font-size: 1.05rem;
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-primary-900);
+  margin: 0;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tp-feat-verified-icon {
+  color: var(--tp-color-accent-600);
+  display: inline-flex;
+  align-items: center;
+}
+
+.tp-feat-sub-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-secondary);
+  flex-wrap: wrap;
+}
+
+.tp-feat-handle {
+  font-weight: var(--tp-font-weight-medium);
+  color: var(--tp-color-text-tertiary);
+}
+
+.tp-feat-bullet {
+  color: var(--tp-color-border-hover);
+}
+
+.tp-feat-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--tp-color-text-secondary);
+}
+
+.tp-feat-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--tp-color-primary-900);
+}
+
+.tp-star-gold {
+  color: #eab308;
+}
+
+.tp-feat-rating strong {
+  font-weight: var(--tp-font-weight-bold);
+}
+
+.tp-feat-rating small {
+  color: var(--tp-color-text-tertiary);
+}
+
+/* Pílula Discreta de Patrocínio */
+.tp-feat-badge-wrapper {
+  flex-shrink: 0;
+}
+
+.tp-feat-sponsored-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: var(--tp-font-weight-semibold);
+  letter-spacing: 0.02em;
+  color: #0284c7;
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 4px 10px;
+  border-radius: var(--tp-radius-full);
+  text-transform: uppercase;
+}
+
+/* =========================================================================
+   2. PLAYER DE VÍDEO INSTITUCIONAL REAL
+   ========================================================================= */
+.tp-feat-video-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tp-video-wrapper,
+.tp-feat-video-thumbnail-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 240px;
+  border-radius: var(--tp-radius-md);
+  overflow: hidden;
+  background-color: #0f172a;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tp-featured-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tp-video-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.7) 100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 12px 14px;
+  transition: opacity 0.3s ease;
+}
+
+.tp-video-wrapper:hover .tp-video-overlay,
+.tp-video-overlay:not(.tp-overlay-faded) {
+  opacity: 1;
+}
+
+.tp-video-overlay.tp-overlay-faded {
+  opacity: 0.25;
+}
+
+.tp-video-wrapper:hover .tp-video-overlay.tp-overlay-faded {
+  opacity: 1;
+}
+
+.tp-video-play-btn,
+.tp-feat-play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: var(--tp-radius-full);
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-video-play-btn:hover,
+.tp-feat-play-btn:hover {
+  background: rgba(2, 132, 199, 0.95);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.04);
+}
+
+.tp-video-overlay-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tp-video-audio-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-video-audio-btn:hover {
+  background: rgba(2, 132, 199, 0.9);
+  transform: scale(1.08);
+}
+
+.tp-feat-video-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Barra de progresso do vídeo */
+.tp-video-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.2);
+  z-index: 5;
+}
+
+.tp-video-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+  transition: width 0.15s linear;
+}
+
+.tp-feat-headline {
+  margin: 2px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #334155;
+  font-style: italic;
+}
+
+/* =========================================================================
+   3. PROVA OPERACIONAL & MATCH ORGÂNICO
+   ========================================================================= */
+.tp-feat-proof-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border-subtle);
+  border-radius: var(--tp-radius-md);
+  padding: 10px 14px;
+}
+
+.tp-feat-match-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tp-feat-match-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #047857;
+  background-color: #d1fae5;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: var(--tp-radius-full);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform var(--tp-transition-fast), box-shadow var(--tp-transition-fast), background-color var(--tp-transition-fast);
+  user-select: none;
+}
+
+.tp-feat-match-tag:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+  background-color: #a7f3d0;
+}
+
+.tp-feat-match-reasons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--tp-color-text-secondary);
+  flex-wrap: wrap;
+}
+
+.tp-feat-reason-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tp-reason-sep {
+  color: var(--tp-color-border-hover);
+}
+
+.tp-feat-trust-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #475569;
+}
+
+.tp-feat-trust-indicator strong {
+  color: #0f172a;
+}
+
+/* =========================================================================
+   4. RODAPÉ COM AÇÃO PRINCIPAL
+   ========================================================================= */
+.tp-feat-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.tp-feat-action-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 18px;
+  background-color: #0f172a;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--tp-radius-md);
+  cursor: pointer;
+  transition: all var(--tp-transition-fast);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+  text-decoration: none;
+}
+
+.tp-feat-action-btn:hover {
+  background-color: #1e293b;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+  transform: translateY(-1px);
+}
+
+/* =========================================================================
+   RESPONSIVIDADE MOBILE
+   ========================================================================= */
+@media (max-width: 640px) {
+  .tp-featured-company-card {
+    padding: 16px 14px;
+    border-radius: var(--tp-radius-md);
+    gap: 12px;
+  }
+
+  .tp-feat-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .tp-feat-badge-wrapper {
+    align-self: flex-start;
+  }
+
+  .tp-feat-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 0.875rem;
+  }
+
+  .tp-feat-name {
+    font-size: 0.975rem;
+  }
+
+  .tp-video-wrapper,
+  .tp-feat-video-thumbnail-wrapper {
+    max-height: 190px;
+  }
+
+  .tp-feat-proof-section {
+    padding: 8px 10px;
+  }
+
+  .tp-feat-action-btn {
+    height: 40px;
+    font-size: 0.8125rem;
+  }
+}

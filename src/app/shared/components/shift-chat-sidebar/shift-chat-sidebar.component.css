@@ -1,0 +1,425 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tp-chat-sidebar-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--tp-color-surface);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-lg);
+  box-shadow: var(--tp-shadow-sm);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  transition: box-shadow var(--tp-transition-normal);
+}
+
+/* Marca Oculta no Desktop */
+.tp-mobile-chat-brand-header {
+  display: none;
+}
+
+/* =========================================================================
+   CABEÇALHO DO CHAT LATERAL
+   ========================================================================= */
+.tp-csidebar-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background-color: var(--tp-color-surface);
+  border-bottom: 1px solid var(--tp-color-border-subtle);
+  flex-shrink: 0;
+}
+
+.tp-csidebar-user-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tp-csidebar-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, var(--tp-color-primary-900) 0%, var(--tp-color-primary-800) 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tp-csidebar-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.tp-csidebar-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tp-csidebar-name {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--tp-color-primary-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tp-csidebar-role-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  background-color: var(--tp-color-accent-100);
+  color: var(--tp-color-accent-700);
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.tp-csidebar-job-tag {
+  font-size: 0.72rem;
+  color: var(--tp-color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tp-csidebar-close-btn {
+  background: none;
+  border: none;
+  color: var(--tp-color-text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--tp-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-csidebar-close-btn:hover {
+  background-color: var(--tp-color-surface-hover);
+  color: var(--tp-color-text-primary);
+}
+
+.tp-csidebar-ephemeral-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--tp-color-accent-50);
+  border: 1px solid var(--tp-color-accent-200);
+  border-radius: var(--tp-radius-sm);
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--tp-color-accent-700);
+}
+
+/* =========================================================================
+   ÁREA DE MENSAGENS COM ROLAGEM
+   ========================================================================= */
+.tp-csidebar-messages-feed {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 14px;
+  background-color: var(--tp-color-surface-subtle);
+  display: flex;
+  flex-direction: column;
+}
+
+.tp-csidebar-msg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Mensagens do Sistema */
+.tp-cmsg-system {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.tp-csystem-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(15, 23, 42, 0.05);
+  color: var(--tp-color-text-secondary);
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  text-align: center;
+  max-width: 90%;
+}
+
+/* Bolhas de Usuário */
+.tp-csidebar-msg-row {
+  display: flex;
+  width: 100%;
+}
+
+.tp-cmsg-outgoing {
+  justify-content: flex-end;
+}
+
+.tp-cmsg-incoming {
+  justify-content: flex-start;
+}
+
+.tp-cmsg-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 82%;
+  gap: 2px;
+}
+
+.tp-cmsg-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  color: var(--tp-color-text-tertiary);
+  padding: 0 4px;
+}
+
+.tp-cmsg-outgoing .tp-cmsg-meta {
+  justify-content: flex-end;
+}
+
+.tp-cmsg-sender {
+  font-weight: 600;
+}
+
+.tp-cmsg-bubble {
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.tp-cmsg-bubble p {
+  margin: 0;
+  color: inherit;
+}
+
+/* Enviada (Empresa - Azul Marinho) */
+.tp-cmsg-outgoing .tp-cmsg-bubble {
+  background-color: var(--tp-color-primary-900);
+  color: #ffffff;
+  border-bottom-right-radius: 2px;
+}
+
+/* Recebida (Profissional - Branco/Cinza) */
+.tp-cmsg-incoming .tp-cmsg-bubble {
+  background-color: var(--tp-color-surface);
+  color: var(--tp-color-text-primary);
+  border: 1px solid var(--tp-color-border);
+  border-bottom-left-radius: 2px;
+}
+
+/* =========================================================================
+   PÍLULAS DE RESPOSTA RÁPIDA
+   ========================================================================= */
+.tp-csidebar-quick-replies {
+  padding: 6px 12px;
+  background-color: var(--tp-color-surface);
+  border-top: 1px solid var(--tp-color-border-subtle);
+  flex-shrink: 0;
+}
+
+.tp-cquick-scroll {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.tp-cquick-pill {
+  padding: 3px 8px;
+  border-radius: 9999px;
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border);
+  color: var(--tp-color-text-secondary);
+  font-size: 0.72rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-cquick-pill:hover {
+  background-color: var(--tp-color-accent-100);
+  border-color: var(--tp-color-accent-500);
+  color: var(--tp-color-accent-700);
+}
+
+/* =========================================================================
+   INPUT DE MENSAGEM
+   ========================================================================= */
+.tp-csidebar-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  background-color: var(--tp-color-surface);
+  border-top: 1px solid var(--tp-color-border-subtle);
+  flex-shrink: 0;
+}
+
+.tp-csidebar-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  background-color: var(--tp-color-surface);
+  color: var(--tp-color-text-primary);
+}
+
+.tp-csidebar-input:focus {
+  outline: none;
+  border-color: var(--tp-color-accent-500);
+  box-shadow: var(--tp-focus-ring);
+}
+
+.tp-csidebar-send-btn {
+  padding: 8px 12px;
+}
+
+/* =========================================================================
+   RODAPÉ COM AÇÃO RÁPIDA: PAGAR PIX
+   ========================================================================= */
+.tp-csidebar-footer-action {
+  padding: 8px 12px;
+  background-color: var(--tp-color-surface-subtle);
+  border-top: 1px solid var(--tp-color-border-subtle);
+  flex-shrink: 0;
+}
+
+.tp-csidebar-pix-btn {
+  width: 100%;
+}
+
+/* =========================================================================
+   ESTADO VAZIO DO PAINEL LATERAL
+   ========================================================================= */
+.tp-csidebar-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  padding: 32px 24px;
+  gap: 12px;
+}
+
+.tp-csidebar-empty-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  background-color: var(--tp-color-accent-50);
+  border: 1px solid var(--tp-color-accent-200);
+  color: var(--tp-color-accent-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tp-csidebar-empty-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--tp-color-primary-900);
+}
+
+.tp-csidebar-empty-desc {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--tp-color-text-secondary);
+  line-height: 1.5;
+}
+
+.tp-csidebar-empty-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border);
+  padding: 6px 10px;
+  border-radius: var(--tp-radius-sm);
+  font-size: 0.72rem;
+  color: var(--tp-color-text-tertiary);
+  margin-top: 8px;
+}
+
+/* =========================================================================
+   RESPONSIVIDADE (MOBILE / TABLET FULLSCREEN OVERLAY)
+   ========================================================================= */
+@media (max-width: 1024px) {
+  :host {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tp-mobile-chat-brand-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 16px 10px 16px;
+    background-color: var(--tp-color-surface, #ffffff);
+    border-bottom: 1px solid var(--tp-color-border-subtle, #f1f5f9);
+    width: 100%;
+    box-sizing: border-box;
+    flex-shrink: 0;
+  }
+
+  .tp-brand-logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--tp-color-primary-900, #0f172a);
+  }
+
+  .tp-brand-text {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--tp-color-primary-900, #0f172a);
+  }
+
+  .tp-chat-sidebar-card {
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    border: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tp-chat-sidebar-card.tp-sidebar-mobile-open {
+    position: static;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}

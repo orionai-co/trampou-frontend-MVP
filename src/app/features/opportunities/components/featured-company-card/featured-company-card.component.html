@@ -1,0 +1,139 @@
+<article class="tp-featured-company-card" *ngIf="company" [attr.aria-label]="company.companyName + ' em destaque'">
+  <!-- 1. HEADER DO CARD -->
+  <header class="tp-feat-header">
+    <div class="tp-feat-company-info">
+      <div class="tp-feat-avatar">
+        <img *ngIf="company.avatarUrl" [src]="company.avatarUrl" [alt]="company.companyName" />
+        <span *ngIf="!company.avatarUrl">{{ company.avatarInitials || 'EP' }}</span>
+      </div>
+
+      <div class="tp-feat-meta-col">
+        <div class="tp-feat-name-row">
+          <h3 class="tp-feat-name">{{ company.companyName }}</h3>
+          <span *ngIf="company.verified" class="tp-feat-verified-icon" title="Empresa Verificada">
+            <tp-icon name="shield-check" size="xs"></tp-icon>
+          </span>
+        </div>
+
+        <div class="tp-feat-sub-meta">
+          <span class="tp-feat-handle">{{ company.companyHandle }}</span>
+          <span class="tp-feat-bullet">•</span>
+          <span class="tp-feat-location">
+            <tp-icon name="map-pin" size="xs"></tp-icon>
+            <span>{{ company.location }} ({{ company.distanceKm }} km)</span>
+          </span>
+          <span class="tp-feat-bullet">•</span>
+          <span class="tp-feat-rating">
+            <tp-icon name="star" size="xs" customClass="tp-star-gold"></tp-icon>
+            <strong>{{ company.rating.toFixed(1) }}</strong>
+            <small>({{ company.reviewCount }})</small>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pílula Discreta no Canto Direito -->
+    <div class="tp-feat-badge-wrapper">
+      <span class="tp-feat-sponsored-pill">
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        <span>{{ company.badgeLabel }}</span>
+      </span>
+    </div>
+  </header>
+
+  <!-- 2. PLAYER DE VÍDEO INSTITUCIONAL REAL -->
+  <div class="tp-feat-video-section">
+    <div class="tp-video-wrapper tp-feat-video-thumbnail-wrapper" (click)="togglePlayVideo()">
+      <video
+        #videoPlayer
+        class="tp-featured-video"
+        [src]="company.videoUrl || 'https://assets.mixkit.co/videos/preview/mixkit-restaurant-kitchen-staff-working-42998-large.mp4'"
+        [poster]="company.videoThumbnail"
+        [muted]="isMuted()"
+        playsinline
+        loop
+        (timeupdate)="onTimeUpdate()"
+        (ended)="onVideoEnded()"
+      ></video>
+
+      <!-- Overlay de Controles -->
+      <div class="tp-video-overlay" [class.tp-overlay-faded]="isPlaying()">
+        <button
+          type="button"
+          class="tp-video-play-btn tp-feat-play-btn"
+          aria-label="Reproduzir vídeo"
+          (click)="$event.stopPropagation(); togglePlayVideo()"
+        >
+          <tp-icon [name]="isPlaying() ? 'pause' : 'play'" size="sm"></tp-icon>
+          <span>{{ isPlaying() ? 'Pausar' : (company.videoDurationText || '0:45') }}</span>
+        </button>
+
+        <div class="tp-video-overlay-right">
+          <button 
+            type="button" 
+            class="tp-video-audio-btn" 
+            (click)="$event.stopPropagation(); toggleMute()"
+            [attr.aria-label]="isMuted() ? 'Ativar som' : 'Desativar som'"
+          >
+            <tp-icon [name]="isMuted() ? 'volume-x' : 'volume-2'" size="xs"></tp-icon>
+          </button>
+          <span class="tp-feat-video-tag">
+            <tp-icon name="eye" size="xs"></tp-icon>
+            <span>Vídeo Institucional • {{ company.videoDurationText || '0:45' }}</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Barra de progresso discreta -->
+      <div class="tp-video-progress-bar" *ngIf="isPlaying() || progressPercent() > 0">
+        <div class="tp-video-progress-fill" [style.width.%]="progressPercent()"></div>
+      </div>
+    </div>
+
+    <!-- Headline Textual da Empresa -->
+    <p class="tp-feat-headline">
+      "{{ company.headline }}"
+    </p>
+  </div>
+
+  <!-- 3. BLOCO DE PROVA OPERACIONAL & MATCH ORGÂNICO -->
+  <div class="tp-feat-proof-section">
+    <!-- Tag de Match & Razões -->
+    <div class="tp-feat-match-row">
+      <span
+        class="tp-feat-match-tag tp-feat-match-badge-btn"
+        (click)="onMatchBadgeClick($event)"
+        title="Ver por que esta empresa combina com você"
+      >
+        ✦ {{ company.matchScore }}% Match
+      </span>
+      <div class="tp-feat-match-reasons">
+        <span *ngFor="let reason of company.matchReasons; let last = last" class="tp-feat-reason-item">
+          {{ reason }}<span *ngIf="!last" class="tp-reason-sep">•</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Indicador de Confiança -->
+    <div class="tp-feat-trust-indicator">
+      <tp-icon name="users" size="xs"></tp-icon>
+      <span>
+        <strong>{{ company.completedShiftsCount }} profissionais</strong> já trabalharam aqui • 100% repasses no prazo via PIX
+      </span>
+    </div>
+  </div>
+
+  <!-- 4. RODAPÉ COM AÇÃO PRINCIPAL -->
+  <footer class="tp-feat-footer">
+    <button
+      type="button"
+      class="tp-feat-action-btn"
+      (click)="onExplore()"
+      [routerLink]="['/empresas', company.companyId]"
+    >
+      <tp-icon name="briefcase" size="xs"></tp-icon>
+      <span>Conhecer Empresa & Ver Vagas ({{ company.openJobsCount }})</span>
+      <tp-icon name="arrow-right" size="xs"></tp-icon>
+    </button>
+  </footer>
+</article>

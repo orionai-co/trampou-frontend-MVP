@@ -1,0 +1,70 @@
+<div class="tp-input-wrapper" [class.tp-input-disabled]="disabled" [class.tp-input-has-error]="!!errorMessage">
+  <label *ngIf="label" class="tp-input-label">
+    {{ label }}
+    <span *ngIf="required" class="tp-input-required">*</span>
+  </label>
+
+  <div
+    class="tp-input-container"
+    [class.tp-input-focused]="isFocused()"
+    [class.tp-input-error]="!!errorMessage"
+  >
+    <tp-icon
+      *ngIf="prefixIcon"
+      [name]="prefixIcon"
+      size="sm"
+      class="tp-input-prefix-icon"
+    ></tp-icon>
+
+    <input
+      [type]="currentType()"
+      [value]="value()"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [attr.aria-invalid]="!!errorMessage"
+      class="tp-input-field"
+      (input)="onInputChange($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    />
+
+    <!-- Clear Button (for search or text) -->
+    <button
+      *ngIf="clearable && value() && !disabled"
+      type="button"
+      class="tp-input-clear-btn"
+      (click)="clearInput()"
+      aria-label="Limpar campo"
+    >
+      <tp-icon name="x" size="xs"></tp-icon>
+    </button>
+
+    <!-- Toggle Password visibility -->
+    <button
+      *ngIf="type === 'password' && !disabled"
+      type="button"
+      class="tp-input-toggle-btn"
+      (click)="togglePasswordVisibility()"
+      aria-label="Mostrar ou ocultar senha"
+    >
+      <tp-icon [name]="showPassword() ? 'eye' : 'eye'" size="sm"></tp-icon>
+    </button>
+
+    <tp-icon
+      *ngIf="suffixIcon && type !== 'password'"
+      [name]="suffixIcon"
+      size="sm"
+      class="tp-input-suffix-icon"
+    ></tp-icon>
+  </div>
+
+  <div *ngIf="errorMessage" class="tp-input-error-msg">
+    <tp-icon name="alert-circle" size="xs"></tp-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <div *ngIf="hint && !errorMessage" class="tp-input-hint">
+    {{ hint }}
+  </div>
+</div>

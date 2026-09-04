@@ -1,0 +1,16 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+.tp-icon {
+  display: inline-block;
+  flex-shrink: 0;
+}
+.tp-icon-xs { width: 14px; height: 14px; }
+.tp-icon-sm { width: 16px; height: 16px; }
+.tp-icon-md { width: 20px; height: 20px; }
+.tp-icon-lg { width: 24px; height: 24px; }
+.tp-icon-xl { width: 32px; height: 32px; }

@@ -1,0 +1,249 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tp-contacts-panel-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--tp-color-surface);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-lg);
+  box-shadow: var(--tp-shadow-sm);
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* =========================================================================
+   CABEÇALHO DA LISTA DE CONTATOS
+   ========================================================================= */
+.tp-contacts-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  background-color: var(--tp-color-surface);
+  border-bottom: 1px solid var(--tp-color-border-subtle);
+  flex-shrink: 0;
+}
+
+.tp-contacts-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tp-contacts-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tp-color-primary-900);
+}
+
+.tp-contacts-title {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--tp-color-primary-900);
+}
+
+.tp-contacts-count-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background-color: var(--tp-color-accent-100);
+  color: var(--tp-color-accent-700);
+}
+
+/* Campo de Busca */
+.tp-contacts-search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  padding: 4px 8px;
+}
+
+.tp-search-icon {
+  color: var(--tp-color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.tp-contacts-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 0.78rem;
+  font-family: inherit;
+  color: var(--tp-color-text-primary);
+  outline: none;
+}
+
+.tp-search-clear-btn {
+  background: none;
+  border: none;
+  color: var(--tp-color-text-tertiary);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================================
+   LISTA / FEED DE CONTATOS
+   ========================================================================= */
+.tp-contacts-list-feed {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.tp-contact-item-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background-color: var(--tp-color-surface);
+  border: none;
+  border-bottom: 1px solid var(--tp-color-border-subtle);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background-color var(--tp-transition-fast);
+  width: 100%;
+}
+
+.tp-contact-item-btn:hover {
+  background-color: var(--tp-color-surface-hover);
+}
+
+/* Estado Ativo / Selecionado */
+.tp-contact-item-active {
+  background-color: var(--tp-color-accent-50) !important;
+  border-left: 3px solid var(--tp-color-accent-600);
+}
+
+.tp-citem-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.tp-citem-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, var(--tp-color-primary-900) 0%, var(--tp-color-primary-800) 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.tp-online-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background-color: #22c55e;
+  border: 2px solid var(--tp-color-surface);
+}
+
+.tp-citem-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.tp-citem-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.tp-citem-name {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--tp-color-primary-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tp-citem-time {
+  font-size: 0.68rem;
+  color: var(--tp-color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.tp-citem-job {
+  font-size: 0.72rem;
+  color: var(--tp-color-text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tp-citem-snippet {
+  margin: 2px 0 0 0;
+  font-size: 0.72rem;
+  color: var(--tp-color-text-tertiary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =========================================================================
+   ESTADO VAZIO
+   ========================================================================= */
+.tp-contacts-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+  gap: 8px;
+  height: 100%;
+}
+
+.tp-contacts-empty-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background-color: var(--tp-color-surface-subtle);
+  color: var(--tp-color-text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.tp-empty-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--tp-color-primary-900);
+}
+
+.tp-empty-desc {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--tp-color-text-secondary);
+  line-height: 1.4;
+}

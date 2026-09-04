@@ -1,0 +1,192 @@
+<tp-modal
+  [isOpen]="isOpen"
+  title="Perfil de Reputação do Candidato"
+  subtitle="Histórico profissional, pontualidade e avaliações verificadas"
+  maxWidth="660px"
+  [hasFooter]="true"
+  (closed)="close()"
+>
+  <div *ngIf="candidate" class="tp-prof-modal-body">
+    <!-- 1. HEADER DO PERFIL -->
+    <div class="tp-prof-header-card">
+      <div class="tp-prof-avatar-wrap">
+        <div class="tp-prof-avatar">
+          <span>{{ candidate.avatarInitials }}</span>
+        </div>
+        <span class="tp-prof-level-pill" [class.tp-level-3]="candidate.level === 3">
+          {{ getLevelLabel(candidate.level) }}
+        </span>
+      </div>
+
+      <div class="tp-prof-headline">
+        <div class="tp-prof-name-row">
+          <h3 class="tp-prof-name">{{ candidate.name }}</h3>
+          <span class="tp-prof-verified-badge" title="Identidade e histórico validados pelo Trampou">
+            <tp-icon name="check-circle" size="xs"></tp-icon>
+            <span>Verificado</span>
+          </span>
+        </div>
+
+        <div class="tp-prof-role-title">
+          {{ getRoleTitle(candidate) }}
+        </div>
+
+        <div class="tp-prof-location-row">
+          <tp-icon name="map-pin" size="xs"></tp-icon>
+          <span>{{ getLocation(candidate) }}</span>
+        </div>
+
+        <p class="tp-prof-bio">
+          {{ getBio(candidate) }}
+        </p>
+      </div>
+    </div>
+
+    <!-- 2. GRADE DE MÉTRICAS DE REPUTAÇÃO (CARDS RÁPIDOS) -->
+    <div class="tp-reputation-grid">
+      <!-- Card Nota Média -->
+      <div class="tp-rep-card tp-rep-rating">
+        <div class="tp-rep-icon-wrap">
+          <tp-icon name="star" size="sm" customClass="tp-rep-star-icon"></tp-icon>
+        </div>
+        <div class="tp-rep-info">
+          <span class="tp-rep-value">{{ candidate.rating.toFixed(1) }}</span>
+          <span class="tp-rep-label">{{ candidate.reviewsCount }} avaliações</span>
+        </div>
+      </div>
+
+      <!-- Card Pontualidade -->
+      <div class="tp-rep-card tp-rep-punctuality">
+        <div class="tp-rep-icon-wrap">
+          <tp-icon name="clock" size="sm" customClass="tp-rep-clock-icon"></tp-icon>
+        </div>
+        <div class="tp-rep-info">
+          <span class="tp-rep-value">{{ candidate.punctualityRate }}%</span>
+          <span class="tp-rep-label">Pontualidade nos turnos</span>
+        </div>
+      </div>
+
+      <!-- Card Trampos Concluídos -->
+      <div class="tp-rep-card tp-rep-shifts">
+        <div class="tp-rep-icon-wrap">
+          <tp-icon name="shield-check" size="sm" customClass="tp-rep-shifts-icon"></tp-icon>
+        </div>
+        <div class="tp-rep-info">
+          <span class="tp-rep-value">{{ getCompletedShifts(candidate) }}</span>
+          <span class="tp-rep-label">Turnos pagos no app</span>
+        </div>
+      </div>
+
+      <!-- Card Match com a Vaga -->
+      <div class="tp-rep-card tp-rep-match">
+        <div class="tp-rep-icon-wrap">
+          <tp-icon name="sparkles" size="sm" customClass="tp-rep-match-icon"></tp-icon>
+        </div>
+        <div class="tp-rep-info">
+          <span class="tp-rep-value">{{ candidate.matchPercentage }}% Match</span>
+          <div class="tp-rep-match-tags">
+            <span *ngFor="let tag of getMatchReasons(candidate)" class="tp-match-micro-tag">
+              {{ tag }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. HABILIDADES & ESPECIALIDADES -->
+    <div class="tp-prof-section">
+      <h4 class="tp-prof-section-title">
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        <span>Habilidades & Especialidades</span>
+      </h4>
+      <div class="tp-skills-chips">
+        <span *ngFor="let skill of getSkills(candidate)" class="tp-skill-chip">
+          {{ skill }}
+        </span>
+      </div>
+    </div>
+
+    <!-- 4. ÚLTIMAS AVALIAÇÕES RECEBIDAS -->
+    <div class="tp-prof-section">
+      <div class="tp-section-header-row">
+        <h4 class="tp-prof-section-title">
+          <tp-icon name="star" size="xs"></tp-icon>
+          <span>Últimas Avaliações Recebidas</span>
+        </h4>
+        <span class="tp-reviews-summary">Nota média {{ candidate.rating.toFixed(1) }} / 5.0</span>
+      </div>
+
+      <div class="tp-reviews-feed">
+        <div *ngFor="let review of getRecentReviews(candidate)" class="tp-review-item">
+          <div class="tp-review-top">
+            <div class="tp-review-company">
+              <strong>{{ review.companyName }}</strong>
+              <span class="tp-review-date">{{ review.date }}</span>
+            </div>
+            <div class="tp-review-badge-row">
+              <span *ngIf="review.badge" class="tp-review-badge">
+                <tp-icon name="sparkles" size="xs"></tp-icon>
+                <span>{{ review.badge }}</span>
+              </span>
+              <span class="tp-review-stars">
+                ★ {{ review.rating.toFixed(1) }}
+              </span>
+            </div>
+          </div>
+          <p class="tp-review-comment">"{{ review.comment }}"</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. INFORMAÇÕES DE REPASSE PIX -->
+    <div class="tp-pix-notice">
+      <tp-icon name="shield-check" size="xs"></tp-icon>
+      <span>Chave PIX protegida para pagamento imediato ao fim do turno: <strong>{{ candidate.pixKeyPreview }}</strong></span>
+    </div>
+  </div>
+
+  <!-- 6. RODAPÉ DE AÇÃO RÁPIDA -->
+  <div tpModalFooter class="tp-prof-footer">
+    <tp-button variant="outline" size="sm" (btnClick)="close()">
+      Fechar
+    </tp-button>
+
+    <div class="tp-prof-decision-actions" *ngIf="candidate">
+      <!-- QUANDO AGUARDANDO DECISÃO (APPLIED) -->
+      <ng-container *ngIf="candidate.status === 'applied'">
+        <button
+          type="button"
+          class="tp-modal-decision-btn tp-modal-btn-reject"
+          (click)="onReject()"
+          title="Recusar este candidato"
+        >
+          <tp-icon name="x" size="xs"></tp-icon>
+          <span>Recusar</span>
+        </button>
+
+        <button
+          type="button"
+          class="tp-modal-decision-btn tp-modal-btn-approve"
+          [disabled]="isSlotsFull"
+          (click)="onApprove()"
+          title="Aprovar profissional para o turno"
+        >
+          <tp-icon name="check" size="xs"></tp-icon>
+          <span>Aprovar Candidato</span>
+        </button>
+      </ng-container>
+
+      <!-- QUANDO JÁ APROVADO -->
+      <div *ngIf="candidate.status === 'approved'" class="tp-prof-status-pill tp-status-approved">
+        <tp-icon name="check-circle" size="xs"></tp-icon>
+        <span>Candidato Aprovado no Turno</span>
+      </div>
+
+      <!-- QUANDO JÁ RECUSADO -->
+      <div *ngIf="candidate.status === 'rejected'" class="tp-prof-status-pill tp-status-rejected">
+        <tp-icon name="x-circle" size="xs"></tp-icon>
+        <span>Candidatura Recusada</span>
+      </div>
+    </div>
+  </div>
+</tp-modal>

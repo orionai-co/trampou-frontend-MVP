@@ -1,0 +1,59 @@
+<article
+  class="tp-notif-card"
+  [class.tp-notif-unread]="!notification.read"
+  [class.tp-notif-highlight]="notification.type === 'shift_reminder' && !notification.read"
+  (click)="onCardClick()"
+  role="region"
+  [attr.aria-label]="notification.title"
+>
+  <!-- Ícone Temático -->
+  <div class="tp-notif-icon-box" [ngClass]="iconColorClass">
+    <tp-icon [name]="iconName" size="md"></tp-icon>
+  </div>
+
+  <!-- Conteúdo Central -->
+  <div class="tp-notif-content">
+    <div class="tp-notif-meta-row">
+      <span class="tp-notif-type-tag">{{ typeBadgeLabel }}</span>
+      <span class="tp-notif-time">{{ notification.timestamp }}</span>
+      <span *ngIf="!notification.read" class="tp-notif-unread-dot" title="Não lida"></span>
+    </div>
+
+    <h3 class="tp-notif-title">{{ notification.title }}</h3>
+    <p class="tp-notif-message">{{ notification.message }}</p>
+
+    <!-- Botões de Ação do Card -->
+    <div *ngIf="notification.actionLabel || notification.secondaryActionLabel" class="tp-notif-actions">
+      <a
+        *ngIf="notification.actionLabel && notification.actionUrl"
+        [routerLink]="notification.actionUrl"
+        class="tp-notif-action-btn tp-notif-primary-btn"
+        (click)="onActionClick($event)"
+      >
+        <span>{{ notification.actionLabel }}</span>
+        <tp-icon name="chevron-right" size="xs"></tp-icon>
+      </a>
+
+      <a
+        *ngIf="notification.secondaryActionLabel && notification.secondaryActionUrl"
+        [routerLink]="notification.secondaryActionUrl"
+        class="tp-notif-action-btn tp-notif-secondary-btn"
+        (click)="onActionClick($event)"
+      >
+        <tp-icon name="message-square" size="xs"></tp-icon>
+        <span>{{ notification.secondaryActionLabel }}</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Botão Excluir/Dispensar Notificação -->
+  <button
+    type="button"
+    class="tp-notif-dismiss-btn"
+    (click)="onDelete($event)"
+    title="Excluir notificação"
+    aria-label="Excluir notificação"
+  >
+    <tp-icon name="x" size="xs"></tp-icon>
+  </button>
+</article>

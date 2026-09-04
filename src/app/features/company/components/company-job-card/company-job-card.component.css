@@ -1,0 +1,216 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tp-company-card {
+  background-color: var(--tp-color-surface);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--tp-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform var(--tp-transition-fast), box-shadow var(--tp-transition-fast), border-color var(--tp-transition-fast);
+}
+
+.tp-company-card:hover {
+  box-shadow: var(--tp-shadow-md);
+  border-color: var(--tp-color-border-hover);
+}
+
+.tp-card-completed {
+  opacity: 0.85;
+  background-color: var(--tp-color-surface-subtle);
+}
+
+/* Cabeçalho */
+.tp-ccard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tp-ccard-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tp-level-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--tp-color-accent-700);
+  background-color: var(--tp-color-accent-50);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  border: 1px solid var(--tp-color-accent-200);
+}
+
+.tp-ccard-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--tp-color-primary-900);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Corpo e Metadados */
+.tp-ccard-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tp-ccard-info-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.tp-ccard-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--tp-color-text-secondary);
+}
+
+.tp-meta-icon {
+  color: var(--tp-color-text-tertiary);
+}
+
+.tp-ccard-address {
+  color: var(--tp-color-text-tertiary);
+  font-size: 0.78rem;
+}
+
+/* Barra de Preenchimento de Vagas */
+.tp-ccard-slots-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--tp-color-surface-subtle);
+  padding: 8px 12px;
+  border-radius: var(--tp-radius-sm);
+}
+
+.tp-slots-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+
+.tp-slots-title {
+  color: var(--tp-color-text-secondary);
+  font-weight: 500;
+}
+
+.tp-slots-fraction {
+  color: var(--tp-color-primary-900);
+}
+
+.tp-slots-progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: var(--tp-color-border);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.tp-slots-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--tp-color-accent-500) 0%, var(--tp-color-accent-600) 100%);
+  border-radius: 9999px;
+  transition: width var(--tp-transition-normal);
+}
+
+.tp-progress-complete {
+  background: linear-gradient(90deg, var(--tp-color-success) 0%, #22c55e 100%);
+}
+
+/* Rodapé */
+.tp-ccard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 10px;
+  border-top: 1px solid var(--tp-color-border-subtle);
+  flex-wrap: wrap;
+}
+
+.tp-ccard-payment {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.tp-cpay-label {
+  font-size: 0.7rem;
+  color: var(--tp-color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.tp-cpay-amount {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.tp-cpay-curr {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--tp-color-accent-600);
+}
+
+.tp-cpay-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--tp-color-primary-900);
+  line-height: 1;
+}
+
+.tp-cpay-unit {
+  font-size: 0.75rem;
+  color: var(--tp-color-text-secondary);
+  font-weight: 500;
+}
+
+.tp-ccard-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .tp-company-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .tp-ccard-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .tp-ccard-action {
+    width: 100%;
+  }
+
+  .tp-ccard-action ::ng-deep button {
+    width: 100%;
+    justify-content: center;
+  }
+}

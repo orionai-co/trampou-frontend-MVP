@@ -1,0 +1,148 @@
+<article
+  class="tp-stream-post"
+  [class.tp-stream-post-applied]="opportunity.applied"
+  (click)="onViewDetails()"
+  tabindex="0"
+  role="button"
+  [attr.aria-label]="'Oportunidade: ' + opportunity.title + ' na empresa ' + opportunity.companyName"
+>
+  <!-- HEADER DA EMPRESA (AVATAR + DADOS DO AUTOR + BADGES) -->
+  <header class="tp-post-header-row">
+    <div class="tp-header-left">
+      <div class="tp-post-avatar-col" [attr.aria-hidden]="true">
+        <div class="tp-post-avatar">
+          <span class="tp-avatar-text">{{ companyInitials }}</span>
+        </div>
+      </div>
+
+      <div class="tp-author-info">
+        <div class="tp-author-name-line">
+          <span class="tp-company-name">{{ opportunity.companyName }}</span>
+          <span class="tp-verified-icon" title="Empresa Verificada no Trampou">
+            <tp-icon name="shield-check" size="xs"></tp-icon>
+          </span>
+          <span class="tp-handle-text">{{ companyHandle }}</span>
+          <span class="tp-sep">·</span>
+          <time class="tp-time-text">{{ relativeTimeText }}</time>
+        </div>
+
+        <span class="tp-rating-tag" title="Avaliação média da empresa">
+          <tp-icon name="star" size="xs" customClass="tp-star-gold"></tp-icon>
+          <strong>{{ opportunity.companyRating.toFixed(1) }}</strong>
+          <small *ngIf="opportunity.companyReviewsCount">({{ opportunity.companyReviewsCount }})</small>
+        </span>
+      </div>
+    </div>
+
+    <div class="tp-header-badges">
+      <tp-badge
+        *ngIf="opportunity.isToday && opportunity.status !== 'urgency'"
+        variant="warning"
+        size="sm"
+      >
+        Para Hoje
+      </tp-badge>
+
+      <tp-badge
+        [variant]="opportunity.matchPercentage >= 90 ? 'accent' : 'neutral'"
+        size="sm"
+        [dot]="true"
+        class="tp-match-badge-btn"
+        (click)="onMatchBadgeClick($event)"
+        title="Ver por que esta vaga combina com você"
+      >
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        <span>Match {{ opportunity.matchPercentage }}%</span>
+      </tp-badge>
+    </div>
+  </header>
+
+  <!-- CORPO DO POST (OCUPA 100% DA LARGURA DE PONTA A PONTA) -->
+  <div class="tp-post-content-col">
+    <!-- TÍTULO DA OPORTUNIDADE -->
+    <h2 class="tp-post-title">
+      {{ opportunity.title }}
+    </h2>
+
+    <!-- DESCRIÇÃO DO SERVIÇO -->
+    <p class="tp-post-description">
+      {{ opportunity.description }}
+    </p>
+
+    <!-- QUADRO DE DETALHES OPERACIONAIS (FUNDO #f8fafc, RADIUS 12px, PADDING 14px) -->
+    <div class="tp-post-attachment">
+      <div class="tp-attachment-grid">
+        <!-- 📍 Bairro e distância calculada -->
+        <div class="tp-att-item">
+          <span class="tp-att-marker">📍</span>
+          <span class="tp-att-text">
+            <strong>{{ opportunity.location.neighborhood }}</strong>
+            <span class="tp-att-detail">• {{ opportunity.location.distanceKm }} km</span>
+          </span>
+        </div>
+
+        <!-- 📅 Data e horário do turno -->
+        <div class="tp-att-item">
+          <span class="tp-att-marker">📅</span>
+          <span class="tp-att-text">
+            <strong>{{ opportunity.date }}</strong>
+            <span class="tp-att-detail">• {{ opportunity.schedule.start }} às {{ opportunity.schedule.end }} ({{ opportunity.schedule.totalHours }}h)</span>
+          </span>
+        </div>
+
+        <!-- 👥 Vagas disponíveis e nível -->
+        <div class="tp-att-item">
+          <span class="tp-att-marker">👥</span>
+          <span class="tp-att-text">
+            <strong>{{ opportunity.spotsAvailable }} de {{ opportunity.spotsTotal }} vagas</strong>
+            <span class="tp-att-detail">• Nível {{ opportunity.requiredLevel }}</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- REMUNERAÇÃO EM DESTAQUE (1.8rem bold) & BADGE URGENTE -->
+      <div class="tp-att-pay-row">
+        <div class="tp-pay-value-wrap">
+          <span class="tp-pay-currency">R$</span>
+          <span class="tp-pay-amount">{{ opportunity.payment.amount }}</span>
+          <span class="tp-pay-type">/ {{ opportunity.payment.type }}</span>
+        </div>
+
+        <tp-badge
+          *ngIf="opportunity.status === 'urgency'"
+          variant="danger"
+          size="sm"
+          [dot]="true"
+        >
+          Urgente
+        </tp-badge>
+      </div>
+    </div>
+
+    <!-- RODAPÉ DE AÇÃO: AÇÃO PRINCIPAL EM LARGURA TOTAL -->
+    <footer class="tp-post-footer-row tp-opportunity-actions" (click)="$event.stopPropagation()">
+      <div class="tp-main-action-wrap">
+        <tp-button
+          *ngIf="!opportunity.applied"
+          variant="primary"
+          size="md"
+          class="tp-apply-btn-prominent tp-btn-apply"
+          (btnClick)="onApply($event)"
+        >
+          <tp-icon name="zap" size="xs"></tp-icon>
+          <span>Quero esse trampo</span>
+        </tp-button>
+
+        <tp-badge
+          *ngIf="opportunity.applied"
+          variant="success"
+          size="md"
+          [dot]="true"
+          class="tp-applied-badge-done"
+        >
+          Interesse Enviado
+        </tp-badge>
+      </div>
+    </footer>
+  </div>
+</article>

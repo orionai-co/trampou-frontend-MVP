@@ -1,0 +1,21 @@
+<nav class="tp-notif-filters-bar" aria-label="Filtros de Notificações">
+  <div class="tp-notif-filters-scroll">
+    <button
+      *ngFor="let tab of filterTabs"
+      type="button"
+      class="tp-notif-filter-pill"
+      [class.tp-filter-pill-active]="activeTab === tab.id"
+      (click)="onSelect(tab.id)"
+      [attr.aria-pressed]="activeTab === tab.id"
+    >
+      <span class="tp-filter-label">{{ tab.label }}</span>
+      <span
+        *ngIf="tab.id === 'all' && unreadCount > 0"
+        class="tp-filter-unread-dot"
+        title="Há notificações não lidas"
+      >
+        {{ unreadCount }}
+      </span>
+    </button>
+  </div>
+</nav>

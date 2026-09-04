@@ -1,0 +1,86 @@
+<main class="tp-notif-page-wrapper">
+  <div class="tp-container tp-notif-container">
+    
+    <!-- 1. Header da Central de Notificações -->
+    <header class="tp-notif-header">
+      <div class="tp-notif-header-title-wrap">
+        <div class="tp-notif-title-row">
+          <div class="tp-notif-icon-bubble">
+            <tp-icon name="bell" size="md"></tp-icon>
+          </div>
+          <h1 class="tp-notif-heading">Avisos e Lembretes</h1>
+          <tp-badge
+            *ngIf="notificationsService.unreadCount() > 0"
+            variant="warning"
+            size="sm"
+            [dot]="true"
+          >
+            {{ notificationsService.unreadCount() }} novas
+          </tp-badge>
+        </div>
+        <p class="tp-notif-subheading">
+          Acompanhe lembretes de turnos hoje, pagamentos PIX recebidos e atualizações de candidaturas.
+        </p>
+      </div>
+
+      <!-- Ação Rápida: Marcar Todas como Lidas -->
+      <div class="tp-notif-header-actions" *ngIf="notificationsService.unreadCount() > 0">
+        <button
+          type="button"
+          class="tp-mark-all-read-btn"
+          (click)="onMarkAllAsRead()"
+          title="Marcar todas as notificações como lidas"
+          aria-label="Marcar todas as notificações como lidas"
+        >
+          <tp-icon name="check" size="xs"></tp-icon>
+          <span>Marcar todas como lidas</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. Filtros de Categoria (Abas) -->
+    <tp-notification-filters
+      [activeTab]="activeTab()"
+      [unreadCount]="notificationsService.unreadCount()"
+      (tabChange)="onTabChange($event)"
+    ></tp-notification-filters>
+
+    <!-- 3. Lista de Notificações -->
+    <section class="tp-notif-feed" aria-label="Lista de Notificações">
+      <ng-container *ngIf="filteredNotifications().length > 0; else emptyStateTpl">
+        <div class="tp-notif-list">
+          <tp-notification-item
+            *ngFor="let notif of filteredNotifications(); trackBy: trackByNotificationId"
+            [notification]="notif"
+            (markAsRead)="onMarkAsRead($event)"
+            (delete)="onDelete($event)"
+          ></tp-notification-item>
+        </div>
+      </ng-container>
+
+      <!-- 4. Estado Vazio -->
+      <ng-template #emptyStateTpl>
+        <div class="tp-notif-empty-state">
+          <div class="tp-notif-empty-icon-wrap">
+            <tp-icon name="check-circle" size="lg"></tp-icon>
+          </div>
+          <h2 class="tp-notif-empty-title">Tudo em dia!</h2>
+          <p class="tp-notif-empty-desc">
+            Você não possui avisos ou lembretes pendentes nesta categoria.
+          </p>
+          <div class="tp-notif-empty-actions">
+            <a routerLink="/oportunidades" class="tp-notif-empty-btn tp-btn-primary">
+              <tp-icon name="search" size="xs"></tp-icon>
+              <span>Explorar Oportunidades</span>
+            </a>
+            <a routerLink="/meus-trabalhos" class="tp-notif-empty-btn tp-btn-secondary">
+              <tp-icon name="briefcase" size="xs"></tp-icon>
+              <span>Ver Meus Trabalhos</span>
+            </a>
+          </div>
+        </div>
+      </ng-template>
+    </section>
+
+  </div>
+</main>

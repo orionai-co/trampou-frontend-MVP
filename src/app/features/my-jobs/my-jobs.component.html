@@ -1,0 +1,358 @@
+<div class="tp-myjobs-page-wrapper">
+  <div class="tp-myjobs-layout-container">
+    
+    <!-- GRID DE 3 COLUNAS: MEUS TRABALHOS (ESQ) + EMPRESAS / CONTATOS (MEIO) + CHAT (DIR) -->
+    <div class="tp-myjobs-dashboard-grid">
+
+      <!-- 1. COLUNA PRINCIPAL: HEADER OPERACIONAL, ABAS E LISTAGEM DE TURNOS -->
+      <section class="tp-col-jobs" role="region" aria-label="Painel operacional Meus Trabalhos">
+        
+        <!-- 1.1 HEADER OPERACIONAL MINIMALISTA: MÉTRICA FINANCEIRA EM TEXTO LIMPO -->
+        <header class="tp-myjobs-header">
+          <div class="tp-myjobs-header-title-row">
+            <div>
+              <h1 class="tp-myjobs-heading">Meus Trabalhos</h1>
+              <p class="tp-myjobs-sub">Painel operacional e financeiro dos seus turnos sob demanda</p>
+            </div>
+
+            <!-- Métrica Financeira: Recebido no Mês -->
+            <div class="tp-financial-metrics-strip">
+              <div class="tp-metric-box">
+                <span class="tp-metric-label">Recebido no Mês</span>
+                <div class="tp-metric-value tp-metric-paid">
+                  <span class="tp-metric-curr">R$</span>
+                  <span>{{ myJobsService.receivedThisMonthAmount() }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- BANNER DE FEEDBACK TEMPORÁRIO -->
+        <div *ngIf="feedbackMessage()" class="tp-myjobs-feedback-banner">
+          <div class="tp-feedback-inner">
+            <tp-icon name="check-circle" size="sm"></tp-icon>
+            <span>{{ feedbackMessage() }}</span>
+          </div>
+          <button type="button" class="tp-feedback-dismiss" (click)="dismissFeedback()">
+            <tp-icon name="x" size="xs"></tp-icon>
+          </button>
+        </div>
+
+        <!-- 1.2 ABAS DE STATUS (ESTILO TIMELINE SIMPLES COM LINHA INDICADORA) -->
+        <nav class="tp-myjobs-tabs-header" aria-label="Filtro de status de trabalhos">
+          <button
+            type="button"
+            class="tp-myjobs-tab-btn"
+            [class.tp-myjobs-tab-active]="activeTab() === 'accepted'"
+            (click)="onSelectTab('accepted')"
+          >
+            <div class="tp-tab-label">
+              <span>Confirmados</span>
+              <span class="tp-tab-pill" *ngIf="myJobsService.acceptedJobs().length > 0">
+                {{ myJobsService.acceptedJobs().length }}
+              </span>
+            </div>
+            <div class="tp-tab-active-bar" *ngIf="activeTab() === 'accepted'"></div>
+          </button>
+
+          <button
+            type="button"
+            class="tp-myjobs-tab-btn"
+            [class.tp-myjobs-tab-active]="activeTab() === 'pending'"
+            (click)="onSelectTab('pending')"
+          >
+            <div class="tp-tab-label">
+              <span>Em Análise</span>
+              <span class="tp-tab-pill tp-tab-pill-pending" *ngIf="myJobsService.pendingJobs().length > 0">
+                {{ myJobsService.pendingJobs().length }}
+              </span>
+            </div>
+            <div class="tp-tab-active-bar" *ngIf="activeTab() === 'pending'"></div>
+          </button>
+
+          <button
+            type="button"
+            class="tp-myjobs-tab-btn"
+            [class.tp-myjobs-tab-active]="activeTab() === 'completed'"
+            (click)="onSelectTab('completed')"
+          >
+            <div class="tp-tab-label">
+              <span>Histórico</span>
+              <span class="tp-tab-pill" *ngIf="myJobsService.completedJobs().length > 0">
+                {{ myJobsService.completedJobs().length }}
+              </span>
+            </div>
+            <div class="tp-tab-active-bar" *ngIf="activeTab() === 'completed'"></div>
+          </button>
+        </nav>
+
+        <!-- 1.3 LISTA DE TRABALHOS (ITENS DIRETOS E ESCANEÁVEIS) -->
+        <div class="tp-myjobs-list-wrap">
+          <!-- ABA: CONFIRMADOS -->
+          <ng-container *ngIf="activeTab() === 'accepted'">
+            <div *ngIf="myJobsService.acceptedJobs().length > 0" class="tp-job-items-container">
+              <tp-job-status-item
+                *ngFor="let job of myJobsService.acceptedJobs(); trackBy: trackByJobId"
+                [job]="job"
+                (checkIn)="openCheckInModal(job)"
+                (viewInstructions)="openInstructionsModal(job)"
+                (withdraw)="openWithdrawModal(job)"
+                (openChat)="openChatForJob(job)"
+              ></tp-job-status-item>
+            </div>
+
+            <!-- Empty State: Confirmados -->
+            <div *ngIf="myJobsService.acceptedJobs().length === 0" class="tp-myjobs-empty-state">
+              <div class="tp-empty-icon-wrap">
+                <tp-icon name="calendar" size="lg"></tp-icon>
+              </div>
+              <h3>Nenhum turno confirmado no momento</h3>
+              <p>Candidate-se a vagas disponíveis no feed para agendar seus próximos trabalhos.</p>
+              <a routerLink="/oportunidades" class="tp-explore-btn">
+                <tp-icon name="search" size="xs"></tp-icon>
+                <span>Explorar Oportunidades</span>
+              </a>
+            </div>
+          </ng-container>
+
+          <!-- ABA: EM ANÁLISE -->
+          <ng-container *ngIf="activeTab() === 'pending'">
+            <div *ngIf="myJobsService.pendingJobs().length > 0" class="tp-job-items-container">
+              <tp-job-status-item
+                *ngFor="let job of myJobsService.pendingJobs(); trackBy: trackByJobId"
+                [job]="job"
+                (cancel)="openCancelModal(job)"
+              ></tp-job-status-item>
+            </div>
+
+            <!-- Empty State: Em Análise -->
+            <div *ngIf="myJobsService.pendingJobs().length === 0" class="tp-myjobs-empty-state">
+              <div class="tp-empty-icon-wrap">
+                <tp-icon name="clock" size="lg"></tp-icon>
+              </div>
+              <h3>Nenhuma candidatura em análise</h3>
+              <p>Você não possui processos seletivos aguardando rodada de confirmação.</p>
+              <a routerLink="/oportunidades" class="tp-explore-btn">
+                <tp-icon name="search" size="xs"></tp-icon>
+                <span>Explorar Oportunidades</span>
+              </a>
+            </div>
+          </ng-container>
+
+          <!-- ABA: HISTÓRICO -->
+          <ng-container *ngIf="activeTab() === 'completed'">
+            <div *ngIf="myJobsService.completedJobs().length > 0" class="tp-job-items-container">
+              <tp-job-status-item
+                *ngFor="let job of myJobsService.completedJobs(); trackBy: trackByJobId"
+                [job]="job"
+                (viewReceipt)="openReceiptModal(job)"
+                (openRating)="openRatingModal(job)"
+              ></tp-job-status-item>
+            </div>
+
+            <!-- Empty State: Histórico -->
+            <div *ngIf="myJobsService.completedJobs().length === 0" class="tp-myjobs-empty-state">
+              <div class="tp-empty-icon-wrap">
+                <tp-icon name="check-circle" size="lg"></tp-icon>
+              </div>
+              <h3>Nenhum serviço finalizado ainda</h3>
+              <p>Seus turnos realizados e comprovantes PIX aparecerão listados aqui.</p>
+              <a routerLink="/oportunidades" class="tp-explore-btn">
+                <tp-icon name="search" size="xs"></tp-icon>
+                <span>Explorar Oportunidades</span>
+              </a>
+            </div>
+          </ng-container>
+        </div>
+
+      </section>
+
+      <!-- 2. COLUNA CENTRAL: LISTA DE CONTATOS / EMPRESAS COM TURNOS CONFIRMADOS -->
+      <aside class="tp-col-contacts" aria-label="Lista de Contatos e Mensagens">
+        <tp-chat-contacts-list
+          [contacts]="activeChatContacts()"
+          [selectedCandidateId]="activeChatFreelancerId()"
+          [selectedJobId]="activeChatJobId()"
+          (selectContact)="handleSelectContact($event)"
+        ></tp-chat-contacts-list>
+      </aside>
+
+      <!-- 3. COLUNA DA EXTREMA DIREITA: CHAT ATIVO COM O CONTRATANTE -->
+      <aside
+        class="tp-col-chat"
+        [class.tp-chat-mobile-visible]="isMobileChatOpen()"
+        aria-label="Canal de Alinhamento e Chat"
+      >
+        <tp-shift-chat-sidebar
+          [jobId]="activeChatJobId()"
+          [jobTitle]="activeChatJobTitle()"
+          [companyName]="activeChatCompanyName()"
+          [freelancerName]="activeChatFreelancerName()"
+          [freelancerId]="activeChatFreelancerId()"
+          [canPayPix]="false"
+          [isMobileOpen]="isMobileChatOpen()"
+          currentUserRole="freelancer"
+          (closed)="closeChatSidebar()"
+        ></tp-shift-chat-sidebar>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE CHECK-IN -->
+  <tp-check-in-modal
+    [isOpen]="isCheckInModalOpen()"
+    [job]="selectedJob()"
+    (closed)="closeCheckInModal()"
+    (confirmed)="handleCheckInConfirmed($event)"
+  ></tp-check-in-modal>
+
+  <!-- MODAL DE INSTRUÇÕES DE CHEGADA -->
+  <tp-modal
+    [isOpen]="isInstructionsModalOpen()"
+    title="Instruções de Chegada"
+    subtitle="Orientações de acesso e vestimenta informadas pelo contratante"
+    maxWidth="480px"
+    [hasFooter]="true"
+    (closed)="closeInstructionsModal()"
+  >
+    <div *ngIf="selectedJob()" class="tp-instructions-modal-body">
+      <div class="tp-summary-mini">
+        <strong>{{ selectedJob()?.companyName }}</strong>
+        <span>{{ selectedJob()?.title }}</span>
+      </div>
+
+      <div class="tp-inst-section">
+        <span class="tp-inst-title">Endereço de Apresentação:</span>
+        <p>{{ selectedJob()?.location?.address }} ({{ selectedJob()?.location?.neighborhood }})</p>
+      </div>
+
+      <div class="tp-inst-section">
+        <span class="tp-inst-title">Horário e Carga Horária:</span>
+        <p>{{ selectedJob()?.schedule?.start }} às {{ selectedJob()?.schedule?.end }} ({{ selectedJob()?.schedule?.totalHours }} horas)</p>
+      </div>
+
+      <div class="tp-inst-section" *ngIf="selectedJob()?.instructions">
+        <span class="tp-inst-title">Regras e Trajes Exigidos:</span>
+        <ul class="tp-inst-rules-list">
+          <li *ngFor="let rule of selectedJob()?.instructions">{{ rule }}</li>
+        </ul>
+      </div>
+
+      <div class="tp-inst-section" *ngIf="selectedJob()?.contactPhone">
+        <span class="tp-inst-title">Telefone de Contato no Local:</span>
+        <p><strong>{{ selectedJob()?.contactPhone }}</strong></p>
+      </div>
+    </div>
+
+    <div tpModalFooter>
+      <tp-button variant="primary" size="sm" (btnClick)="closeInstructionsModal()">
+        Entendido
+      </tp-button>
+    </div>
+  </tp-modal>
+
+  <!-- MODAL DE COMPROVANTE PIX -->
+  <tp-modal
+    [isOpen]="isReceiptModalOpen()"
+    title="Comprovante de Transferência PIX"
+    subtitle="Pagamento instantâneo validado e transferido para sua conta"
+    maxWidth="440px"
+    [hasFooter]="true"
+    (closed)="closeReceiptModal()"
+  >
+    <div *ngIf="selectedJob()" class="tp-receipt-modal-body">
+      <div class="tp-receipt-badge-top">
+        <tp-icon name="check-circle" size="md" customClass="tp-receipt-check-icon"></tp-icon>
+        <span class="tp-receipt-status-text">Pagamento Concluído</span>
+      </div>
+
+      <div class="tp-receipt-amount-row">
+        <span class="tp-receipt-amount-val">R$ {{ selectedJob()?.payment?.amount }},00</span>
+        <span class="tp-receipt-amount-sub">Transferência PIX Direta</span>
+      </div>
+
+      <div class="tp-receipt-details-list">
+        <div class="tp-rdetail-item">
+          <span class="tp-rdetail-lbl">Empresa Pagadora</span>
+          <span class="tp-rdetail-val">{{ selectedJob()?.companyName }}</span>
+        </div>
+        <div class="tp-rdetail-item">
+          <span class="tp-rdetail-lbl">Serviço Realizado</span>
+          <span class="tp-rdetail-val">{{ selectedJob()?.title }}</span>
+        </div>
+        <div class="tp-rdetail-item">
+          <span class="tp-rdetail-lbl">Data e Horário</span>
+          <span class="tp-rdetail-val">{{ selectedJob()?.payment?.paidAt || selectedJob()?.date }}</span>
+        </div>
+        <div class="tp-rdetail-item">
+          <span class="tp-rdetail-lbl">ID da Transação</span>
+          <span class="tp-rdetail-val tp-rdetail-code">{{ selectedJob()?.payment?.receiptId || 'PIX-94829103-CONFIRMED' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div tpModalFooter>
+      <tp-button variant="outline" size="sm" (btnClick)="closeReceiptModal()">
+        Fechar
+      </tp-button>
+    </div>
+  </tp-modal>
+
+  <!-- MODAL DE CONFIRMAÇÃO DE CANCELAMENTO / DESISTÊNCIA -->
+  <tp-modal
+    [isOpen]="isWithdrawModalOpen()"
+    title="Confirmar Desistência do Trabalho"
+    subtitle="A empresa será notificada imediatamente para alocar outro profissional"
+    maxWidth="460px"
+    [hasFooter]="true"
+    (closed)="closeWithdrawModal()"
+  >
+    <div *ngIf="selectedJob()" class="tp-withdraw-modal-body">
+      <div class="tp-withdraw-warning">
+        <tp-icon name="alert-triangle" size="sm"></tp-icon>
+        <span>Desistências com menos de 4h do início podem impactar sua taxa de confiabilidade no Trampou.</span>
+      </div>
+      <p class="tp-withdraw-text">
+        Tem certeza que deseja cancelar sua presença em <strong>"{{ selectedJob()?.title }}"</strong> na empresa <strong>{{ selectedJob()?.companyName }}</strong>?
+      </p>
+    </div>
+
+    <div tpModalFooter class="tp-modal-footer-dual">
+      <tp-button variant="outline" size="sm" (btnClick)="closeWithdrawModal()">
+        Voltar
+      </tp-button>
+      <tp-button variant="destructive" size="sm" (btnClick)="confirmWithdrawJob()">
+        Sim, Cancelar Presença
+      </tp-button>
+    </div>
+  </tp-modal>
+
+  <!-- MODAL DE CHAT EFÊMERO (VISÃO PROFISSIONAL) -->
+  <tp-shift-chat-modal
+    [isOpen]="isChatModalOpen()"
+    [jobId]="selectedJob()?.opportunityId || selectedJob()?.id || ''"
+    [jobTitle]="selectedJob()?.title || ''"
+    [companyName]="selectedJob()?.companyName || ''"
+    freelancerName="Matheus Silva"
+    freelancerId="user-freelancer-1"
+    currentUserRole="freelancer"
+    (closed)="closeChatModal()"
+  ></tp-shift-chat-modal>
+
+  <!-- MODAL DE AVALIAÇÃO MÚTUA (PROFISSIONAL -> EMPRESA) -->
+  <tp-rating-modal
+    [isOpen]="isRatingModalOpen()"
+    [shiftId]="selectedJob()?.id || ''"
+    [shiftTitle]="selectedJob()?.title || ''"
+    reviewerRole="freelancer"
+    reviewerName="Matheus Silva"
+    [targetId]="selectedJob()?.companyName || 'empresa-contratante'"
+    [targetName]="selectedJob()?.companyName || 'Empresa Contratante'"
+    (closed)="closeRatingModal()"
+    (reviewSubmitted)="handleReviewSubmitted()"
+  ></tp-rating-modal>
+
+</div>
+

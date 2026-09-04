@@ -1,0 +1,342 @@
+<tp-modal
+  *ngIf="opportunity"
+  [isOpen]="isOpen"
+  [title]="modalTitle"
+  [subtitle]="modalSubtitle"
+  maxWidth="620px"
+  [hasFooter]="true"
+  (closed)="onClose()"
+>
+  <!-- STEPPER PROGRESS BAR (4 ETAPAS COMPACTAS) -->
+  <div class="tp-stepper-container" aria-label="Progresso da Candidatura">
+    <!-- Passo 1 -->
+    <div class="tp-step-item" [class.tp-step-active]="currentStep() === 1" [class.tp-step-done]="currentStep() > 1">
+      <div class="tp-step-circle">
+        <tp-icon *ngIf="currentStep() > 1" name="check" size="xs"></tp-icon>
+        <span *ngIf="currentStep() <= 1">1</span>
+      </div>
+      <span class="tp-step-label">Resumo</span>
+    </div>
+
+    <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 2"></div>
+
+    <!-- Passo 2 -->
+    <div class="tp-step-item" [class.tp-step-active]="currentStep() === 2" [class.tp-step-done]="currentStep() > 2">
+      <div class="tp-step-circle">
+        <tp-icon *ngIf="currentStep() > 2" name="check" size="xs"></tp-icon>
+        <span *ngIf="currentStep() <= 2">2</span>
+      </div>
+      <span class="tp-step-label">Requisitos</span>
+    </div>
+
+    <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 3"></div>
+
+    <!-- Passo 3 -->
+    <div class="tp-step-item" [class.tp-step-active]="currentStep() === 3" [class.tp-step-done]="currentStep() > 3">
+      <div class="tp-step-circle">
+        <tp-icon *ngIf="currentStep() > 3" name="check" size="xs"></tp-icon>
+        <span *ngIf="currentStep() <= 3">3</span>
+      </div>
+      <span class="tp-step-label">PIX & Acordo</span>
+    </div>
+
+    <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 4"></div>
+
+    <!-- Passo 4 -->
+    <div class="tp-step-item" [class.tp-step-active]="currentStep() === 4" [class.tp-step-done]="currentStep() === 4">
+      <div class="tp-step-circle">
+        <tp-icon *ngIf="currentStep() === 4" name="check-circle" size="xs"></tp-icon>
+        <span *ngIf="currentStep() < 4">4</span>
+      </div>
+      <span class="tp-step-label">Sucesso</span>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       ETAPA 1 — O TRAMPO, DATA E REMUNERAÇÃO
+       ========================================================================= -->
+  <div *ngIf="currentStep() === 1" class="tp-modal-step-body tp-step-1">
+    <!-- Remuneração Principal com Selo PIX -->
+    <div class="tp-step1-pay-card">
+      <div class="tp-pay-left">
+        <span class="tp-pay-label">Remuneração Combinada</span>
+        <div class="tp-pay-digits">
+          <span class="tp-pay-symbol">R$</span>
+          <span class="tp-pay-amount">{{ opportunity.payment.amount }}</span>
+          <span class="tp-pay-period">/ {{ opportunity.payment.type }}</span>
+        </div>
+        <div class="tp-pix-badge">
+          <span class="tp-pix-check">✓</span>
+          <span>PIX Garantido no término</span>
+        </div>
+      </div>
+
+      <div class="tp-pay-right">
+        <tp-badge
+          [variant]="opportunity.matchPercentage >= 90 ? 'accent' : 'neutral'"
+          size="md"
+          [dot]="true"
+        >
+          Match {{ opportunity.matchPercentage }}%
+        </tp-badge>
+        <div class="tp-spots-counter">
+          <tp-icon name="users" size="xs"></tp-icon>
+          <span>{{ opportunity.spotsAvailable }} vagas restantes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logística Operacional Direta (Quando & Onde) -->
+    <div class="tp-logistics-box">
+      <!-- 📅 Quando -->
+      <div class="tp-logistics-item">
+        <div class="tp-logistics-icon">
+          <tp-icon name="calendar" size="sm"></tp-icon>
+        </div>
+        <div class="tp-logistics-info">
+          <span class="tp-logistics-title">Data e Horário</span>
+          <strong class="tp-logistics-value">
+            {{ opportunity.date }} • {{ opportunity.schedule.start }} às {{ opportunity.schedule.end }}
+          </strong>
+          <small class="tp-logistics-sub">Carga horária total: {{ opportunity.schedule.totalHours }}h de serviço</small>
+        </div>
+      </div>
+
+      <div class="tp-logistics-divider"></div>
+
+      <!-- 📍 Onde -->
+      <div class="tp-logistics-item">
+        <div class="tp-logistics-icon">
+          <tp-icon name="map-pin" size="sm"></tp-icon>
+        </div>
+        <div class="tp-logistics-info">
+          <span class="tp-logistics-title">Local do Serviço</span>
+          <strong class="tp-logistics-value">
+            {{ opportunity.location.address || opportunity.location.neighborhood }}
+          </strong>
+          <small class="tp-logistics-sub">
+            {{ opportunity.location.neighborhood }}, {{ opportunity.location.city }} • a {{ opportunity.location.distanceKm }} km
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       ETAPA 2 — ATIVIDADES & TRAJE EXIGIDO
+       ========================================================================= -->
+  <div *ngIf="currentStep() === 2" class="tp-modal-step-body tp-step-2">
+    <!-- O Que Você Irá Fazer -->
+    <div class="tp-detail-block">
+      <span class="tp-block-label">O que você irá fazer</span>
+      <div class="tp-desc-card">
+        <p class="tp-desc-text">{{ opportunity.description }}</p>
+      </div>
+    </div>
+
+    <!-- Traje & Equipamento Exigido -->
+    <div class="tp-detail-block">
+      <span class="tp-block-label">Traje & Requisitos Exigidos</span>
+      <div class="tp-chips-grid">
+        <div *ngFor="let req of opportunity.requirements" class="tp-req-chip">
+          <tp-icon name="check" size="xs" customClass="tp-req-chip-icon"></tp-icon>
+          <span>{{ req }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Horário de Chegada / Briefing -->
+    <div class="tp-briefing-alert">
+      <tp-icon name="clock" size="sm" customClass="tp-briefing-icon"></tp-icon>
+      <div class="tp-briefing-text">
+        <strong>Pontualidade & Alinhamento</strong>
+        <span>Chegada recomendada com 15 min de antecedência (às {{ arrivalTimeText }}) para alinhamento inicial.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       ETAPA 3 — COMPROMISSO & CONFIRMAÇÃO PIX
+       ========================================================================= -->
+  <div *ngIf="currentStep() === 3" class="tp-modal-step-body tp-step-3">
+    <!-- Checklist Rápido de Prontidão (1-click) -->
+    <div class="tp-detail-block">
+      <span class="tp-block-label">Checklist de Prontidão</span>
+      <div class="tp-checklist-list">
+        <label class="tp-check-row" [class.tp-check-row-active]="checkAvailability()">
+          <input
+            type="checkbox"
+            class="tp-sr-checkbox"
+            [checked]="checkAvailability()"
+            (change)="onToggleAvailability($event)"
+          />
+          <div class="tp-check-square">
+            <tp-icon *ngIf="checkAvailability()" name="check" size="xs"></tp-icon>
+          </div>
+          <div class="tp-check-label-wrap">
+            <strong>Disponibilidade Confirmada</strong>
+            <span>Tenho total disponibilidade para o turno das <strong>{{ opportunity.schedule.start }} às {{ opportunity.schedule.end }}</strong> ({{ opportunity.date }}).</span>
+          </div>
+        </label>
+
+        <label class="tp-check-row" [class.tp-check-row-active]="checkAttire()">
+          <input
+            type="checkbox"
+            class="tp-sr-checkbox"
+            [checked]="checkAttire()"
+            (change)="onToggleAttire($event)"
+          />
+          <div class="tp-check-square">
+            <tp-icon *ngIf="checkAttire()" name="check" size="xs"></tp-icon>
+          </div>
+          <div class="tp-check-label-wrap">
+            <strong>Traje e Equipamento</strong>
+            <span>Possuo e utilizarei o traje/equipamento exigido para a função.</span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Chave PIX de Recebimento -->
+    <div class="tp-pix-account-card">
+      <div class="tp-pix-account-top">
+        <div class="tp-pix-icon-badge">
+          <tp-icon name="shield-check" size="sm"></tp-icon>
+        </div>
+        <div>
+          <strong class="tp-pix-title">Chave PIX de Recebimento</strong>
+          <span class="tp-pix-sub">Dados da conta cadastrada no seu perfil</span>
+        </div>
+      </div>
+
+      <div class="tp-pix-info-table">
+        <div class="tp-pix-info-line">
+          <span class="tp-pix-k">Titular</span>
+          <strong class="tp-pix-v">{{ userProfileService.name() }}</strong>
+        </div>
+        <div class="tp-pix-info-line">
+          <span class="tp-pix-k">Chave</span>
+          <strong class="tp-pix-v tp-pix-code">{{ userProfileService.pixKey() }} ({{ userProfileService.pixKeyType() }})</strong>
+        </div>
+      </div>
+
+      <div class="tp-pix-disclaimer">
+        <tp-icon name="alert-circle" size="xs" customClass="tp-disc-icon"></tp-icon>
+        <span>
+          O valor integral de <strong>R$ {{ opportunity.payment.amount }}</strong> será transferido automaticamente para esta chave PIX logo após a validação do término do serviço.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       ETAPA 4 — CANDIDATURA ENVIADA COM SUCESSO
+       ========================================================================= -->
+  <div *ngIf="currentStep() === 4" class="tp-modal-step-body tp-step-4">
+    <div class="tp-success-container">
+      <div class="tp-success-badge-halo">
+        <tp-icon name="check-circle" size="lg" customClass="tp-success-icon"></tp-icon>
+      </div>
+      <h3 class="tp-success-heading">Candidatura enviada para {{ opportunity.companyName }}!</h3>
+      <p class="tp-success-message">
+        A empresa avaliará a rodada de seleção em até 20 minutos. Notificaremos você assim que o resultado sair.
+      </p>
+    </div>
+
+    <!-- Resumo da Candidatura -->
+    <div class="tp-success-summary-box">
+      <div class="tp-summary-row">
+        <span class="tp-summary-lbl">Oportunidade</span>
+        <strong class="tp-summary-val">{{ opportunity.title }}</strong>
+      </div>
+      <div class="tp-summary-row">
+        <span class="tp-summary-lbl">Turno Agendado</span>
+        <strong class="tp-summary-val">{{ opportunity.date }} • {{ opportunity.schedule.start }} às {{ opportunity.schedule.end }}</strong>
+      </div>
+      <div class="tp-summary-row">
+        <span class="tp-summary-lbl">Transferência Prevista</span>
+        <strong class="tp-summary-val tp-summary-pay">R$ {{ opportunity.payment.amount }} via PIX</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       RODAPÉ DO MODAL (AÇÕES CONTEXTUAIS)
+       ========================================================================= -->
+  <div tpModalFooter class="tp-modal-footer-content">
+    <!-- ETAPA 1: AÇÕES -->
+    <ng-container *ngIf="currentStep() === 1">
+      <tp-button variant="outline" (btnClick)="onClose()">
+        Voltar ao Feed
+      </tp-button>
+
+      <tp-button
+        *ngIf="!opportunity.applied"
+        variant="primary"
+        (btnClick)="goToStep(2)"
+      >
+        <span>Ver Requisitos</span>
+        <tp-icon name="chevron-right" size="xs"></tp-icon>
+      </tp-button>
+
+      <tp-badge
+        *ngIf="opportunity.applied"
+        variant="success"
+        size="md"
+        [dot]="true"
+      >
+        <tp-icon name="check-circle" size="xs"></tp-icon>
+        Interesse Enviado
+      </tp-badge>
+    </ng-container>
+
+    <!-- ETAPA 2: AÇÕES -->
+    <ng-container *ngIf="currentStep() === 2">
+      <tp-button variant="outline" (btnClick)="goToStep(1)">
+        <tp-icon name="chevron-left" size="xs"></tp-icon>
+        <span>Voltar</span>
+      </tp-button>
+
+      <tp-button
+        variant="primary"
+        (btnClick)="goToStep(3)"
+      >
+        <span>Avançar para Compromisso</span>
+        <tp-icon name="chevron-right" size="xs"></tp-icon>
+      </tp-button>
+    </ng-container>
+
+    <!-- ETAPA 3: AÇÕES -->
+    <ng-container *ngIf="currentStep() === 3">
+      <tp-button variant="outline" (btnClick)="goToStep(2)">
+        <tp-icon name="chevron-left" size="xs"></tp-icon>
+        <span>Voltar</span>
+      </tp-button>
+
+      <tp-button
+        variant="primary"
+        [loading]="isSubmitting()"
+        [disabled]="!isChecklistComplete()"
+        (btnClick)="onConfirmApply()"
+      >
+        <tp-icon name="zap" size="xs"></tp-icon>
+        <span>Confirmar e Enviar Candidatura</span>
+      </tp-button>
+    </ng-container>
+
+    <!-- ETAPA 4: AÇÕES -->
+    <ng-container *ngIf="currentStep() === 4">
+      <tp-button variant="outline" (btnClick)="onClose()">
+        Voltar ao Feed
+      </tp-button>
+
+      <tp-button
+        variant="primary"
+        (btnClick)="onNavigateToMyJobs()"
+      >
+        <span>Acompanhar em "Meus Trabalhos"</span>
+        <tp-icon name="chevron-right" size="xs"></tp-icon>
+      </tp-button>
+    </ng-container>
+  </div>
+</tp-modal>

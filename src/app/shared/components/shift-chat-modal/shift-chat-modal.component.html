@@ -1,0 +1,91 @@
+<tp-modal
+  [isOpen]="isOpen"
+  [title]="'Alinhamento Operacional: ' + (counterpartName || 'Turno')"
+  [subtitle]="'Canal efêmero individual com ' + counterpartRoleLabel"
+  maxWidth="560px"
+  [hasFooter]="false"
+  (closed)="close()"
+>
+  <div class="tp-chat-modal-content">
+    
+    <!-- BANNER DE AVISO EFÊMERO -->
+    <div class="tp-chat-ephemeral-banner">
+      <tp-icon name="shield-check" size="xs" customClass="tp-chat-lock-icon"></tp-icon>
+      <span>
+        <strong>Canal Operacional Efêmero:</strong> O histórico é exclusivo para este turno e é excluído após a finalização do serviço.
+      </span>
+    </div>
+
+    <!-- FEED DE MENSAGENS -->
+    <div #messagesContainer class="tp-chat-messages-container">
+      <div *ngIf="currentRoom()" class="tp-chat-messages-list">
+        
+        <div
+          *ngFor="let msg of currentRoom()?.messages"
+          class="tp-chat-msg-row"
+          [class.tp-msg-outgoing]="msg.senderRole === currentUserRole"
+          [class.tp-msg-incoming]="msg.senderRole !== currentUserRole"
+          [class.tp-msg-system]="msg.senderId === 'system'"
+        >
+          <!-- Mensagem do Sistema -->
+          <div *ngIf="msg.senderId === 'system'" class="tp-system-bubble">
+            <tp-icon name="alert-circle" size="xs"></tp-icon>
+            <span>{{ msg.text }}</span>
+          </div>
+
+          <!-- Mensagens de Usuários (Empresa / Freelancer) -->
+          <div *ngIf="msg.senderId !== 'system'" class="tp-msg-bubble-wrap">
+            <div class="tp-msg-sender-meta">
+              <span class="tp-msg-sender-name">{{ msg.senderName }}</span>
+              <span class="tp-msg-timestamp">{{ msg.timestamp }}</span>
+            </div>
+            
+            <div class="tp-msg-bubble">
+              <p>{{ msg.text }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CHIPS DE RESPOSTA RÁPIDA -->
+    <div class="tp-chat-quick-replies">
+      <span class="tp-quick-label">Respostas rápidas:</span>
+      <div class="tp-quick-pills-scroll">
+        <button
+          type="button"
+          *ngFor="let reply of quickReplies"
+          class="tp-quick-pill"
+          (click)="onQuickReplyClick(reply)"
+        >
+          {{ reply }}
+        </button>
+      </div>
+    </div>
+
+    <!-- CAMPO DE ENTRADA DE MENSAGEM -->
+    <footer class="tp-chat-input-footer">
+      <input
+        type="text"
+        class="tp-chat-input"
+        placeholder="Digite uma mensagem rápida de alinhamento..."
+        [ngModel]="messageText()"
+        (ngModelChange)="messageText.set($event)"
+        (keyup.enter)="sendMessage()"
+      />
+
+      <tp-button
+        variant="primary"
+        size="sm"
+        customClass="tp-chat-send-btn"
+        [disabled]="!messageText() || !messageText().trim()"
+        (btnClick)="sendMessage()"
+      >
+        <tp-icon name="chevron-right" size="xs"></tp-icon>
+        <span>Enviar</span>
+      </tp-button>
+    </footer>
+
+  </div>
+</tp-modal>

@@ -1,0 +1,87 @@
+<article class="tp-company-card" [class.tp-card-completed]="job.status === 'completed'">
+  <!-- CABEÇALHO DO CARD: CATEGORIA, STATUS & TÍTULO -->
+  <header class="tp-ccard-header">
+    <div class="tp-ccard-badges">
+      <tp-badge variant="neutral" size="sm">{{ job.category }}</tp-badge>
+      <tp-badge [variant]="statusBadgeVariant" [dot]="true" size="sm">{{ statusLabel }}</tp-badge>
+      <span class="tp-level-chip">
+        <tp-icon name="shield-check" size="xs"></tp-icon>
+        <span>Nível {{ job.requiredLevel }}+</span>
+      </span>
+    </div>
+
+    <h2 class="tp-ccard-title">{{ job.title }}</h2>
+  </header>
+
+  <!-- CORPO COM METADADOS LOGÍSTICOS -->
+  <div class="tp-ccard-body">
+    <div class="tp-ccard-info-row">
+      <div class="tp-ccard-meta-item">
+        <tp-icon name="calendar" size="xs" customClass="tp-meta-icon"></tp-icon>
+        <span>{{ job.date }}</span>
+      </div>
+
+      <div class="tp-ccard-meta-item">
+        <tp-icon name="clock" size="xs" customClass="tp-meta-icon"></tp-icon>
+        <span>{{ job.schedule.start }} às {{ job.schedule.end }} ({{ job.schedule.totalHours }}h)</span>
+      </div>
+    </div>
+
+    <div class="tp-ccard-meta-item tp-ccard-address">
+      <tp-icon name="map-pin" size="xs" customClass="tp-meta-icon"></tp-icon>
+      <span>{{ job.location.address }} • {{ job.location.neighborhood }}, {{ job.location.city }}</span>
+    </div>
+  </div>
+
+  <!-- BARRA DE PREENCHIMENTO DE VAGAS -->
+  <div class="tp-ccard-slots-bar-wrap">
+    <div class="tp-slots-labels">
+      <span class="tp-slots-title">Vagas preenchidas</span>
+      <span class="tp-slots-fraction">
+        <strong>{{ job.slots.filled }}</strong> de {{ job.slots.total }} vagas
+      </span>
+    </div>
+    <div class="tp-slots-progress-track">
+      <div
+        class="tp-slots-progress-fill"
+        [style.width.%]="fillPercentage"
+        [class.tp-progress-complete]="job.slots.filled >= job.slots.total"
+      ></div>
+    </div>
+  </div>
+
+  <!-- RODAPÉ: REMUNERAÇÃO & AÇÃO DE CANDIDATOS -->
+  <footer class="tp-ccard-footer">
+    <div class="tp-ccard-payment">
+      <span class="tp-cpay-label">Remuneração PIX</span>
+      <div class="tp-cpay-amount">
+        <span class="tp-cpay-curr">R$</span>
+        <span class="tp-cpay-val">{{ job.paymentAmount }}</span>
+        <span class="tp-cpay-unit">/ diária</span>
+      </div>
+    </div>
+
+    <div class="tp-ccard-action">
+      <tp-button
+        *ngIf="job.status !== 'completed'"
+        [variant]="appliedCandidatesCount > 0 ? 'primary' : 'outline'"
+        size="sm"
+        customClass="tp-candidates-btn"
+        (btnClick)="onCardAction()"
+      >
+        <tp-icon name="users" size="xs"></tp-icon>
+        <span>Ver Candidatos ({{ totalCandidatesCount }})</span>
+      </tp-button>
+
+      <tp-button
+        *ngIf="job.status === 'completed'"
+        variant="outline"
+        size="sm"
+        (btnClick)="onCardAction()"
+      >
+        <tp-icon name="check-circle" size="xs"></tp-icon>
+        <span>Ver Equipe & Detalhes</span>
+      </tp-button>
+    </div>
+  </footer>
+</article>

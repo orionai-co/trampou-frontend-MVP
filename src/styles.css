@@ -1,0 +1,286 @@
+/* ==========================================================================
+   TRAMPOU - DESIGN SYSTEM & VISUAL IDENTITY
+   Identidade Oficial: Branco + Azul (Azul Escuro Estrutural + Azul Claro Interação)
+   ========================================================================== */
+
+:root {
+  /* --------------------------------------------------------------------------
+     1. PALETA DE CORES PRIMÁRIAS & ESTRUTURAIS (AZUL ESCURO & MARCA)
+     -------------------------------------------------------------------------- */
+  --tp-color-primary-950: #08101e;
+  --tp-color-primary-900: #0f1f3d; /* Azul Escuro Oficial (Identidade, títulos, ações primárias) */
+  --tp-color-primary-800: #172e5a;
+  --tp-color-primary-700: #1e3a8a;
+  --tp-color-primary-600: #2563eb;
+  
+  /* --------------------------------------------------------------------------
+     2. PALETA DE CORES DE INTERAÇÃO & DESTAQUE (AZUL CLARO & ACCENTS)
+     -------------------------------------------------------------------------- */
+  --tp-color-accent-700: #0369a1;
+  --tp-color-accent-600: #0284c7; /* Azul Claro Interação */
+  --tp-color-accent-500: #0ea5e9; /* Azul Claro Vibrante (Acentos, badges, foco) */
+  --tp-color-accent-400: #38bdf8;
+  --tp-color-accent-200: #bae6fd;
+  --tp-color-accent-100: #e0f2fe; /* Fundo suave para tags e estados ativos */
+  --tp-color-accent-50:  #f0f9ff;
+
+  /* --------------------------------------------------------------------------
+     3. BRANCO & SUPERFÍCIES (BASE PREDOMINANTE)
+     -------------------------------------------------------------------------- */
+  --tp-color-white: #ffffff;
+  --tp-color-background: #f8fafc;        /* Fundo limpo e suave (Slate 50) */
+  --tp-color-surface: #ffffff;           /* Superfície principal de cards e seções */
+  --tp-color-surface-subtle: #f1f5f9;    /* Superfície de suporte (Slate 100) */
+  --tp-color-surface-hover: #f8fafc;
+  --tp-color-surface-active: #f1f5f9;
+
+  /* --------------------------------------------------------------------------
+     4. CORES NEUTRAS & BORDAS
+     -------------------------------------------------------------------------- */
+  --tp-color-border-subtle: #f1f5f9;     /* Divisores ultra-sutis */
+  --tp-color-border: #e2e8f0;            /* Bordas padrão de cards e inputs (Slate 200) */
+  --tp-color-border-hover: #cbd5e1;      /* Borda em hover (Slate 300) */
+  --tp-color-border-focus: #0ea5e9;      /* Borda em foco */
+
+  /* --------------------------------------------------------------------------
+     5. TIPOGRAFIA & CORES DE TEXTO
+     -------------------------------------------------------------------------- */
+  --tp-color-text-primary: #0f172a;      /* Texto principal de alto contraste (Slate 900) */
+  --tp-color-text-secondary: #475569;    /* Subtítulos, labels e descrições (Slate 600) */
+  --tp-color-text-tertiary: #94a3b8;     /* Metadados e placeholders (Slate 400) */
+  --tp-color-text-disabled: #cbd5e1;     /* Textos desabilitados */
+  --tp-color-text-inverse: #ffffff;      /* Texto em fundos escuros */
+
+  /* --------------------------------------------------------------------------
+     6. CORES SEMÂNTICAS (USO MODERADO)
+     -------------------------------------------------------------------------- */
+  /* Sucesso (Confirmado, Concluído) */
+  --tp-color-success: #16a34a;
+  --tp-color-success-hover: #15803d;
+  --tp-color-success-light: #f0fdf4;
+  --tp-color-success-border: #bbf7d0;
+  --tp-color-success-text: #14532d;
+
+  /* Atenção (Prazos próximos, Avisos) */
+  --tp-color-warning: #d97706;
+  --tp-color-warning-hover: #b45309;
+  --tp-color-warning-light: #fffbeb;
+  --tp-color-warning-border: #fde68a;
+  --tp-color-warning-text: #78350f;
+
+  /* Erro / Perigo (Cancelamentos, Falhas, Destructive) */
+  --tp-color-danger: #dc2626;
+  --tp-color-danger-hover: #b91c1c;
+  --tp-color-danger-light: #fef2f2;
+  --tp-color-danger-border: #fecaca;
+  --tp-color-danger-text: #7f1d1d;
+
+  /* Informação */
+  --tp-color-info: #0284c7;
+  --tp-color-info-light: #f0f9ff;
+  --tp-color-info-border: #bae6fd;
+  --tp-color-info-text: #0369a1;
+
+  /* --------------------------------------------------------------------------
+     7. ESCALA TIPOGRÁFICA
+     -------------------------------------------------------------------------- */
+  --tp-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  
+  --tp-font-weight-regular: 400;
+  --tp-font-weight-medium: 500;
+  --tp-font-weight-semibold: 600;
+  --tp-font-weight-bold: 700;
+
+  --tp-font-size-2xs: 0.6875rem; /* 11px */
+  --tp-font-size-xs:  0.75rem;   /* 12px */
+  --tp-font-size-sm:  0.875rem;  /* 14px */
+  --tp-font-size-base: 1rem;     /* 16px */
+  --tp-font-size-lg:  1.125rem;  /* 18px */
+  --tp-font-size-xl:  1.25rem;   /* 20px */
+  --tp-font-size-2xl: 1.5rem;    /* 24px */
+  --tp-font-size-3xl: 1.875rem;  /* 30px */
+  --tp-font-size-4xl: 2.25rem;   /* 36px */
+
+  --tp-line-height-tight: 1.2;
+  --tp-line-height-snug: 1.35;
+  --tp-line-height-base: 1.5;
+  --tp-line-height-relaxed: 1.625;
+
+  /* Destaque especial para remuneração e valores no Feed */
+  --tp-font-size-currency: 1.5rem; /* 24px */
+  --tp-font-weight-currency: 700;
+  --tp-color-currency: var(--tp-color-primary-900);
+
+  /* --------------------------------------------------------------------------
+     8. ESCALA DE ESPAÇAMENTO
+     -------------------------------------------------------------------------- */
+  --tp-spacing-2xs: 2px;
+  --tp-spacing-xs:  4px;
+  --tp-spacing-sm:  8px;
+  --tp-spacing-md:  12px;
+  --tp-spacing-lg:  16px;
+  --tp-spacing-xl:  24px;
+  --tp-spacing-2xl: 32px;
+  --tp-spacing-3xl: 48px;
+  --tp-spacing-4xl: 64px;
+
+  /* --------------------------------------------------------------------------
+     9. BORDER RADIUS
+     -------------------------------------------------------------------------- */
+  --tp-radius-xs: 4px;
+  --tp-radius-sm: 6px;
+  --tp-radius-md: 10px;
+  --tp-radius-lg: 14px;
+  --tp-radius-xl: 20px;
+  --tp-radius-full: 9999px;
+
+  /* --------------------------------------------------------------------------
+     10. SOMBRAS SUAVES E MODERNAS
+     -------------------------------------------------------------------------- */
+  --tp-shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --tp-shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --tp-shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --tp-shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --tp-shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.09), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --tp-shadow-hover: 0 12px 20px -3px rgba(15, 31, 61, 0.1), 0 4px 6px -2px rgba(15, 31, 61, 0.05);
+
+  /* --------------------------------------------------------------------------
+     11. TRANSIÇÕES & ANIMAÇÕES
+     -------------------------------------------------------------------------- */
+  --tp-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --tp-transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --tp-transition-smooth: 300ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Focus ring outline */
+  --tp-focus-ring: 0 0 0 3px rgba(14, 165, 233, 0.35);
+  --tp-focus-ring-danger: 0 0 0 3px rgba(220, 38, 38, 0.25);
+}
+
+/* ==========================================================================
+   CSS RESET & ELEMENTOS BASE
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  min-height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: var(--tp-font-family);
+  font-size: var(--tp-font-size-base);
+  line-height: var(--tp-line-height-base);
+  font-weight: var(--tp-font-weight-regular);
+  color: var(--tp-color-text-primary);
+  background-color: var(--tp-color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scroll lock para modais e overlays */
+body.tp-no-scroll {
+  overflow: hidden !important;
+}
+
+/* Tipografia Base */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--tp-color-primary-900);
+  font-weight: var(--tp-font-weight-bold);
+  line-height: var(--tp-line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: var(--tp-font-size-3xl); }
+h2 { font-size: var(--tp-font-size-2xl); }
+h3 { font-size: var(--tp-font-size-xl); }
+h4 { font-size: var(--tp-font-size-lg); }
+h5 { font-size: var(--tp-font-size-base); }
+h6 { font-size: var(--tp-font-size-sm); }
+
+p {
+  color: var(--tp-color-text-secondary);
+  line-height: var(--tp-line-height-base);
+}
+
+small {
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-tertiary);
+}
+
+a {
+  color: var(--tp-color-accent-600);
+  text-decoration: none;
+  font-weight: var(--tp-font-weight-medium);
+  transition: color var(--tp-transition-fast);
+}
+
+a:hover {
+  color: var(--tp-color-primary-900);
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: none;
+  box-shadow: var(--tp-focus-ring);
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   UTILITÁRIOS GLOBAIS DE LAYOUT E TIPOGRAFIA
+   ========================================================================== */
+.tp-container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--tp-spacing-lg);
+  padding-right: var(--tp-spacing-lg);
+}
+
+.tp-container-sm {
+  width: 100%;
+  max-width: 768px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--tp-spacing-lg);
+  padding-right: var(--tp-spacing-lg);
+}
+
+.tp-currency-value {
+  font-size: var(--tp-font-size-currency);
+  font-weight: var(--tp-font-weight-currency);
+  color: var(--tp-color-primary-900);
+  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--tp-spacing-xs);
+}
+
+.tp-currency-symbol {
+  font-size: var(--tp-font-size-sm);
+  font-weight: var(--tp-font-weight-semibold);
+  color: var(--tp-color-accent-600);
+}

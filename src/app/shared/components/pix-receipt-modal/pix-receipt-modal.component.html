@@ -1,0 +1,94 @@
+<tp-modal
+  [isOpen]="isOpen"
+  title="Comprovante de Transferência PIX"
+  subtitle="Repasse instantâneo concluído e liquidado na conta do profissional"
+  maxWidth="460px"
+  [hasFooter]="true"
+  (closed)="close()"
+>
+  <div *ngIf="receiptData" class="tp-receipt-modal-body">
+    
+    <!-- BADGE DE SUCESSO & VALOR -->
+    <div class="tp-receipt-hero-card">
+      <div class="tp-receipt-check-circle">
+        <tp-icon name="check" size="lg"></tp-icon>
+      </div>
+
+      <span class="tp-receipt-status-pill">Pagamento Concluído</span>
+
+      <div class="tp-receipt-amount-display">
+        <span class="tp-receipt-curr">R$</span>
+        <span class="tp-receipt-amount">{{ receiptData.amount }},00</span>
+      </div>
+
+      <span class="tp-receipt-shift-name">{{ receiptData.jobTitle }}</span>
+    </div>
+
+    <!-- LISTA DE DETALHES DA TRANSAÇÃO -->
+    <div class="tp-receipt-details-list">
+      <div class="tp-receipt-row">
+        <span class="tp-rlabel">Empresa Pagadora</span>
+        <span class="tp-rvalue">{{ receiptData.companyName }}</span>
+      </div>
+
+      <div class="tp-receipt-row">
+        <span class="tp-rlabel">Profissional Beneficiário</span>
+        <span class="tp-rvalue">{{ receiptData.freelancerName }}</span>
+      </div>
+
+      <div class="tp-receipt-row">
+        <span class="tp-rlabel">Chave PIX de Destino</span>
+        <span class="tp-rvalue tp-pix-font">{{ receiptData.pixKeyPreview }}</span>
+      </div>
+
+      <div class="tp-receipt-row">
+        <span class="tp-rlabel">Data e Horário</span>
+        <span class="tp-rvalue">{{ receiptData.paidAt }}</span>
+      </div>
+
+      <div class="tp-receipt-row tp-receipt-id-row">
+        <span class="tp-rlabel">ID da Transação E2E</span>
+        <div class="tp-rid-copy-wrap">
+          <span class="tp-rvalue tp-rid-code">{{ receiptData.transactionId }}</span>
+          <button
+            type="button"
+            class="tp-copy-btn"
+            (click)="copyReceiptCode()"
+            title="Copiar ID da transação"
+          >
+            <tp-icon [name]="isCopied() ? 'check' : 'share-2'" size="xs"></tp-icon>
+            <span>{{ isCopied() ? 'Copiado!' : 'Copiar' }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div tpModalFooter class="tp-receipt-footer-dual">
+    <tp-button variant="outline" size="sm" (btnClick)="onDownload()">
+      <tp-icon name="share-2" size="xs"></tp-icon>
+      <span>Compartilhar / Copiar</span>
+    </tp-button>
+
+    <tp-button
+      *ngIf="showRatingAction"
+      variant="primary"
+      size="sm"
+      customClass="tp-receipt-rate-btn"
+      (btnClick)="onOpenRating()"
+    >
+      <tp-icon name="star" size="xs"></tp-icon>
+      <span>Avaliar Experiência</span>
+    </tp-button>
+
+    <tp-button
+      *ngIf="!showRatingAction"
+      variant="primary"
+      size="sm"
+      (btnClick)="close()"
+    >
+      Concluir
+    </tp-button>
+  </div>
+</tp-modal>

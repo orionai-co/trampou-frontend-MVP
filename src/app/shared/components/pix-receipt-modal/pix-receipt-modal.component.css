@@ -1,0 +1,146 @@
+:host {
+  display: contents;
+}
+
+.tp-receipt-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Card Principal */
+.tp-receipt-hero-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: var(--tp-radius-lg);
+  padding: 20px 16px;
+  gap: 6px;
+}
+
+.tp-receipt-check-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+  margin-bottom: 2px;
+}
+
+.tp-receipt-status-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #15803d;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tp-receipt-amount-display {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.tp-receipt-curr {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.tp-receipt-amount {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #14532d;
+  letter-spacing: -0.02em;
+}
+
+.tp-receipt-shift-name {
+  font-size: 0.8125rem;
+  color: #166534;
+  font-weight: 500;
+}
+
+/* Lista de Detalhes */
+.tp-receipt-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  padding: 14px 16px;
+}
+
+.tp-receipt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.8125rem;
+}
+
+.tp-rlabel {
+  color: var(--tp-color-text-secondary);
+  font-weight: 500;
+}
+
+.tp-rvalue {
+  color: var(--tp-color-primary-900);
+  font-weight: 600;
+  text-align: right;
+}
+
+.tp-pix-font {
+  font-family: monospace;
+}
+
+.tp-receipt-id-row {
+  border-top: 1px dashed var(--tp-color-border);
+  padding-top: 8px;
+  margin-top: 2px;
+}
+
+.tp-rid-copy-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tp-rid-code {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--tp-color-accent-700);
+}
+
+.tp-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--tp-color-accent-700);
+  background-color: var(--tp-color-accent-100);
+  border: 1px solid var(--tp-color-accent-200);
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-copy-btn:hover {
+  background-color: var(--tp-color-accent-200);
+}
+
+.tp-receipt-footer-dual {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}

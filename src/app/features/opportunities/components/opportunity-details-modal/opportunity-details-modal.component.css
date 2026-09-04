@@ -1,0 +1,580 @@
+/* =========================================================================
+   1. STEPPER BAR (4 ETAPAS COMPACTAS)
+   ========================================================================= */
+.tp-stepper-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--tp-spacing-md);
+  padding: 0 4px 12px;
+  border-bottom: 1px solid var(--tp-color-border-subtle);
+}
+
+.tp-step-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--tp-color-text-tertiary);
+  font-size: 11px;
+  font-weight: var(--tp-font-weight-medium);
+  transition: color var(--tp-transition-fast);
+}
+
+.tp-step-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--tp-radius-full);
+  background-color: var(--tp-color-surface-subtle);
+  border: 1.5px solid var(--tp-color-border);
+  color: var(--tp-color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: var(--tp-font-weight-bold);
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-step-label {
+  white-space: nowrap;
+}
+
+.tp-step-active {
+  color: var(--tp-color-primary-900);
+  font-weight: var(--tp-font-weight-bold);
+}
+
+.tp-step-active .tp-step-circle {
+  background-color: var(--tp-color-accent-600);
+  border-color: var(--tp-color-accent-600);
+  color: var(--tp-color-white);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.tp-step-done {
+  color: var(--tp-color-success);
+}
+
+.tp-step-done .tp-step-circle {
+  background-color: var(--tp-color-success);
+  border-color: var(--tp-color-success);
+  color: var(--tp-color-white);
+}
+
+.tp-step-line {
+  flex: 1;
+  height: 2px;
+  background-color: var(--tp-color-border);
+  margin: 0 8px;
+  transition: background-color var(--tp-transition-fast);
+}
+
+.tp-step-line-filled {
+  background-color: var(--tp-color-success);
+}
+
+/* Modal Step Body & Transition */
+.tp-modal-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tp-spacing-md);
+  animation: tp-step-fade-in 0.2s ease-out;
+}
+
+@keyframes tp-step-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================================
+   ETAPA 1: O TRAMPO, DATA E REMUNERAÇÃO
+   ========================================================================= */
+.tp-step1-pay-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tp-spacing-md);
+  background-color: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: var(--tp-radius-lg);
+  padding: var(--tp-spacing-md) var(--tp-spacing-lg);
+  flex-wrap: wrap;
+}
+
+.tp-pay-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tp-pay-label {
+  font-size: 11px;
+  font-weight: var(--tp-font-weight-semibold);
+  color: var(--tp-color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tp-pay-digits {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  color: var(--tp-color-primary-900);
+}
+
+.tp-pay-symbol {
+  font-size: 1.1rem;
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-accent-600);
+}
+
+.tp-pay-amount {
+  font-size: 1.55rem;
+  font-weight: var(--tp-font-weight-bold);
+  letter-spacing: -0.02em;
+}
+
+.tp-pay-period {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tp-color-text-secondary);
+  margin-left: 3px;
+}
+
+.tp-pix-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--tp-font-size-xs);
+  font-weight: var(--tp-font-weight-semibold);
+  color: var(--tp-color-success-text);
+  background-color: var(--tp-color-success-light);
+  border: 1px solid var(--tp-color-success-border);
+  padding: 2px 8px;
+  border-radius: var(--tp-radius-full);
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.tp-pix-check {
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-success);
+}
+
+.tp-pay-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--tp-spacing-xs);
+}
+
+.tp-spots-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-secondary);
+}
+
+/* Logística Operacional */
+.tp-logistics-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tp-spacing-sm);
+  background-color: var(--tp-color-white);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-lg);
+  padding: var(--tp-spacing-md);
+}
+
+.tp-logistics-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tp-spacing-md);
+}
+
+.tp-logistics-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--tp-radius-sm);
+  background-color: var(--tp-color-accent-100);
+  color: var(--tp-color-accent-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tp-logistics-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tp-logistics-title {
+  font-size: 11px;
+  font-weight: var(--tp-font-weight-semibold);
+  color: var(--tp-color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tp-logistics-value {
+  font-size: var(--tp-font-size-sm);
+  color: var(--tp-color-primary-900);
+  line-height: 1.35;
+}
+
+.tp-logistics-sub {
+  font-size: 12px;
+  color: var(--tp-color-text-secondary);
+}
+
+.tp-logistics-divider {
+  height: 1px;
+  background-color: var(--tp-color-border-subtle);
+  margin: 2px 0;
+}
+
+/* =========================================================================
+   ETAPA 2: ATIVIDADES & TRAJE EXIGIDO
+   ========================================================================= */
+.tp-detail-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tp-block-label {
+  font-size: var(--tp-font-size-xs);
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-primary-900);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tp-desc-card {
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  padding: var(--tp-spacing-md);
+}
+
+.tp-desc-text {
+  font-size: var(--tp-font-size-sm);
+  color: var(--tp-color-text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.tp-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tp-req-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--tp-color-white);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  padding: 6px 12px;
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-text-primary);
+  font-weight: var(--tp-font-weight-medium);
+  box-shadow: var(--tp-shadow-xs);
+}
+
+.tp-req-chip-icon {
+  color: var(--tp-color-accent-600);
+}
+
+.tp-briefing-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tp-spacing-sm);
+  background-color: var(--tp-color-warning-light);
+  border: 1px solid var(--tp-color-warning-border);
+  border-radius: var(--tp-radius-md);
+  padding: var(--tp-spacing-sm) var(--tp-spacing-md);
+}
+
+.tp-briefing-icon {
+  color: var(--tp-color-warning-text);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tp-briefing-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-warning-text);
+  line-height: 1.4;
+}
+
+/* =========================================================================
+   ETAPA 3: COMPROMISSO & CONFIRMAÇÃO PIX
+   ========================================================================= */
+.tp-checklist-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tp-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--tp-spacing-md);
+  padding: 12px 14px;
+  background-color: var(--tp-color-white);
+  border: 1.5px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--tp-transition-fast);
+  position: relative;
+}
+
+.tp-check-row:hover {
+  border-color: var(--tp-color-accent-400);
+  background-color: var(--tp-color-accent-50);
+}
+
+.tp-check-row-active {
+  border-color: var(--tp-color-accent-600);
+  background-color: rgba(239, 246, 255, 0.6);
+}
+
+.tp-sr-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tp-check-square {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--tp-radius-xs);
+  border: 2px solid var(--tp-color-border-hover);
+  background-color: var(--tp-color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all var(--tp-transition-fast);
+  color: var(--tp-color-white);
+}
+
+.tp-check-row-active .tp-check-square {
+  background-color: var(--tp-color-accent-600);
+  border-color: var(--tp-color-accent-600);
+}
+
+.tp-check-label-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tp-check-label-wrap strong {
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-primary-900);
+}
+
+.tp-check-label-wrap span {
+  font-size: 12px;
+  color: var(--tp-color-text-secondary);
+  line-height: 1.4;
+}
+
+/* PIX Account Card */
+.tp-pix-account-card {
+  background: #f8fafc;
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-lg);
+  padding: var(--tp-spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tp-spacing-sm);
+}
+
+.tp-pix-account-top {
+  display: flex;
+  align-items: center;
+  gap: var(--tp-spacing-sm);
+}
+
+.tp-pix-icon-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--tp-radius-sm);
+  background-color: var(--tp-color-success-light);
+  color: var(--tp-color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tp-pix-title {
+  font-size: var(--tp-font-size-xs);
+  color: var(--tp-color-primary-900);
+  display: block;
+}
+
+.tp-pix-sub {
+  font-size: 11px;
+  color: var(--tp-color-text-tertiary);
+}
+
+.tp-pix-info-table {
+  background-color: var(--tp-color-white);
+  border: 1px solid var(--tp-color-border-subtle);
+  border-radius: var(--tp-radius-md);
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tp-pix-info-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--tp-font-size-xs);
+}
+
+.tp-pix-k {
+  color: var(--tp-color-text-tertiary);
+}
+
+.tp-pix-v {
+  color: var(--tp-color-text-primary);
+}
+
+.tp-pix-code {
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--tp-color-accent-700);
+}
+
+.tp-pix-disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--tp-color-text-secondary);
+  line-height: 1.4;
+}
+
+.tp-disc-icon {
+  color: var(--tp-color-accent-600);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* =========================================================================
+   ETAPA 4: CANDIDATURA ENVIADA COM SUCESSO
+   ========================================================================= */
+.tp-success-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--tp-spacing-xs);
+  padding: var(--tp-spacing-sm) 0 4px;
+}
+
+.tp-success-badge-halo {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--tp-radius-full);
+  background-color: var(--tp-color-success-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+  animation: tp-scale-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes tp-scale-pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.tp-success-icon {
+  color: var(--tp-color-success);
+}
+
+.tp-success-heading {
+  font-size: var(--tp-font-size-lg);
+  font-weight: var(--tp-font-weight-bold);
+  color: var(--tp-color-primary-900);
+  margin: 0;
+}
+
+.tp-success-message {
+  font-size: var(--tp-font-size-sm);
+  color: var(--tp-color-text-secondary);
+  max-width: 420px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.tp-success-summary-box {
+  background-color: var(--tp-color-surface-subtle);
+  border: 1px solid var(--tp-color-border);
+  border-radius: var(--tp-radius-md);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tp-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--tp-font-size-xs);
+}
+
+.tp-summary-lbl {
+  color: var(--tp-color-text-tertiary);
+}
+
+.tp-summary-val {
+  color: var(--tp-color-text-primary);
+}
+
+.tp-summary-pay {
+  color: var(--tp-color-success);
+  font-weight: var(--tp-font-weight-bold);
+}
+
+/* Footer */
+.tp-modal-footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--tp-spacing-md);
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .tp-step-label {
+    display: none;
+  }
+  .tp-modal-footer-content {
+    flex-direction: column-reverse;
+    width: 100%;
+  }
+  .tp-modal-footer-content ::ng-deep .tp-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,19 @@
+<div
+  class="tp-card"
+  [class]="'tp-card-' + variant + ' tp-card-p-' + padding + (selected ? ' tp-card-selected' : '') + (interactive ? ' tp-card-interactive' : '')"
+  [attr.tabindex]="interactive ? 0 : null"
+  (click)="onClick($event)"
+  (keydown.enter)="onKeyEnter($event)"
+>
+  <div *ngIf="hasHeader" class="tp-card-header">
+    <ng-content select="[tpCardHeader]"></ng-content>
+  </div>
+
+  <div class="tp-card-body">
+    <ng-content></ng-content>
+  </div>
+
+  <div *ngIf="hasFooter" class="tp-card-footer">
+    <ng-content select="[tpCardFooter]"></ng-content>
+  </div>
+</div>

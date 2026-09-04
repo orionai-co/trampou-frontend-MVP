@@ -1,0 +1,52 @@
+<section class="tp-career-progress-card" aria-label="Progressão de Carreira e Níveis">
+  <div class="tp-career-header">
+    <div class="tp-career-current-level">
+      <div class="tp-level-icon-badge">
+        <tp-icon name="award" size="xs"></tp-icon>
+      </div>
+      <div>
+        <span class="tp-career-label">Nível Atual</span>
+        <h3 class="tp-career-title">{{ currentLevelTitle }}</h3>
+      </div>
+    </div>
+
+    <div class="tp-career-next-milestone">
+      <span class="tp-career-label">Próximo Marco</span>
+      <span class="tp-next-level-badge">
+        <tp-icon name="sparkles" size="xs"></tp-icon>
+        <span>{{ nextLevelTitle }}</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Barra de Progresso Visual -->
+  <div class="tp-career-bar-container">
+    <div class="tp-career-bar-track">
+      <div
+        class="tp-career-bar-fill"
+        [style.width.%]="progressPercentage"
+        role="progressbar"
+        [attr.aria-valuenow]="currentPoints"
+        [attr.aria-valuemin]="0"
+        [attr.aria-valuemax]="targetPoints"
+      ></div>
+    </div>
+
+    <div class="tp-career-progress-stats">
+      <span class="tp-career-shifts-count">
+        <strong>{{ currentPoints }}</strong> de {{ targetPoints }} turnos concluídos
+      </span>
+      <span class="tp-career-percentage-pill">
+        {{ progressPercentage }}%
+      </span>
+    </div>
+  </div>
+
+  <!-- Linha Informativa de Benefício -->
+  <div class="tp-career-benefit-notice">
+    <tp-icon name="sparkles" size="xs" customClass="tp-benefit-icon"></tp-icon>
+    <p class="tp-career-benefit-text">
+      {{ benefitDescription }}
+    </p>
+  </div>
+</section>

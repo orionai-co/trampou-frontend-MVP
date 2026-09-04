@@ -1,0 +1,43 @@
+<section class="tp-achievements-card" aria-label="Conquistas e Emblemas de Confiança">
+  <div class="tp-achievements-header">
+    <div class="tp-achievements-title-row">
+      <div class="tp-achievements-header-icon">
+        <tp-icon name="award" size="xs"></tp-icon>
+      </div>
+      <div>
+        <h3 class="tp-achievements-title">Conquistas & Prova de Experiência</h3>
+        <span class="tp-achievements-subtitle">Emblemas de confiança conquistados em turnos</span>
+      </div>
+    </div>
+
+    <span class="tp-achievements-count-badge">
+      <tp-icon name="check-circle" size="xs"></tp-icon>
+      <span>{{ unlockedCount }} desbloqueadas</span>
+    </span>
+  </div>
+
+  <!-- Grade de Emblemas de Confiança -->
+  <div class="tp-achievements-grid">
+    <div
+      *ngFor="let achievement of displayedAchievements; trackBy: trackByAchievementId"
+      class="tp-achievement-item"
+      [attr.data-id]="achievement.id"
+    >
+      <div class="tp-achievement-top">
+        <div class="tp-achievement-icon-box" [class]="'tp-icon-' + achievement.id">
+          <tp-icon [name]="getAchievementIcon(achievement.icon)" size="sm"></tp-icon>
+        </div>
+        <span class="tp-achievement-unlocked-pill">Conquistado</span>
+      </div>
+
+      <div class="tp-achievement-content">
+        <h4 class="tp-achievement-name">{{ achievement.title }}</h4>
+        <p class="tp-achievement-desc">{{ achievement.description }}</p>
+      </div>
+
+      <div class="tp-achievement-footer">
+        <span class="tp-achievement-date">{{ achievement.unlockedAt }}</span>
+      </div>
+    </div>
+  </div>
+</section>

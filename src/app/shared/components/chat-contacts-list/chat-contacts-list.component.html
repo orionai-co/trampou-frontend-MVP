@@ -1,0 +1,88 @@
+<div class="tp-contacts-panel-card" role="region" aria-label="Lista de Contatos Ativos">
+  
+  <!-- CABEÇALHO DO PAINEL DE CONTATOS -->
+  <header class="tp-contacts-header">
+    <div class="tp-contacts-title-row">
+      <div class="tp-contacts-title-wrap">
+        <tp-icon name="message-square" size="sm"></tp-icon>
+        <h3 class="tp-contacts-title">Contatos</h3>
+      </div>
+
+      <span class="tp-contacts-count-badge" *ngIf="contacts.length > 0">
+        {{ contacts.length }} {{ contacts.length === 1 ? 'ativo' : 'ativos' }}
+      </span>
+    </div>
+
+    <!-- CAMPO DE BUSCA RÁPIDA -->
+    <div class="tp-contacts-search-box" *ngIf="contacts.length > 3">
+      <tp-icon name="search" size="xs" customClass="tp-search-icon"></tp-icon>
+      <input
+        type="text"
+        class="tp-contacts-search-input"
+        placeholder="Buscar profissional..."
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+      />
+      <button
+        *ngIf="searchTerm()"
+        type="button"
+        class="tp-search-clear-btn"
+        (click)="searchTerm.set('')"
+        aria-label="Limpar busca"
+      >
+        <tp-icon name="x" size="xs"></tp-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- LISTA DE CONTATOS -->
+  <div class="tp-contacts-list-feed">
+    <ng-container *ngIf="filteredContacts().length > 0; else emptyContactsTpl">
+      
+      <button
+        type="button"
+        *ngFor="let contact of filteredContacts(); trackBy: trackByContact"
+        class="tp-contact-item-btn"
+        [class.tp-contact-item-active]="isSelected(contact)"
+        (click)="onSelect(contact)"
+      >
+        <!-- AVATAR COM BADGE ONLINE -->
+        <div class="tp-citem-avatar-wrap">
+          <div class="tp-citem-avatar">
+            <span>{{ contact.avatarInitials }}</span>
+          </div>
+          <span class="tp-online-dot" *ngIf="contact.isOnline !== false" title="Profissional Ativo"></span>
+        </div>
+
+        <!-- INFORMAÇÕES DO CONTATO -->
+        <div class="tp-citem-content">
+          <div class="tp-citem-top">
+            <h4 class="tp-citem-name">{{ contact.candidateName }}</h4>
+            <span class="tp-citem-time" *ngIf="contact.lastMessageTime">{{ contact.lastMessageTime }}</span>
+          </div>
+
+          <span class="tp-citem-job" [title]="contact.jobTitle">{{ contact.jobTitle }}</span>
+
+          <p class="tp-citem-snippet" *ngIf="contact.lastMessage">
+            {{ contact.lastMessage }}
+          </p>
+        </div>
+      </button>
+
+    </ng-container>
+  </div>
+
+  <!-- ESTADO VAZIO -->
+  <ng-template #emptyContactsTpl>
+    <div class="tp-contacts-empty-state">
+      <div class="tp-contacts-empty-icon">
+        <tp-icon name="users" size="md"></tp-icon>
+      </div>
+      <h4 class="tp-empty-title">Nenhum profissional ativo</h4>
+      <p class="tp-empty-desc">
+        Aprove candidatos nas vagas em aberto para iniciar conversas de alinhamento.
+      </p>
+    </div>
+  </ng-template>
+
+</div>

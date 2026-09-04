@@ -1,0 +1,320 @@
+<tp-modal
+  [isOpen]="isOpen"
+  [title]="stepTitle"
+  [subtitle]="stepSubtitle"
+  maxWidth="560px"
+  [hasFooter]="true"
+  (closed)="close()"
+>
+  <!-- STEPPER PROGRESS BAR -->
+  <div class="tp-create-stepper-header">
+    <div class="tp-step-indicator" [class.tp-step-active]="currentStep() === 1" [class.tp-step-done]="currentStep() > 1">
+      <span class="tp-step-num">1</span>
+      <span class="tp-step-text">Função</span>
+    </div>
+    <div class="tp-step-line" [class.tp-line-active]="currentStep() > 1"></div>
+
+    <div class="tp-step-indicator" [class.tp-step-active]="currentStep() === 2" [class.tp-step-done]="currentStep() > 2">
+      <span class="tp-step-num">2</span>
+      <span class="tp-step-text">Valores</span>
+    </div>
+    <div class="tp-step-line" [class.tp-line-active]="currentStep() > 2"></div>
+
+    <div class="tp-step-indicator" [class.tp-step-active]="currentStep() === 3">
+      <span class="tp-step-num">3</span>
+      <span class="tp-step-text">Publicação</span>
+    </div>
+  </div>
+
+  <!-- MENSAGEM DE ERRO SE HOUVER -->
+  <div *ngIf="errorMessage()" class="tp-form-error-banner">
+    <tp-icon name="alert-circle" size="xs"></tp-icon>
+    <span>{{ errorMessage() }}</span>
+  </div>
+
+  <!-- CONTEÚDO DO FORMULÁRIO -->
+  <div class="tp-create-form-body">
+
+    <!-- =========================================================================
+         PASSO 1: FUNÇÃO & LOGÍSTICA
+         ========================================================================= -->
+    <div *ngIf="currentStep() === 1" class="tp-step-content">
+      <!-- Título da Vaga -->
+      <div class="tp-form-group">
+        <label class="tp-form-label" for="jobTitle">Título da Vaga *</label>
+        <input
+          id="jobTitle"
+          type="text"
+          class="tp-form-input"
+          placeholder="Ex: Garçom para Evento Corporativo"
+          [(ngModel)]="formData().title"
+        />
+      </div>
+
+      <!-- Categoria -->
+      <div class="tp-form-group">
+        <label class="tp-form-label">Categoria *</label>
+        <div class="tp-category-pills">
+          <button
+            type="button"
+            *ngFor="let cat of categories"
+            class="tp-cat-pill"
+            [class.tp-cat-pill-active]="formData().category === cat"
+            (click)="setCategory(cat)"
+          >
+            {{ cat }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Data e Horários -->
+      <div class="tp-form-row tp-form-row-3">
+        <div class="tp-form-group">
+          <label class="tp-form-label" for="jobDate">Data *</label>
+          <input
+            id="jobDate"
+            type="text"
+            class="tp-form-input"
+            placeholder="Ex: Hoje, Amanhã..."
+            [(ngModel)]="formData().date"
+          />
+        </div>
+
+        <div class="tp-form-group">
+          <label class="tp-form-label" for="jobStartTime">Início *</label>
+          <input
+            id="jobStartTime"
+            type="time"
+            class="tp-form-input"
+            [(ngModel)]="formData().startTime"
+            (change)="calculateHours()"
+          />
+        </div>
+
+        <div class="tp-form-group">
+          <label class="tp-form-label" for="jobEndTime">Término *</label>
+          <input
+            id="jobEndTime"
+            type="time"
+            class="tp-form-input"
+            [(ngModel)]="formData().endTime"
+            (change)="calculateHours()"
+          />
+        </div>
+      </div>
+
+      <!-- Endereço e Localização -->
+      <div class="tp-form-group">
+        <label class="tp-form-label" for="jobAddress">Endereço Completo do Local *</label>
+        <input
+          id="jobAddress"
+          type="text"
+          class="tp-form-input"
+          placeholder="Ex: Alameda Santos, 1200"
+          [(ngModel)]="formData().address"
+        />
+      </div>
+
+      <div class="tp-form-row">
+        <div class="tp-form-group">
+          <label class="tp-form-label" for="jobNeighborhood">Bairro *</label>
+          <input
+            id="jobNeighborhood"
+            type="text"
+            class="tp-form-input"
+            placeholder="Ex: Jardins"
+            [(ngModel)]="formData().neighborhood"
+          />
+        </div>
+
+        <div class="tp-form-group">
+          <label class="tp-form-label" for="jobCity">Cidade *</label>
+          <input
+            id="jobCity"
+            type="text"
+            class="tp-form-input"
+            placeholder="Ex: São Paulo"
+            [(ngModel)]="formData().city"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         PASSO 2: VAGAS & VALOR
+         ========================================================================= -->
+    <div *ngIf="currentStep() === 2" class="tp-step-content">
+      <!-- Quantidade de Vagas -->
+      <div class="tp-form-group">
+        <label class="tp-form-label" for="jobSlots">Número de Profissionais Necessários *</label>
+        <div class="tp-counter-wrap">
+          <input
+            id="jobSlots"
+            type="number"
+            min="1"
+            max="50"
+            class="tp-form-input tp-input-number"
+            [(ngModel)]="formData().slotsTotal"
+          />
+          <span class="tp-counter-hint">vaga(s) disponíveis para contratação</span>
+        </div>
+      </div>
+
+      <!-- Nível Mínimo Exigido -->
+      <div class="tp-form-group">
+        <label class="tp-form-label">Nível Mínimo do Profissional *</label>
+        <div class="tp-levels-grid">
+          <div
+            class="tp-level-card"
+            [class.tp-level-selected]="formData().requiredLevel === 1"
+            (click)="setLevel(1)"
+          >
+            <div class="tp-level-card-header">
+              <span class="tp-level-badge-tag">Nível 1</span>
+              <tp-icon name="check-circle" size="xs" *ngIf="formData().requiredLevel === 1"></tp-icon>
+            </div>
+            <strong>Iniciante / Básico</strong>
+            <p>Ideal para suporte geral, triagem e tarefas operacionais simples.</p>
+          </div>
+
+          <div
+            class="tp-level-card"
+            [class.tp-level-selected]="formData().requiredLevel === 2"
+            (click)="setLevel(2)"
+          >
+            <div class="tp-level-card-header">
+              <span class="tp-level-badge-tag">Nível 2</span>
+              <tp-icon name="check-circle" size="xs" *ngIf="formData().requiredLevel === 2"></tp-icon>
+            </div>
+            <strong>Profissional Ativo</strong>
+            <p>Experiência comprovada, histórico positivo e alta pontualidade.</p>
+          </div>
+
+          <div
+            class="tp-level-card"
+            [class.tp-level-selected]="formData().requiredLevel === 3"
+            (click)="setLevel(3)"
+          >
+            <div class="tp-level-card-header">
+              <span class="tp-level-badge-tag">Nível 3</span>
+              <tp-icon name="check-circle" size="xs" *ngIf="formData().requiredLevel === 3"></tp-icon>
+            </div>
+            <strong>Especialista / Sênior</strong>
+            <p>Mais de 50 turnos concluídos e avaliação máxima na plataforma.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remuneração PIX -->
+      <div class="tp-form-group">
+        <label class="tp-form-label" for="jobPayment">Remuneração PIX por Diária (R$) *</label>
+        <div class="tp-input-currency-wrap">
+          <span class="tp-input-prefix">R$</span>
+          <input
+            id="jobPayment"
+            type="number"
+            min="50"
+            step="10"
+            class="tp-form-input tp-input-with-prefix"
+            placeholder="180"
+            [(ngModel)]="formData().paymentAmount"
+          />
+        </div>
+        <small class="tp-form-helper">O valor é repassado diretamente via PIX ao término do turno após o check-out.</small>
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         PASSO 3: INSTRUÇÕES & CONFIRMAÇÃO
+         ========================================================================= -->
+    <div *ngIf="currentStep() === 3" class="tp-step-content">
+      <!-- Regras de Vestimenta e Requisitos -->
+      <div class="tp-form-group">
+        <label class="tp-form-label" for="jobRequirements">Regras de Vestimenta e Requisitos (1 por linha)</label>
+        <textarea
+          id="jobRequirements"
+          rows="3"
+          class="tp-form-textarea"
+          placeholder="Ex: Camisa preta lisa&#10;Calça social&#10;Pontualidade"
+          [(ngModel)]="formData().requirementsText"
+        ></textarea>
+      </div>
+
+      <!-- CARD DE PRÉ-VISUALIZAÇÃO RESUMIDA -->
+      <div class="tp-preview-summary-card">
+        <div class="tp-preview-header">
+          <div class="tp-preview-tags">
+            <tp-badge variant="neutral" size="sm">{{ formData().category }}</tp-badge>
+            <tp-badge variant="accent" size="sm">Nível {{ formData().requiredLevel }}+</tp-badge>
+          </div>
+          <span class="tp-preview-slots">{{ formData().slotsTotal }} vaga(s)</span>
+        </div>
+
+        <h3 class="tp-preview-title">{{ formData().title || 'Título da Vaga' }}</h3>
+
+        <div class="tp-preview-details">
+          <div class="tp-pdetail">
+            <tp-icon name="calendar" size="xs"></tp-icon>
+            <span>{{ formData().date }} • {{ formData().startTime }} às {{ formData().endTime }}</span>
+          </div>
+          <div class="tp-pdetail">
+            <tp-icon name="map-pin" size="xs"></tp-icon>
+            <span>{{ formData().address || 'Endereço' }}, {{ formData().neighborhood }} - {{ formData().city }}</span>
+          </div>
+        </div>
+
+        <div class="tp-preview-footer">
+          <span class="tp-preview-pix-tag">Repasse Garantido</span>
+          <div class="tp-preview-val">
+            <span>R$ {{ formData().paymentAmount }}</span>
+            <small>/ diária</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RODAPÉ DO MODAL COM BOTÕES DE NAVEGAÇÃO -->
+  <div tpModalFooter class="tp-modal-footer-dual">
+    <tp-button
+      *ngIf="currentStep() > 1"
+      variant="outline"
+      size="sm"
+      (btnClick)="prevStep()"
+    >
+      <tp-icon name="chevron-left" size="xs"></tp-icon>
+      <span>Voltar</span>
+    </tp-button>
+
+    <tp-button
+      *ngIf="currentStep() === 1"
+      variant="outline"
+      size="sm"
+      (btnClick)="close()"
+    >
+      Cancelar
+    </tp-button>
+
+    <tp-button
+      *ngIf="currentStep() < 3"
+      variant="primary"
+      size="sm"
+      (btnClick)="nextStep()"
+    >
+      <span>Avançar</span>
+      <tp-icon name="chevron-right" size="xs"></tp-icon>
+    </tp-button>
+
+    <tp-button
+      *ngIf="currentStep() === 3"
+      variant="primary"
+      size="sm"
+      customClass="tp-confirm-publish-btn"
+      (btnClick)="submitJob()"
+    >
+      <tp-icon name="sparkles" size="xs"></tp-icon>
+      <span>Publicar Vaga Agora</span>
+    </tp-button>
+  </div>
+</tp-modal>
