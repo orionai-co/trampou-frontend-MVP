@@ -28,6 +28,7 @@ export type IconName =
   | 'bell'
   | 'sparkles'
   | 'message-square'
+  | 'chat'
   | 'share-2'
   | 'bookmark'
   | 'sliders'

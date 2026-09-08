@@ -9,10 +9,10 @@
   width: 100%;
 }
 
-/* Grid de 3 Colunas: Meus Trabalhos (1fr) + Contatos (280px) + Chat (380px) */
+/* Grid Dashboard: Meus Trabalhos (1fr) + Painel Unificado de Chat (660px) */
 .tp-myjobs-dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 280px 380px;
+  grid-template-columns: 1fr 660px;
   gap: 20px;
   max-width: 1540px;
   margin: 0 auto;
@@ -34,22 +34,82 @@
   flex-direction: column;
 }
 
-/* Colunas Laterais Fixas */
-.tp-col-contacts,
-.tp-col-chat {
+/* Card Unificado (Split-Pane: Contatos + Chat) */
+.tp-chat-unified-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  height: 620px;
   position: sticky;
   top: 80px;
-  height: calc(100vh - 110px);
+  box-sizing: border-box;
+}
+
+/* Painel de Contatos (Esquerda) */
+.tp-chat-sidebar {
+  border-right: 1px solid #e2e8f0;
+  background-color: #fafbfc;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
-.tp-col-contacts {
-  width: 280px;
+.tp-chat-sidebar-header {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.tp-col-chat {
-  width: 380px;
+.tp-chat-contacts-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Painel de Mensagens (Direita) */
+.tp-chat-main-pane {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Unificação visual: Remove bordas individuais, sombras e fundos dos componentes filhos */
+.tp-chat-unified-container ::ng-deep .tp-contacts-panel-card,
+.tp-chat-unified-container ::ng-deep .tp-chat-sidebar-card {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.tp-chat-unified-container ::ng-deep .tp-contacts-header {
+  background-color: #fafbfc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.tp-chat-unified-container ::ng-deep .tp-contact-item-btn {
+  background-color: #fafbfc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tp-chat-unified-container ::ng-deep .tp-contact-item-btn:hover {
+  background-color: #f1f5f9;
+}
+
+.tp-chat-unified-container ::ng-deep .tp-contact-item-active {
+  background-color: #eff6ff !important;
 }
 
 /* 1. Header Operacional Minimalista */
@@ -442,16 +502,12 @@
 /* Responsividade */
 @media (max-width: 1200px) {
   .tp-myjobs-dashboard-grid {
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 520px;
     gap: 16px;
   }
 
-  .tp-col-contacts {
-    display: none;
-  }
-
-  .tp-col-chat {
-    width: 340px;
+  .tp-chat-unified-container {
+    grid-template-columns: 220px 1fr;
   }
 }
 
@@ -470,17 +526,8 @@
     min-width: 0;
   }
 
-  /* Oculta lista lateral de contatos e sidebar estática no mobile */
-  .tp-col-contacts {
-    display: none;
-  }
-
-  .tp-col-chat {
-    display: none;
-  }
-
-  /* Chat em tela cheia quando ativado */
-  .tp-col-chat.tp-chat-mobile-visible {
+  /* Chat em tela cheia quando ativado no mobile/tablet */
+  .tp-chat-unified-container.tp-chat-mobile-visible {
     display: flex !important;
     position: fixed;
     top: 0;
@@ -492,16 +539,43 @@
     height: 100dvh;
     z-index: 1200;
     background-color: var(--tp-color-surface, #ffffff);
+    border-radius: 0;
+    border: none;
     padding: 0;
     margin: 0;
     box-sizing: border-box;
   }
 
-  .tp-col-chat.tp-chat-mobile-visible tp-shift-chat-sidebar {
+  .tp-chat-unified-container.tp-chat-mobile-visible .tp-chat-sidebar {
+    display: none;
+  }
+
+  .tp-chat-unified-container.tp-chat-mobile-visible .tp-chat-main-pane {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
+  }
+
+  .tp-chat-unified-container.tp-chat-mobile-visible tp-shift-chat-sidebar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* Responsividade: No mobile (< 768px), mantém apenas a view ativa (contatos ou conversa aberta) */
+@media (max-width: 768px) {
+  .tp-chat-unified-container {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: 540px;
+  }
+  
+  .tp-chat-sidebar {
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
   }
 }
 

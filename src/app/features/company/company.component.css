@@ -14,10 +14,10 @@
   width: 100%;
 }
 
-/* Grid de 3 Colunas: Vagas (1fr) + Contatos (280px) + Chat (380px) */
+/* Grid de 2 Colunas: Vagas (1fr) + Painel Unificado de Chat (660px) */
 .tp-company-dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 280px 380px;
+  grid-template-columns: 1fr 660px;
   gap: 20px;
   max-width: 1540px;
   margin: 0 auto;
@@ -38,22 +38,150 @@
   margin-bottom: var(--tp-spacing-lg);
 }
 
-/* Colunas Laterais Fixas */
-.tp-col-contacts,
-.tp-col-chat {
+/* Card Unificado da Área de Chat da Empresa */
+.tp-company-chat-unified-card {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  min-height: 620px;
+  height: calc(100vh - 140px); /* Ajuste conforme a altura da viewport */
   position: sticky;
   top: 80px;
-  height: calc(100vh - 110px);
+  box-sizing: border-box;
+}
+
+/* Sidebar de Contatos (Esquerda) */
+.tp-company-chat-sidebar {
+  border-right: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tp-company-chat-sidebar-header {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tp-sidebar-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tp-sidebar-title-row h3 {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tp-sidebar-title-row tp-icon {
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+}
+
+.tp-badge-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.tp-company-search-box {
+  padding: 8px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ffffff;
+}
+
+.tp-company-search-box tp-icon {
+  color: #94a3b8;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.tp-company-search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.8125rem;
+  color: #1e293b;
+  padding: 4px 0;
+  font-family: inherit;
+}
+
+.tp-company-search-box input::placeholder {
+  color: #94a3b8;
+}
+
+.tp-company-contacts-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Área de Conversa / Empty State (Direita) */
+.tp-company-chat-main-pane {
+  display: flex;
+  flex-direction: column;
+  background-color: #fafbfc;
+  height: 100%;
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tp-company-chat-main-pane tp-shift-chat-sidebar {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.tp-col-contacts {
-  width: 280px;
+/* Unificação visual: Remove bordas individuais, sombras e fundos duplicados */
+.tp-company-chat-unified-card ::ng-deep .tp-contacts-panel-card,
+.tp-company-chat-unified-card ::ng-deep .tp-chat-sidebar-card {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  height: 100% !important;
+  width: 100% !important;
 }
 
-.tp-col-chat {
-  width: 380px;
+.tp-company-chat-unified-card ::ng-deep .tp-contacts-header,
+.tp-company-chat-unified-card ::ng-deep .tp-contacts-search-box {
+  display: none !important;
+}
+
+.tp-company-chat-unified-card ::ng-deep .tp-contact-item-btn {
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.tp-company-chat-unified-card ::ng-deep .tp-contact-item-btn:hover {
+  background-color: #f8fafc;
+}
+
+.tp-company-chat-unified-card ::ng-deep .tp-contact-item-active {
+  background-color: #eff6ff !important;
 }
 
 /* Banner de Feedback Temporário */
@@ -316,16 +444,12 @@
 /* Responsividade */
 @media (max-width: 1200px) {
   .tp-company-dashboard-grid {
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 540px;
     gap: 16px;
   }
 
-  .tp-col-contacts {
-    display: none;
-  }
-
-  .tp-col-chat {
-    width: 340px;
+  .tp-company-chat-unified-card {
+    grid-template-columns: 240px 1fr;
   }
 }
 
@@ -344,15 +468,21 @@
     min-width: 0;
   }
 
-  /* No mobile/tablet, as colunas de chat e contatos ficam ocultas por padrão na tela principal
-     e acessíveis via drawer/modal sob demanda */
-  .tp-col-contacts,
-  .tp-col-chat {
-    display: none;
+  /* Responsividade Mobile (< 1024px) */
+  .tp-company-chat-unified-card {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: auto;
+    position: static;
+  }
+
+  .tp-company-chat-sidebar {
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
   }
 
   /* Mobile Chat Overlay Fullscreen */
-  .tp-col-chat.tp-chat-mobile-visible {
+  .tp-company-chat-unified-card.tp-chat-mobile-visible {
     display: flex !important;
     position: fixed;
     top: 0;
@@ -363,13 +493,26 @@
     height: 100vh;
     height: 100dvh;
     z-index: 1200;
-    background-color: var(--tp-color-surface);
+    background-color: var(--tp-color-surface, #ffffff);
+    border-radius: 0;
+    border: none;
     padding: 0;
     margin: 0;
     box-sizing: border-box;
   }
 
-  .tp-col-chat.tp-chat-mobile-visible tp-shift-chat-sidebar {
+  .tp-company-chat-unified-card.tp-chat-mobile-visible .tp-company-chat-sidebar {
+    display: none;
+  }
+
+  .tp-company-chat-unified-card.tp-chat-mobile-visible .tp-company-chat-main-pane {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tp-company-chat-unified-card.tp-chat-mobile-visible tp-shift-chat-sidebar {
     width: 100%;
     height: 100%;
     display: flex;

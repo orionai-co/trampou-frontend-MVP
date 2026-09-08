@@ -101,4 +101,18 @@ describe('MyJobsComponent', () => {
     expect(component.activeChatCompanyName()).toBe(targetContact.candidateName);
     expect(component.isMobileChatOpen()).toBeTrue();
   });
+
+  it('should render the unified chat split-pane container with sidebar and main pane', () => {
+    const unifiedContainer = fixture.nativeElement.querySelector('.tp-chat-unified-container');
+    const sidebar = fixture.nativeElement.querySelector('.tp-chat-sidebar');
+    const mainPane = fixture.nativeElement.querySelector('.tp-chat-main-pane');
+    const contactsList = fixture.nativeElement.querySelector('tp-chat-contacts-list');
+    const chatSidebar = fixture.nativeElement.querySelector('tp-shift-chat-sidebar');
+
+    expect(unifiedContainer).toBeTruthy();
+    expect(sidebar).toBeTruthy();
+    expect(mainPane).toBeTruthy();
+    expect(contactsList).toBeTruthy();
+    expect(chatSidebar).toBeTruthy();
+  });
 });

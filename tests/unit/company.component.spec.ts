@@ -148,5 +148,29 @@ describe('CompanyComponent', () => {
     component.closeBoostModal();
     expect(component.isBoostModalOpen()).toBeFalse();
   });
+
+  it('should render unified chat card with sidebar and main pane in the DOM', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const unifiedCard = compiled.querySelector('.tp-company-chat-unified-card');
+    const sidebar = compiled.querySelector('.tp-company-chat-sidebar');
+    const mainPane = compiled.querySelector('.tp-company-chat-main-pane');
+    const searchBox = compiled.querySelector('.tp-company-search-box');
+
+    expect(unifiedCard).toBeTruthy();
+    expect(sidebar).toBeTruthy();
+    expect(mainPane).toBeTruthy();
+    expect(searchBox).toBeTruthy();
+  });
+
+  it('should return correct activeContactsCount and filter contacts by search term', () => {
+    expect(component.activeContactsCount).toBe(component.activeChatContacts().length);
+
+    component.contactSearchTerm.set('Lucas');
+    expect(component.filteredChatContacts().every(c => c.candidateName.toLowerCase().includes('lucas'))).toBeTrue();
+
+    const mockEvent = { target: { value: 'Barista' } } as unknown as Event;
+    component.onContactSearchInput(mockEvent);
+    expect(component.contactSearchTerm()).toBe('Barista');
+  });
 });
 

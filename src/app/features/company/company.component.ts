@@ -94,6 +94,29 @@ export class CompanyComponent {
     return contacts;
   });
 
+  // Campo de busca de contatos
+  contactSearchTerm = signal<string>('');
+
+  get activeContactsCount(): number {
+    return this.activeChatContacts().length;
+  }
+
+  readonly filteredChatContacts = computed<ChatContact[]>(() => {
+    const term = this.contactSearchTerm().toLowerCase().trim();
+    const contacts = this.activeChatContacts();
+    if (!term) return contacts;
+    return contacts.filter(c =>
+      c.candidateName.toLowerCase().includes(term) ||
+      c.jobTitle.toLowerCase().includes(term) ||
+      (c.category && c.category.toLowerCase().includes(term))
+    );
+  });
+
+  onContactSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.contactSearchTerm.set(input?.value || '');
+  }
+
   // Chat Efêmero (Coluna da Extrema Direita / Docked)
   activeChatJob = signal<CompanyJob | null>(null);
   activeChatCandidate = signal<Candidate | null>(null);

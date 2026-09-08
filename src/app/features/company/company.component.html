@@ -118,35 +118,60 @@
 
       </section>
 
-      <!-- 2. COLUNA CENTRAL: LISTA DE CONTATOS / CANDIDATOS APROVADOS -->
-      <aside class="tp-col-contacts" aria-label="Lista de Contatos e Mensagens">
-        <tp-chat-contacts-list
-          [contacts]="activeChatContacts()"
-          [selectedCandidateId]="activeChatFreelancerId()"
-          [selectedJobId]="activeChatJobId()"
-          (selectContact)="handleSelectContact($event)"
-        ></tp-chat-contacts-list>
-      </aside>
-
-      <!-- 3. COLUNA DA EXTREMA DIREITA: CHAT ATIVO COM O PROFISSIONAL -->
-      <aside
-        class="tp-col-chat"
+      <!-- 2. PAINEL UNIFICADO DE COMUNICAÇÃO (SPLIT-PANE: CONTATOS + CHAT) -->
+      <div
+        class="tp-company-chat-unified-card"
         [class.tp-chat-mobile-visible]="isMobileChatOpen()"
-        aria-label="Canal de Alinhamento e Chat"
+        aria-label="Central de Comunicação e Chat da Empresa"
       >
-        <tp-shift-chat-sidebar
-          [jobId]="activeChatJobId()"
-          [jobTitle]="activeChatJobTitle()"
-          [companyName]="companyService.companyProfile().name"
-          [freelancerName]="activeChatFreelancerName()"
-          [freelancerId]="activeChatFreelancerId()"
-          [canPayPix]="activeChatJob()?.status !== 'completed'"
-          [isMobileOpen]="isMobileChatOpen()"
-          currentUserRole="company"
-          (closed)="closeChatSidebar()"
-          (openPayout)="openPayoutFromSidebar()"
-        ></tp-shift-chat-sidebar>
-      </aside>
+        <!-- Coluna da Esquerda: Lista de Contatos / Candidatos -->
+        <aside class="tp-company-chat-sidebar" aria-label="Lista de Contatos e Mensagens">
+          <div class="tp-company-chat-sidebar-header">
+            <div class="tp-sidebar-title-row">
+              <tp-icon name="chat" size="sm"></tp-icon>
+              <h3>Contatos</h3>
+            </div>
+            <span class="tp-badge-count">{{ activeContactsCount }} ativos</span>
+          </div>
+
+          <div class="tp-company-search-box">
+            <tp-icon name="search" size="xs"></tp-icon>
+            <input
+              type="text"
+              placeholder="Buscar profissional..."
+              [value]="contactSearchTerm()"
+              (input)="onContactSearchInput($event)"
+            />
+          </div>
+
+          <div class="tp-company-contacts-list">
+            <!-- Lista de contatos existente mantida aqui -->
+            <tp-chat-contacts-list
+              [contacts]="filteredChatContacts()"
+              [selectedCandidateId]="activeChatFreelancerId()"
+              [selectedJobId]="activeChatJobId()"
+              (selectContact)="handleSelectContact($event)"
+            ></tp-chat-contacts-list>
+          </div>
+        </aside>
+
+        <!-- Coluna da Direita: Painel do Chat ou Empty State -->
+        <section class="tp-company-chat-main-pane" aria-label="Canal de Alinhamento e Chat">
+          <!-- Seletor de Chat ativo ou Empty State ('Nenhum chat selecionado') -->
+          <tp-shift-chat-sidebar
+            [jobId]="activeChatJobId()"
+            [jobTitle]="activeChatJobTitle()"
+            [companyName]="companyService.companyProfile().name"
+            [freelancerName]="activeChatFreelancerName()"
+            [freelancerId]="activeChatFreelancerId()"
+            [canPayPix]="activeChatJob()?.status !== 'completed'"
+            [isMobileOpen]="isMobileChatOpen()"
+            currentUserRole="company"
+            (closed)="closeChatSidebar()"
+            (openPayout)="openPayoutFromSidebar()"
+          ></tp-shift-chat-sidebar>
+        </section>
+      </div>
 
     </div>
   </div>

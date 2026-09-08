@@ -168,34 +168,37 @@
 
       </section>
 
-      <!-- 2. COLUNA CENTRAL: LISTA DE CONTATOS / EMPRESAS COM TURNOS CONFIRMADOS -->
-      <aside class="tp-col-contacts" aria-label="Lista de Contatos e Mensagens">
-        <tp-chat-contacts-list
-          [contacts]="activeChatContacts()"
-          [selectedCandidateId]="activeChatFreelancerId()"
-          [selectedJobId]="activeChatJobId()"
-          (selectContact)="handleSelectContact($event)"
-        ></tp-chat-contacts-list>
-      </aside>
-
-      <!-- 3. COLUNA DA EXTREMA DIREITA: CHAT ATIVO COM O CONTRATANTE -->
-      <aside
-        class="tp-col-chat"
+      <!-- 2. PAINEL UNIFICADO DE COMUNICAÇÃO (SPLIT-PANE: CONTATOS + CHAT) -->
+      <div
+        class="tp-chat-unified-container"
         [class.tp-chat-mobile-visible]="isMobileChatOpen()"
-        aria-label="Canal de Alinhamento e Chat"
+        aria-label="Central de Comunicação e Chat"
       >
-        <tp-shift-chat-sidebar
-          [jobId]="activeChatJobId()"
-          [jobTitle]="activeChatJobTitle()"
-          [companyName]="activeChatCompanyName()"
-          [freelancerName]="activeChatFreelancerName()"
-          [freelancerId]="activeChatFreelancerId()"
-          [canPayPix]="false"
-          [isMobileOpen]="isMobileChatOpen()"
-          currentUserRole="freelancer"
-          (closed)="closeChatSidebar()"
-        ></tp-shift-chat-sidebar>
-      </aside>
+        <!-- Coluna da Esquerda: Lista de Contatos -->
+        <aside class="tp-chat-sidebar" aria-label="Lista de Contatos e Mensagens">
+          <tp-chat-contacts-list
+            [contacts]="activeChatContacts()"
+            [selectedCandidateId]="activeChatFreelancerId()"
+            [selectedJobId]="activeChatJobId()"
+            (selectContact)="handleSelectContact($event)"
+          ></tp-chat-contacts-list>
+        </aside>
+
+        <!-- Coluna da Direita: Área de Mensagens -->
+        <section class="tp-chat-main-pane" aria-label="Canal de Alinhamento e Chat">
+          <tp-shift-chat-sidebar
+            [jobId]="activeChatJobId()"
+            [jobTitle]="activeChatJobTitle()"
+            [companyName]="activeChatCompanyName()"
+            [freelancerName]="activeChatFreelancerName()"
+            [freelancerId]="activeChatFreelancerId()"
+            [canPayPix]="false"
+            [isMobileOpen]="isMobileChatOpen()"
+            currentUserRole="freelancer"
+            (closed)="closeChatSidebar()"
+          ></tp-shift-chat-sidebar>
+        </section>
+      </div>
 
     </div>
   </div>
