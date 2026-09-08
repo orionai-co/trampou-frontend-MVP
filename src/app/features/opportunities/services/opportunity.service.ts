@@ -1,5 +1,5 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { Observable, of, delay, tap, map } from 'rxjs';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { Observable, of, delay, tap, map, from, firstValueFrom } from 'rxjs';
 import {
   Opportunity,
   OpportunityFilters,
@@ -9,6 +9,9 @@ import {
   FeaturedCompany,
   MOCK_FEATURED_COMPANIES
 } from '../../../core/models/sponsored-content.model';
+import { ApiClientService } from '../../../core/services/api-client.service';
+import { API_ENDPOINTS } from '../../../core/constants/api-endpoints';
+import { environment } from '../../../../environments/environment';
 
 const INITIAL_MOCK_OPPORTUNITIES: Opportunity[] = [
   {
@@ -396,6 +399,8 @@ const INITIAL_MOCK_OPPORTUNITIES: Opportunity[] = [
   providedIn: 'root'
 })
 export class OpportunityService {
+  private apiClient = inject(ApiClientService);
+
   private opportunitiesState = signal<Opportunity[]>(INITIAL_MOCK_OPPORTUNITIES);
   private featuredCompaniesState = signal<FeaturedCompany[]>(MOCK_FEATURED_COMPANIES);
   private appliedIds = signal<Set<string>>(new Set<string>());
@@ -409,7 +414,47 @@ export class OpportunityService {
     this.searchQuery.set(query);
   }
 
+  async fetchOpportunities(filters?: OpportunityFilters): Promise<Opportunity[]> {
+    if (environment.useMock) {
+      return Promise.resolve(this.applyFilters(this.opportunitiesState(), filters));
+    }
+    return this.apiClient.get<Opportunity[]>(API_ENDPOINTS.OPPORTUNITIES.FEED, { params: filters });
+  }
+
+  async fetchOpportunityById(id: string): Promise<Opportunity | undefined> {
+    if (environment.useMock) {
+      return Promise.resolve(this.opportunitiesState().find(o => o.id === id));
+    }
+    return this.apiClient.get<Opportunity>(API_ENDPOINTS.OPPORTUNITIES.DETAILS(id));
+  }
+
+  async submitApplication(id: string): Promise<{ success: boolean; opportunity?: Opportunity }> {
+    if (environment.useMock) {
+      return firstValueFrom(this.applyToOpportunity(id));
+    }
+    return this.apiClient.post<{ success: boolean; opportunity?: Opportunity }>(
+      API_ENDPOINTS.OPPORTUNITIES.APPLY(id)
+    );
+  }
+
+  async cancelApplicationRemote(id: string): Promise<boolean> {
+    if (environment.useMock) {
+      this.appliedIds.update(set => {
+        const next = new Set(set);
+        next.delete(id);
+        return next;
+      });
+      return Promise.resolve(true);
+    }
+    return this.apiClient.delete<boolean>(API_ENDPOINTS.OPPORTUNITIES.CANCEL_APPLICATION(id));
+  }
+
   getOpportunities(filters?: OpportunityFilters): Observable<Opportunity[]> {
+    if (!environment.useMock) {
+      return from(this.apiClient.get<Opportunity[]>(API_ENDPOINTS.OPPORTUNITIES.FEED, { params: filters })).pipe(
+        map(list => this.applyFilters(list, filters))
+      );
+    }
     return of(this.opportunitiesState()).pipe(
       delay(250), // Simula latência realista de rede sem travar a UI
       map(list => this.applyFilters(list, filters))

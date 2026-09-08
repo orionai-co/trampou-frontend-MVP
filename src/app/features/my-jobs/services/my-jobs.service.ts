@@ -1,6 +1,9 @@
-import { Injectable, signal, computed } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { Observable, of, delay, firstValueFrom } from 'rxjs';
 import { JobApplication, JobApplicationStatus } from '../models/job-application.model';
+import { ApiClientService } from '../../../core/services/api-client.service';
+import { API_ENDPOINTS } from '../../../core/constants/api-endpoints';
+import { environment } from '../../../../environments/environment';
 
 const INITIAL_MOCK_APPLICATIONS: JobApplication[] = [
   // 1. CONFIRMADOS (ATIVOS)
@@ -387,6 +390,8 @@ const INITIAL_MOCK_APPLICATIONS: JobApplication[] = [
   providedIn: 'root'
 })
 export class MyJobsService {
+  private apiClient = inject(ApiClientService);
+
   private applicationsState = signal<JobApplication[]>(INITIAL_MOCK_APPLICATIONS);
 
   readonly applications = this.applicationsState.asReadonly();
@@ -415,6 +420,41 @@ export class MyJobsService {
   readonly receivedThisMonthAmount = computed(() =>
     this.completedJobs().reduce((sum, item) => sum + item.payment.amount, 0)
   );
+
+  async fetchConfirmedJobs(): Promise<JobApplication[]> {
+    if (environment.useMock) {
+      return Promise.resolve(this.acceptedJobs());
+    }
+    return this.apiClient.get<JobApplication[]>(API_ENDPOINTS.MY_JOBS.CONFIRMED);
+  }
+
+  async fetchUnderReviewJobs(): Promise<JobApplication[]> {
+    if (environment.useMock) {
+      return Promise.resolve(this.pendingJobs());
+    }
+    return this.apiClient.get<JobApplication[]>(API_ENDPOINTS.MY_JOBS.UNDER_REVIEW);
+  }
+
+  async fetchHistoryJobs(): Promise<JobApplication[]> {
+    if (environment.useMock) {
+      return Promise.resolve(this.completedJobs());
+    }
+    return this.apiClient.get<JobApplication[]>(API_ENDPOINTS.MY_JOBS.HISTORY);
+  }
+
+  async checkIn(jobId: string): Promise<{ success: boolean; time: string }> {
+    if (environment.useMock) {
+      return firstValueFrom(this.confirmCheckIn(jobId));
+    }
+    return this.apiClient.post<{ success: boolean; time: string }>(API_ENDPOINTS.MY_JOBS.CHECK_IN(jobId));
+  }
+
+  async cancelShift(jobId: string): Promise<boolean> {
+    if (environment.useMock) {
+      return firstValueFrom(this.cancelApplication(jobId));
+    }
+    return this.apiClient.delete<boolean>(API_ENDPOINTS.MY_JOBS.CANCEL_SHIFT(jobId));
+  }
 
   getApplications(): Observable<JobApplication[]> {
     return of(this.applications()).pipe(delay(150));

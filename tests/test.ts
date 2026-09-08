@@ -11,6 +11,7 @@ getTestBed().initTestEnvironment(
 );
 
 // Importação estática de todos os specs em tests/unit
+import './unit/api-client.service.spec';
 import './unit/app.component.spec';
 import './unit/badge.component.spec';
 import './unit/button.component.spec';

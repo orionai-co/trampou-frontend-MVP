@@ -1,4 +1,7 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { ApiClientService } from './api-client.service';
+import { API_ENDPOINTS } from '../constants/api-endpoints';
+import { environment } from '../../../environments/environment';
 
 export type NotificationType =
   | 'shift_reminder'
@@ -36,6 +39,8 @@ export type NotificationFilterTab = 'all' | 'shifts' | 'pix' | 'opportunities' |
   providedIn: 'root'
 })
 export class NotificationsService {
+  private apiClient = inject(ApiClientService);
+
   private readonly initialNotifications: TrampouNotification[] = [
     {
       id: 'notif-1',
@@ -226,6 +231,27 @@ export class NotificationsService {
       case 'all':
       default:
         return list;
+    }
+  }
+
+  async fetchNotifications(): Promise<TrampouNotification[]> {
+    if (environment.useMock) {
+      return Promise.resolve(this.notifications());
+    }
+    return this.apiClient.get<TrampouNotification[]>(API_ENDPOINTS.NOTIFICATIONS.LIST);
+  }
+
+  async syncMarkAsRead(id: string): Promise<void> {
+    this.markAsRead(id);
+    if (!environment.useMock) {
+      await this.apiClient.put(API_ENDPOINTS.NOTIFICATIONS.MARK_AS_READ(id));
+    }
+  }
+
+  async syncMarkAllAsRead(): Promise<void> {
+    this.markAllAsRead();
+    if (!environment.useMock) {
+      await this.apiClient.put(API_ENDPOINTS.NOTIFICATIONS.MARK_ALL_READ);
     }
   }
 }

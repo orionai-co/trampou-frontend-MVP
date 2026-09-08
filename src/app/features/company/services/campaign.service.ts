@@ -1,10 +1,13 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
 import {
   SponsoredCampaign,
   CampaignMetrics,
   CAMPAIGN_PLANS,
   CampaignPlan
 } from '../../../core/models/sponsored-campaign.model';
+import { ApiClientService } from '../../../core/services/api-client.service';
+import { API_ENDPOINTS } from '../../../core/constants/api-endpoints';
+import { environment } from '../../../../environments/environment';
 
 const INITIAL_MOCK_CAMPAIGN: SponsoredCampaign = {
   id: 'camp-001',
@@ -37,9 +40,39 @@ const INITIAL_MOCK_CAMPAIGN: SponsoredCampaign = {
   providedIn: 'root'
 })
 export class CampaignService {
+  private apiClient = inject(ApiClientService);
+
   private readonly _campaigns = signal<SponsoredCampaign[]>([INITIAL_MOCK_CAMPAIGN]);
 
   readonly campaigns = this._campaigns.asReadonly();
+
+  async fetchCampaigns(): Promise<SponsoredCampaign[]> {
+    if (environment.useMock) {
+      return Promise.resolve(this.campaigns());
+    }
+    return this.apiClient.get<SponsoredCampaign[]>(API_ENDPOINTS.CAMPAIGNS.LIST);
+  }
+
+  async fetchActiveCampaign(): Promise<SponsoredCampaign | null> {
+    if (environment.useMock) {
+      return Promise.resolve(this.activeCampaign());
+    }
+    return this.apiClient.get<SponsoredCampaign | null>(API_ENDPOINTS.CAMPAIGNS.ACTIVE);
+  }
+
+  async saveCampaign(campaignData: Partial<SponsoredCampaign>): Promise<SponsoredCampaign> {
+    if (environment.useMock) {
+      return Promise.resolve(this.createCampaign(campaignData));
+    }
+    return this.apiClient.post<SponsoredCampaign>(API_ENDPOINTS.CAMPAIGNS.CREATE, campaignData);
+  }
+
+  async fetchMetrics(): Promise<CampaignMetrics> {
+    if (environment.useMock) {
+      return Promise.resolve(this.currentMetrics());
+    }
+    return this.apiClient.get<CampaignMetrics>(API_ENDPOINTS.CAMPAIGNS.METRICS);
+  }
 
   readonly activeCampaign = computed<SponsoredCampaign | null>(() => {
     return this._campaigns().find(c => c.status === 'active') || null;
