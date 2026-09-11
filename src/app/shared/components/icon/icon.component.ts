@@ -39,7 +39,8 @@ export type IconName =
   | 'play'
   | 'pause'
   | 'volume-2'
-  | 'volume-x';
+  | 'volume-x'
+  | 'loader';
 
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 

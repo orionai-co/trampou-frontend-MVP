@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Opportunity } from '../../models/opportunity.model';
 import { UserProfileService } from '../../../../core/services/user-profile.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import {
   TpModalComponent,
   TpBadgeComponent,
@@ -38,7 +39,38 @@ export type ApplicationStep = 1 | 2 | 3 | 4;
 })
 export class OpportunityDetailsModalComponent implements OnChanges {
   readonly userProfileService = inject(UserProfileService);
+  readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+
+  readonly userRole = this.authService.userRole;
+  readonly currentUser = this.authService.currentUser;
+
+  get isOwnJob(): boolean {
+    if (this.userRole() !== 'contractor') return false;
+    const user = this.currentUser();
+    if (!user) return false;
+
+    if (this.opportunity?.companyName && user.name) {
+      const oppName = this.opportunity.companyName.trim().toLowerCase();
+      const userName = user.name.trim().toLowerCase();
+      if (oppName === userName) return true;
+    }
+
+    if ((this.opportunity as any)?.companyId && (this.opportunity as any).companyId === user.id) {
+      return true;
+    }
+
+    if (this.opportunity?.companyName === 'Empresa Contratante' && user.role === 'contractor') {
+      return true;
+    }
+
+    return false;
+  }
+
+  onManageInCompanyPanel(): void {
+    this.onClose();
+    this.router.navigate(['/empresa']);
+  }
 
   @Input() isOpen = false;
   @Input() opportunity: Opportunity | null = null;
@@ -67,10 +99,11 @@ export class OpportunityDetailsModalComponent implements OnChanges {
 
   get modalSubtitle(): string {
     if (!this.opportunity) return '';
-    if (this.currentStep() === 2) return `${this.opportunity.companyName} • Regras e orientações de apresentação`;
+    const ownSuffix = this.isOwnJob ? ' (Sua vaga)' : '';
+    if (this.currentStep() === 2) return `${this.opportunity.companyName}${ownSuffix} • Regras e orientações de apresentação`;
     if (this.currentStep() === 3) return 'Validação de presença e confirmação da chave PIX';
     if (this.currentStep() === 4) return 'Sua solicitação foi registrada no Trampou';
-    return `${this.opportunity.companyName} • ${this.opportunity.location.neighborhood}`;
+    return `${this.opportunity.companyName}${ownSuffix} • ${this.opportunity.location.neighborhood}`;
   }
 
   get arrivalTimeText(): string {

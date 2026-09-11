@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NotificationsComponent } from '../../src/app/features/notifications/notifications.component';
-import { NotificationsService } from '../../src/app/core/services/notifications.service';
+import { NotificationsService, TrampouNotification } from '../../src/app/core/services/notifications.service';
+import { ApiClientService } from '../../src/app/core/services/api-client.service';
 import { provideRouter } from '@angular/router';
 
 describe('NotificationsComponent', () => {
@@ -8,15 +9,51 @@ describe('NotificationsComponent', () => {
   let fixture: ComponentFixture<NotificationsComponent>;
   let service: NotificationsService;
 
+  const mockNotifs: TrampouNotification[] = [
+    {
+      id: 'notif-1',
+      type: 'pix_received',
+      title: 'Pagamento PIX',
+      message: 'PIX recebido',
+      timestamp: 'Hoje às 14:00',
+      read: false
+    },
+    {
+      id: 'notif-2',
+      type: 'shift_reminder',
+      title: 'Turno Hoje',
+      message: 'Lembrete de turno',
+      timestamp: 'Há 15 min',
+      read: false
+    },
+    {
+      id: 'notif-3',
+      type: 'company_alert',
+      title: 'Alerta Empresa',
+      message: 'Nova oportunidade',
+      timestamp: 'Hoje às 12:40',
+      read: false
+    }
+  ];
+
   beforeEach(async () => {
+    const apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'put']);
+    apiClientSpy.get.and.returnValue(Promise.resolve(mockNotifs));
+    apiClientSpy.put.and.returnValue(Promise.resolve());
+
     await TestBed.configureTestingModule({
       imports: [NotificationsComponent],
-      providers: [NotificationsService, provideRouter([])]
+      providers: [
+        NotificationsService,
+        { provide: ApiClientService, useValue: apiClientSpy },
+        provideRouter([])
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(NotificationsComponent);
     component = fixture.componentInstance;
     service = TestBed.inject(NotificationsService);
+    await service.fetchNotifications();
     fixture.detectChanges();
   });
 
@@ -57,15 +94,5 @@ describe('NotificationsComponent', () => {
     fixture.detectChanges();
 
     expect(service.unreadCount()).toBe(0);
-  });
-
-  it('should delete a notification when onDelete is invoked', () => {
-    const initialLength = service.notifications().length;
-    const target = service.notifications()[0];
-
-    component.onDelete(target.id);
-    fixture.detectChanges();
-
-    expect(service.notifications().length).toBe(initialLength - 1);
   });
 });

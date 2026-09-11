@@ -108,6 +108,9 @@
   <ng-container *ngIf="job.status === 'pending'">
     <header class="tp-job-header-row">
       <div class="tp-pending-meta">
+        <div class="tp-pending-tag-row">
+          <tp-badge variant="neutral" size="sm">Aguardando Confirmação</tp-badge>
+        </div>
         <h3 class="tp-job-title">{{ job.title }}</h3>
         <span class="tp-job-company-tag">{{ job.companyName }} • {{ job.location.neighborhood }}</span>
       </div>
@@ -117,6 +120,18 @@
         <span>{{ job.payment.amount }}</span>
       </div>
     </header>
+
+    <div class="tp-pending-shift-details" *ngIf="job.date || job.schedule">
+      <div class="tp-schedule-tag" *ngIf="job.schedule">
+        <tp-icon name="clock" size="xs" customClass="tp-sched-icon"></tp-icon>
+        <strong>{{ job.date }} • {{ job.schedule.start }} às {{ job.schedule.end }}</strong>
+        <span class="tp-sched-hours" *ngIf="job.schedule.totalHours">({{ job.schedule.totalHours }}h)</span>
+      </div>
+      <div class="tp-schedule-tag" *ngIf="!job.schedule && job.date">
+        <tp-icon name="calendar" size="xs" customClass="tp-sched-icon"></tp-icon>
+        <strong>{{ job.date }}</strong>
+      </div>
+    </div>
 
     <div class="tp-pending-status-bar">
       <div class="tp-pending-time-pill">

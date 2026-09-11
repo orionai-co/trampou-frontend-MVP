@@ -7,34 +7,6 @@ import {
 } from '../../../core/models/sponsored-campaign.model';
 import { ApiClientService } from '../../../core/services/api-client.service';
 import { API_ENDPOINTS } from '../../../core/constants/api-endpoints';
-import { environment } from '../../../../environments/environment';
-
-const INITIAL_MOCK_CAMPAIGN: SponsoredCampaign = {
-  id: 'camp-001',
-  companyId: 'comp-001',
-  type: 'featured_company',
-  title: 'Destaque Institucional — Buffet Espaço Paulista',
-  headline: 'Conheça nossa megaestrutura gastronômica, nossa equipe e como é trabalhar nos maiores eventos de SP.',
-  videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-restaurant-kitchen-staff-working-42998-large.mp4',
-  videoThumbnail: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80',
-  durationDays: 7,
-  status: 'active',
-  startDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-  endDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
-  targeting: {
-    radiusKm: 10,
-    category: 'Gastronomia & Eventos',
-    minLevel: 2
-  },
-  metrics: {
-    impressions: 12480,
-    videoViews: 8230,
-    profileVisits: 428,
-    interestedCount: 87,
-    applicationsCount: 31,
-    spentAmount: 149.00
-  }
-};
 
 @Injectable({
   providedIn: 'root'
@@ -42,36 +14,70 @@ const INITIAL_MOCK_CAMPAIGN: SponsoredCampaign = {
 export class CampaignService {
   private apiClient = inject(ApiClientService);
 
-  private readonly _campaigns = signal<SponsoredCampaign[]>([INITIAL_MOCK_CAMPAIGN]);
+  private readonly _campaigns = signal<SponsoredCampaign[]>([]);
+  readonly isLoading = signal<boolean>(false);
+  readonly errorMessage = signal<string | null>(null);
 
   readonly campaigns = this._campaigns.asReadonly();
 
   async fetchCampaigns(): Promise<SponsoredCampaign[]> {
-    if (environment.useMock) {
-      return Promise.resolve(this.campaigns());
+    this.isLoading.set(true);
+    try {
+      const data = await this.apiClient.get<SponsoredCampaign[]>(API_ENDPOINTS.CAMPAIGNS.LIST);
+      this._campaigns.set(data || []);
+      return data || [];
+    } catch (error: any) {
+      this.errorMessage.set(error?.message || 'Erro ao buscar campanhas.');
+      return [];
+    } finally {
+      this.isLoading.set(false);
     }
-    return this.apiClient.get<SponsoredCampaign[]>(API_ENDPOINTS.CAMPAIGNS.LIST);
   }
 
   async fetchActiveCampaign(): Promise<SponsoredCampaign | null> {
-    if (environment.useMock) {
-      return Promise.resolve(this.activeCampaign());
+    try {
+      const active = await this.apiClient.get<SponsoredCampaign | null>(API_ENDPOINTS.CAMPAIGNS.ACTIVE);
+      if (active) {
+        this._campaigns.update(list => {
+          const exists = list.some(c => c.id === active.id);
+          return exists ? list.map(c => (c.id === active.id ? active : c)) : [active, ...list];
+        });
+      }
+      return active;
+    } catch (error) {
+      return null;
     }
-    return this.apiClient.get<SponsoredCampaign | null>(API_ENDPOINTS.CAMPAIGNS.ACTIVE);
   }
 
   async saveCampaign(campaignData: Partial<SponsoredCampaign>): Promise<SponsoredCampaign> {
-    if (environment.useMock) {
-      return Promise.resolve(this.createCampaign(campaignData));
+    this.isLoading.set(true);
+    try {
+      const created = await this.apiClient.post<SponsoredCampaign>(API_ENDPOINTS.CAMPAIGNS.CREATE, campaignData);
+      if (created) {
+        this._campaigns.update(list => [
+          created,
+          ...list.map(c => (c.status === 'active' ? { ...c, status: 'completed' as const } : c))
+        ]);
+      }
+      return created;
+    } finally {
+      this.isLoading.set(false);
     }
-    return this.apiClient.post<SponsoredCampaign>(API_ENDPOINTS.CAMPAIGNS.CREATE, campaignData);
   }
 
   async fetchMetrics(): Promise<CampaignMetrics> {
-    if (environment.useMock) {
-      return Promise.resolve(this.currentMetrics());
+    try {
+      return await this.apiClient.get<CampaignMetrics>(API_ENDPOINTS.CAMPAIGNS.METRICS);
+    } catch (error) {
+      return {
+        impressions: 0,
+        videoViews: 0,
+        profileVisits: 0,
+        interestedCount: 0,
+        applicationsCount: 0,
+        spentAmount: 0
+      };
     }
-    return this.apiClient.get<CampaignMetrics>(API_ENDPOINTS.CAMPAIGNS.METRICS);
   }
 
   readonly activeCampaign = computed<SponsoredCampaign | null>(() => {

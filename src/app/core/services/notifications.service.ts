@@ -1,7 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { ApiClientService } from './api-client.service';
 import { API_ENDPOINTS } from '../constants/api-endpoints';
-import { environment } from '../../../environments/environment';
 
 export type NotificationType =
   | 'shift_reminder'
@@ -41,97 +40,27 @@ export type NotificationFilterTab = 'all' | 'shifts' | 'pix' | 'opportunities' |
 export class NotificationsService {
   private apiClient = inject(ApiClientService);
 
-  private readonly initialNotifications: TrampouNotification[] = [
-    {
-      id: 'notif-1',
-      type: 'shift_reminder',
-      title: 'Turno Hoje: Garçom para Casamento',
-      message: 'Seu turno no Buffet Espaço Paulista começa às 18:00 (em 2 horas). Não se esqueça do uniforme preto.',
-      timestamp: 'Há 15 min',
-      read: false,
-      actionUrl: '/meus-trabalhos',
-      actionLabel: 'Ver Detalhes do Turno',
-      secondaryActionUrl: '/meus-trabalhos',
-      secondaryActionLabel: 'Abrir Chat',
-      metadata: {
-        jobId: 'job-1',
-        shiftTime: '18:00 às 02:00',
-        companyName: 'Buffet Espaço Paulista'
-      }
-    },
-    {
-      id: 'notif-2',
-      type: 'pix_received',
-      title: 'Pagamento PIX Liberado',
-      message: 'Repasse de R$ 190,00 transferido instantaneamente via PIX pelo Buffet Fasano.',
-      timestamp: 'Hoje às 14:00',
-      read: false,
-      actionUrl: '/meus-trabalhos',
-      actionLabel: 'Ver Comprovante',
-      metadata: {
-        amount: 190,
-        companyName: 'Buffet Fasano'
-      }
-    },
-    {
-      id: 'notif-comp-1',
-      type: 'company_alert',
-      title: 'Nova Vaga de Buffet Espaço Paulista',
-      message: 'Seu buffet acompanhado acabou de publicar 2 vagas de Garçom de Salão (98% de Match) para este final de semana.',
-      timestamp: 'Hoje às 12:40',
-      read: false,
-      actionUrl: '/empresas/buffet-espaco-paulista',
-      actionLabel: 'Ver Vaga & Candidatar',
-      metadata: {
-        companyName: 'Buffet Espaço Paulista',
-        companyId: 'comp-001',
-        matchScore: 98
-      }
-    },
-    {
-      id: 'notif-3',
-      type: 'shift_approved',
-      title: 'Candidatura Aprovada!',
-      message: 'Você foi selecionado para Auxiliar de Bar no SkyLounge Rooftop.',
-      timestamp: 'Hoje às 11:30',
-      read: false,
-      actionUrl: '/meus-trabalhos',
-      actionLabel: 'Alinhar no Chat',
-      metadata: {
-        jobId: 'job-2',
-        companyName: 'SkyLounge Rooftop'
-      }
-    },
-    {
-      id: 'notif-4',
-      type: 'new_match',
-      title: 'Oportunidade de Alto Match',
-      message: 'Nova vaga com 98% de Match disponível perto de você.',
-      timestamp: 'Ontem às 19:45',
-      read: true,
-      actionUrl: '/oportunidades',
-      actionLabel: 'Quero esse Trampo',
-      metadata: {
-        matchScore: 98
-      }
-    },
-    {
-      id: 'notif-5',
-      type: 'system',
-      title: 'Passaporte de Reputação Atualizado',
-      message: 'Parabéns! Sua pontualidade de 100% garantiu o emblema "Pontualidade Britânica" no seu perfil.',
-      timestamp: 'Há 2 dias',
-      read: true,
-      actionUrl: '/perfil',
-      actionLabel: 'Ver Conquistas'
-    }
-  ];
-
-  readonly notifications = signal<TrampouNotification[]>(this.initialNotifications);
+  readonly notifications = signal<TrampouNotification[]>([]);
+  readonly isLoading = signal<boolean>(false);
+  readonly errorMessage = signal<string | null>(null);
 
   readonly unreadCount = computed<number>(() => {
     return this.notifications().filter(n => !n.read).length;
   });
+
+  async fetchNotifications(): Promise<TrampouNotification[]> {
+    this.isLoading.set(true);
+    try {
+      const data = await this.apiClient.get<TrampouNotification[]>(API_ENDPOINTS.NOTIFICATIONS.LIST);
+      this.notifications.set(data || []);
+      return data || [];
+    } catch (error: any) {
+      this.errorMessage.set(error?.message || 'Erro ao carregar notificações.');
+      return [];
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 
   addNotification(notification: Omit<TrampouNotification, 'id' | 'read' | 'timestamp'> & {
     id?: string;
@@ -234,24 +163,21 @@ export class NotificationsService {
     }
   }
 
-  async fetchNotifications(): Promise<TrampouNotification[]> {
-    if (environment.useMock) {
-      return Promise.resolve(this.notifications());
-    }
-    return this.apiClient.get<TrampouNotification[]>(API_ENDPOINTS.NOTIFICATIONS.LIST);
-  }
-
   async syncMarkAsRead(id: string): Promise<void> {
     this.markAsRead(id);
-    if (!environment.useMock) {
+    try {
       await this.apiClient.put(API_ENDPOINTS.NOTIFICATIONS.MARK_AS_READ(id));
+    } catch {
+      // Falha silenciosa para manter fluidez de UI
     }
   }
 
   async syncMarkAllAsRead(): Promise<void> {
     this.markAllAsRead();
-    if (!environment.useMock) {
+    try {
       await this.apiClient.put(API_ENDPOINTS.NOTIFICATIONS.MARK_ALL_READ);
+    } catch {
+      // Falha silenciosa para manter fluidez de UI
     }
   }
 }

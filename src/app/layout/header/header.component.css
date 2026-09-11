@@ -233,6 +233,56 @@
   flex-shrink: 0;
 }
 
+/* Auth Actions (Deslogado) */
+.tp-header-auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tp-btn-header-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tp-color-text-primary, #0f172a);
+  background-color: transparent;
+  border: 1.5px solid var(--tp-color-border, #e2e8f0);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.tp-btn-header-login:hover {
+  background-color: var(--tp-color-surface-subtle, #f1f5f9);
+  border-color: #cbd5e1;
+  color: var(--tp-color-primary-900, #0f1f3d);
+}
+
+.tp-btn-header-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #0066FF;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 102, 255, 0.15);
+}
+
+.tp-btn-header-register:hover {
+  background-color: #0052cc;
+  box-shadow: 0 4px 8px rgba(0, 102, 255, 0.25);
+}
+
 /* Botão de Busca Circular */
 .tp-header-search-trigger-btn {
   width: 38px;
@@ -269,6 +319,35 @@
   height: 6px;
   border-radius: 50%;
   background-color: var(--tp-color-accent-400);
+}
+
+/* Botão de Destaque: Publicar Vaga (Empresa / role: 'contractor') */
+.tp-btn-header-publish {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--tp-radius-full, 9999px);
+  border: 1px solid rgba(2, 132, 199, 0.3);
+  cursor: pointer;
+  transition: all var(--tp-transition-fast, 0.15s ease);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+  white-space: nowrap;
+}
+
+.tp-btn-header-publish:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+  transform: translateY(-1px);
+}
+
+.tp-btn-header-publish:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.3);
 }
 
 /* Context Switcher */

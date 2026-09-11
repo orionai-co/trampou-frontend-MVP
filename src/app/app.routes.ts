@@ -6,18 +6,47 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { CompanyComponent } from './features/company/company.component';
 import { NotificationsComponent } from './features/notifications/notifications.component';
 import { CompanyProfilePageComponent } from './features/company-profile/company-profile-page.component';
-import { HomeTempComponent } from './features/home-temp/home-temp.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: MainLayoutComponent,
+    pathMatch: 'full',
+    redirectTo: 'auth/login'
+  },
+  {
+    path: 'auth',
     children: [
       {
         path: '',
-        redirectTo: 'oportunidades',
+        redirectTo: 'login',
         pathMatch: 'full'
       },
+      {
+        path: 'login',
+        loadComponent: () => import('./features/auth/pages/login/login.component').then(m => m.LoginComponent),
+        title: 'Entrar — TRAMPOU'
+      },
+      {
+        path: 'tipo-conta',
+        loadComponent: () => import('./features/auth/pages/account-type-selector/account-type-selector.component').then(m => m.AccountTypeSelectorComponent),
+        title: 'Escolha seu Perfil — TRAMPOU'
+      },
+      {
+        path: 'cadastro/profissional',
+        loadComponent: () => import('./features/auth/pages/register-professional/register-professional.component').then(m => m.RegisterProfessionalComponent),
+        title: 'Cadastro de Prestador — TRAMPOU'
+      },
+      {
+        path: 'cadastro/empresa',
+        loadComponent: () => import('./features/auth/pages/register-company/register-company.component').then(m => m.RegisterCompanyComponent),
+        title: 'Cadastro de Empresa — TRAMPOU'
+      }
+    ]
+  },
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
       {
         path: 'oportunidades',
         component: OpportunitiesFeedComponent,
@@ -57,16 +86,11 @@ export const routes: Routes = [
         path: 'notificacoes',
         redirectTo: 'avisos',
         pathMatch: 'full'
-      },
-      {
-        path: 'design-system',
-        component: HomeTempComponent,
-        title: 'Design System — TRAMPOU'
       }
     ]
   },
   {
     path: '**',
-    redirectTo: 'oportunidades'
+    redirectTo: 'auth/login'
   }
 ];

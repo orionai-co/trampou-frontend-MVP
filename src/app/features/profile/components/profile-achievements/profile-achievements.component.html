@@ -17,7 +17,7 @@
   </div>
 
   <!-- Grade de Emblemas de Confiança -->
-  <div class="tp-achievements-grid">
+  <div class="tp-achievements-grid" *ngIf="displayedAchievements.length > 0">
     <div
       *ngFor="let achievement of displayedAchievements; trackBy: trackByAchievementId"
       class="tp-achievement-item"
@@ -39,5 +39,14 @@
         <span class="tp-achievement-date">{{ achievement.unlockedAt }}</span>
       </div>
     </div>
+  </div>
+
+  <!-- Estado Vazio -->
+  <div class="tp-achievements-empty" *ngIf="displayedAchievements.length === 0">
+    <div class="tp-empty-icon-wrap">
+      <tp-icon name="award" size="md"></tp-icon>
+    </div>
+    <h4>Nenhuma conquista desbloqueada ainda</h4>
+    <p>Complete turnos com excelência e pontualidade para receber emblemas de confiança em seu perfil.</p>
   </div>
 </section>

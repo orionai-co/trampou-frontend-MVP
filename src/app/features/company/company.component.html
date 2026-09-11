@@ -69,8 +69,14 @@
         <!-- 1.4 LISTA DE VAGAS -->
         <div class="tp-company-list-wrapper">
           
+          <!-- ESTADO DE CARREGAMENTO -->
+          <div *ngIf="companyService.isLoading()" class="tp-company-loading-state" style="text-align: center; padding: 40px 20px;">
+            <tp-icon name="loader" size="md"></tp-icon>
+            <p style="margin-top: 12px; color: var(--tp-color-text-secondary); font-size: 0.875rem;">Carregando dados operacionais da empresa...</p>
+          </div>
+
           <!-- ABA: VAGAS ATIVAS -->
-          <ng-container *ngIf="activeTab() === 'active'">
+          <ng-container *ngIf="!companyService.isLoading() && activeTab() === 'active'">
             <div *ngIf="companyService.activeJobs().length > 0" class="tp-company-cards-grid">
               <tp-company-job-card
                 *ngFor="let job of companyService.activeJobs(); trackBy: trackByJobId"
@@ -85,17 +91,17 @@
               <div class="tp-empty-icon-wrap">
                 <tp-icon name="briefcase" size="lg"></tp-icon>
               </div>
-              <h3>Nenhuma vaga ativa no momento</h3>
-              <p>Publique uma nova oportunidade sob demanda em menos de 1 minuto para receber candidatos qualificados.</p>
+              <h3>Nenhuma vaga ativa publicada</h3>
+              <p>Nenhuma vaga ativa publicada. Clique em '+ Publicar Nova Vaga' para abrir turnos sob demanda.</p>
               <tp-button variant="primary" size="md" (btnClick)="openCreateJobModal()">
-                <tp-icon name="sparkles" size="xs"></tp-icon>
-                <span>Publicar Primeira Vaga</span>
+                <tp-icon name="plus" size="xs"></tp-icon>
+                <span>+ Publicar Nova Vaga</span>
               </tp-button>
             </div>
           </ng-container>
 
           <!-- ABA: HISTÓRICO DE TURNOS -->
-          <ng-container *ngIf="activeTab() === 'history'">
+          <ng-container *ngIf="!companyService.isLoading() && activeTab() === 'history'">
             <div *ngIf="companyService.historyJobs().length > 0" class="tp-company-cards-grid">
               <tp-company-job-card
                 *ngFor="let job of companyService.historyJobs(); trackBy: trackByJobId"
@@ -145,8 +151,14 @@
           </div>
 
           <div class="tp-company-contacts-list">
-            <!-- Lista de contatos existente mantida aqui -->
+            <!-- Loading de Contatos -->
+            <div *ngIf="companyService.contactsLoading()" class="tp-company-loading-inline" style="text-align: center; padding: 24px 16px; color: var(--tp-color-text-secondary);">
+              <tp-icon name="loader" size="sm"></tp-icon>
+              <p style="margin: 8px 0 0 0; font-size: 0.78rem;">Carregando contatos...</p>
+            </div>
+            <!-- Lista de contatos -->
             <tp-chat-contacts-list
+              *ngIf="!companyService.contactsLoading()"
               [contacts]="filteredChatContacts()"
               [selectedCandidateId]="activeChatFreelancerId()"
               [selectedJobId]="activeChatJobId()"

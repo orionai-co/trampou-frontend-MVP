@@ -11,7 +11,7 @@
 
     <tp-button variant="outline" size="sm" (btnClick)="openEditModal()">
       <tp-icon name="sliders" size="xs"></tp-icon>
-      <span>Editar Chave</span>
+      <span>{{ pixKey.key ? 'Editar Chave' : 'Cadastrar Chave' }}</span>
     </tp-button>
   </div>
 

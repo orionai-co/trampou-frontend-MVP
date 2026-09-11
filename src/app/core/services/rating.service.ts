@@ -16,35 +16,6 @@ export interface ReviewSubmission {
   submittedAt: string;
 }
 
-const INITIAL_MOCK_REVIEWS: ReviewSubmission[] = [
-  {
-    id: 'rev-001',
-    shiftId: 'app-005',
-    shiftTitle: 'Auxiliar de Salão / Cumim para Jantar',
-    reviewerRole: 'company',
-    reviewerName: 'Restaurante Terraço Jardins',
-    targetId: 'user-freelancer-1',
-    targetName: 'Matheus Silva',
-    rating: 5,
-    tags: ['Pontual', 'Proativo', 'Uniforme Completo'],
-    comment: 'Excelente profissional, atencioso com a equipe e impecável na apresentação.',
-    submittedAt: '20/08/2026'
-  },
-  {
-    id: 'rev-002',
-    shiftId: 'app-005',
-    shiftTitle: 'Auxiliar de Salão / Cumim para Jantar',
-    reviewerRole: 'freelancer',
-    reviewerName: 'Matheus Silva',
-    targetId: 'comp-terraco',
-    targetName: 'Restaurante Terraço Jardins',
-    rating: 5,
-    tags: ['Pagamento Rápido', 'Ambiente Respeitoso', 'Alimentação no Local'],
-    comment: 'Ambiente muito bom para trabalhar e repasse via PIX feito no mesmo instante.',
-    submittedAt: '20/08/2026'
-  }
-];
-
 @Injectable({
   providedIn: 'root'
 })
@@ -52,7 +23,7 @@ export class RatingService {
   private readonly userProfileService = inject(UserProfileService);
   private readonly companyService = inject(CompanyService);
 
-  private readonly _reviews = signal<ReviewSubmission[]>(INITIAL_MOCK_REVIEWS);
+  private readonly _reviews = signal<ReviewSubmission[]>([]);
   readonly reviews = this._reviews.asReadonly();
 
   readonly totalReviewsCount = computed(() => this._reviews().length);
@@ -93,7 +64,7 @@ export class RatingService {
 
     // Recálculo reativo se a avaliação foi para o Freelancer
     if (params.reviewerRole === 'company') {
-      const currentReviews = this.userProfileService.currentUser().reviewsCount || 42;
+      const currentReviews = this.userProfileService.currentUser().reviewsCount ?? 0;
       this.userProfileService.updateProfile({
         rating: this.freelancerAverageRating(),
         reviewsCount: currentReviews + 1

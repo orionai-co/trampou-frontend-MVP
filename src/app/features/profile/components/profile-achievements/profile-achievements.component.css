@@ -185,3 +185,40 @@
     grid-template-columns: 1fr;
   }
 }
+
+.tp-achievements-empty {
+  text-align: center;
+  padding: 24px 16px;
+  color: var(--tp-color-text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.tp-achievements-empty .tp-empty-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--tp-color-surface-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tp-color-text-tertiary);
+  margin-bottom: 4px;
+}
+
+.tp-achievements-empty h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--tp-color-primary-900);
+}
+
+.tp-achievements-empty p {
+  margin: 0;
+  font-size: 0.8rem;
+  max-width: 320px;
+  color: var(--tp-color-text-tertiary);
+}
+

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CompanyCampaignMetricsComponent } from '../../src/app/features/company/components/company-campaign-metrics/company-campaign-metrics.component';
 import { CampaignService } from '../../src/app/features/company/services/campaign.service';
+import { ApiClientService } from '../../src/app/core/services/api-client.service';
 
 describe('CompanyCampaignMetricsComponent', () => {
   let component: CompanyCampaignMetricsComponent;
@@ -8,14 +9,45 @@ describe('CompanyCampaignMetricsComponent', () => {
   let campaignService: CampaignService;
 
   beforeEach(async () => {
+    const apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'post']);
+    apiClientSpy.get.and.returnValue(Promise.resolve([]));
+    apiClientSpy.post.and.returnValue(Promise.resolve({}));
+
     await TestBed.configureTestingModule({
       imports: [CompanyCampaignMetricsComponent],
-      providers: [CampaignService]
+      providers: [
+        CampaignService,
+        { provide: ApiClientService, useValue: apiClientSpy }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CompanyCampaignMetricsComponent);
     component = fixture.componentInstance;
     campaignService = TestBed.inject(CampaignService);
+
+    campaignService.createCampaign({
+      title: 'Destaque Institucional — Buffet Espaço Paulista',
+      headline: 'Conheça nossa megaestrutura gastronômica.',
+      durationDays: 7,
+      targeting: {
+        radiusKm: 10,
+        category: 'Gastronomia & Eventos',
+        minLevel: 2
+      }
+    });
+
+    const active = campaignService.activeCampaign();
+    if (active) {
+      campaignService.updateMetrics(active.id, {
+        impressions: 12480,
+        videoViews: 8230,
+        profileVisits: 428,
+        interestedCount: 87,
+        applicationsCount: 31,
+        spentAmount: 149
+      });
+    }
+
     fixture.detectChanges();
   });
 

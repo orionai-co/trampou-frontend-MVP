@@ -1,17 +1,66 @@
 import { TestBed } from '@angular/core/testing';
 import { NotificationsService, TrampouNotification } from '../../src/app/core/services/notifications.service';
+import { ApiClientService } from '../../src/app/core/services/api-client.service';
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
+  let apiClientSpy: jasmine.SpyObj<ApiClientService>;
 
-  beforeEach(() => {
+  const mockNotifications: TrampouNotification[] = [
+    {
+      id: 'notif-1',
+      type: 'shift_reminder',
+      title: 'Turno Hoje: Garçom para Casamento',
+      message: 'Seu turno no Buffet Espaço Paulista começa às 18:00 (em 2 horas).',
+      timestamp: 'Há 15 min',
+      read: false,
+      actionUrl: '/meus-trabalhos'
+    },
+    {
+      id: 'notif-2',
+      type: 'pix_received',
+      title: 'Pagamento PIX Liberado',
+      message: 'Repasse de R$ 190,00 transferido instantaneamente via PIX.',
+      timestamp: 'Hoje às 14:00',
+      read: false,
+      actionUrl: '/meus-trabalhos'
+    },
+    {
+      id: 'notif-comp-1',
+      type: 'company_alert',
+      title: 'Nova Vaga de Buffet Espaço Paulista',
+      message: 'Seu buffet acompanhado acabou de publicar 2 vagas.',
+      timestamp: 'Hoje às 12:40',
+      read: false,
+      actionUrl: '/empresas/buffet-espaco-paulista'
+    },
+    {
+      id: 'notif-3',
+      type: 'shift_approved',
+      title: 'Candidatura Aprovada!',
+      message: 'Você foi selecionado para Auxiliar de Bar.',
+      timestamp: 'Hoje às 11:30',
+      read: true,
+      actionUrl: '/meus-trabalhos'
+    }
+  ];
+
+  beforeEach(async () => {
+    apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'put']);
+    apiClientSpy.get.and.returnValue(Promise.resolve(mockNotifications));
+    apiClientSpy.put.and.returnValue(Promise.resolve({ success: true }));
+
     TestBed.configureTestingModule({
-      providers: [NotificationsService]
+      providers: [
+        NotificationsService,
+        { provide: ApiClientService, useValue: apiClientSpy }
+      ]
     });
     service = TestBed.inject(NotificationsService);
+    await service.fetchNotifications();
   });
 
-  it('should be created and contain initial mock notifications', () => {
+  it('should be created and contain notifications after fetch', () => {
     expect(service).toBeTruthy();
     expect(service.notifications().length).toBeGreaterThan(0);
   });

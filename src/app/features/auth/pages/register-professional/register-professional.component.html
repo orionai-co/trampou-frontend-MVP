@@ -1,0 +1,392 @@
+<div class="tp-auth-page">
+  <tp-auth-header backUrl="/auth/tipo-conta"></tp-auth-header>
+
+  <main class="tp-auth-main">
+    <div class="tp-wizard-container">
+      @if (!isSuccess()) {
+        <!-- Cabeçalho do Wizard -->
+        <div class="tp-wizard-header">
+          <div class="tp-role-tag">
+            <span>👷 PRESTADOR DE SERVIÇOS</span>
+          </div>
+          <h1 class="tp-wizard-title">Crie seu perfil profissional</h1>
+          <p class="tp-wizard-subtitle">
+            Complete os passos abaixo para receber turnos e ofertas no seu perfil.
+          </p>
+
+          <tp-auth-step-progress [currentStep]="currentStep()" [steps]="steps"></tp-auth-step-progress>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="tp-auth-alert tp-auth-alert-error" role="alert">
+            <tp-icon name="alert-circle" size="sm"></tp-icon>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        <div class="tp-wizard-card">
+          <!-- ETAPA 1: DADOS DA CONTA -->
+          @if (currentStep() === 1) {
+            <form [formGroup]="step1Form" class="tp-step-form" novalidate>
+              <h2 class="tp-step-title">1. Seus dados de acesso</h2>
+
+              <!-- Nome Completo -->
+              <div class="tp-form-field">
+                <label for="prof-nome" class="tp-form-label">Nome Completo</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step1Form.get('nome')?.invalid && step1Form.get('nome')?.touched">
+                  <input
+                    id="prof-nome"
+                    type="text"
+                    formControlName="nome"
+                    placeholder="Ex: Carlos Oliveira Silva"
+                    class="tp-form-input"
+                  />
+                </div>
+                @if (step1Form.get('nome')?.invalid && step1Form.get('nome')?.touched) {
+                  <span class="tp-form-error">O nome deve ter no mínimo 3 caracteres.</span>
+                }
+              </div>
+
+              <!-- E-mail -->
+              <div class="tp-form-field">
+                <label for="prof-email" class="tp-form-label">E-mail</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step1Form.get('email')?.invalid && step1Form.get('email')?.touched">
+                  <input
+                    id="prof-email"
+                    type="email"
+                    formControlName="email"
+                    placeholder="seu.email@exemplo.com"
+                    class="tp-form-input"
+                  />
+                </div>
+                @if (step1Form.get('email')?.invalid && step1Form.get('email')?.touched) {
+                  <span class="tp-form-error">Informe um e-mail válido.</span>
+                }
+              </div>
+
+              <!-- WhatsApp -->
+              <div class="tp-form-field">
+                <label for="prof-whatsapp" class="tp-form-label">WhatsApp (para receber avisos de turnos)</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step1Form.get('whatsapp')?.invalid && step1Form.get('whatsapp')?.touched">
+                  <input
+                    id="prof-whatsapp"
+                    type="tel"
+                    formControlName="whatsapp"
+                    placeholder="(11) 99999-9999"
+                    (input)="onWhatsappInput($event)"
+                    maxlength="15"
+                    class="tp-form-input"
+                  />
+                </div>
+                @if (step1Form.get('whatsapp')?.invalid && step1Form.get('whatsapp')?.touched) {
+                  <span class="tp-form-error">Informe um número de WhatsApp válido com DDD.</span>
+                }
+              </div>
+
+              <!-- Senha -->
+              <div class="tp-form-field">
+                <label for="prof-senha" class="tp-form-label">Senha (mín. 8 caracteres, com letra e número)</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step1Form.get('senha')?.invalid && step1Form.get('senha')?.touched">
+                  <input
+                    id="prof-senha"
+                    [type]="showPassword() ? 'text' : 'password'"
+                    formControlName="senha"
+                    placeholder="Crie uma senha forte"
+                    class="tp-form-input"
+                  />
+                  <button
+                    type="button"
+                    (click)="togglePasswordVisibility()"
+                    class="tp-input-suffix-btn"
+                  >
+                    <tp-icon name="eye" size="sm"></tp-icon>
+                  </button>
+                </div>
+                @if (step1Form.get('senha')?.invalid && step1Form.get('senha')?.touched) {
+                  <span class="tp-form-error">A senha deve ter pelo menos 8 caracteres, 1 letra e 1 número.</span>
+                }
+              </div>
+
+              <!-- Confirmar Senha -->
+              <div class="tp-form-field">
+                <label for="prof-confirm-senha" class="tp-form-label">Confirmar Senha</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="(step1Form.get('confirmarSenha')?.invalid || step1Form.errors?.['passwordMismatch']) && step1Form.get('confirmarSenha')?.touched">
+                  <input
+                    id="prof-confirm-senha"
+                    [type]="showConfirmPassword() ? 'text' : 'password'"
+                    formControlName="confirmarSenha"
+                    placeholder="Repita a senha"
+                    class="tp-form-input"
+                  />
+                  <button
+                    type="button"
+                    (click)="toggleConfirmPasswordVisibility()"
+                    class="tp-input-suffix-btn"
+                  >
+                    <tp-icon name="eye" size="sm"></tp-icon>
+                  </button>
+                </div>
+                @if (step1Form.errors?.['passwordMismatch'] && step1Form.get('confirmarSenha')?.touched) {
+                  <span class="tp-form-error">As senhas não coincidem.</span>
+                }
+              </div>
+
+              <div class="tp-wizard-actions">
+                <div></div>
+                <button
+                  type="button"
+                  id="btn-prof-next-1"
+                  class="tp-btn-primary"
+                  (click)="nextStep()"
+                >
+                  <span>Continuar</span>
+                  <tp-icon name="arrow-right" size="sm"></tp-icon>
+                </button>
+              </div>
+            </form>
+          }
+
+          <!-- ETAPA 2: PERFIL PROFISSIONAL -->
+          @if (currentStep() === 2) {
+            <form [formGroup]="step2Form" class="tp-step-form" novalidate>
+              <h2 class="tp-step-title">2. Especialidades & Experiência</h2>
+
+              <!-- Área de Atuação -->
+              <div class="tp-form-field">
+                <label for="prof-area" class="tp-form-label">Área Principal de Atuação</label>
+                <select
+                  id="prof-area"
+                  formControlName="area"
+                  class="tp-form-select"
+                  (change)="onAreaChange(step2Form.get('area')?.value)"
+                >
+                  @for (area of areas; track area) {
+                    <option [value]="area">{{ area }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Especialidades (Seleção dinâmica) -->
+              <div class="tp-form-field">
+                <label class="tp-form-label">Especialidades (selecione uma ou mais)</label>
+                <div class="tp-specialties-chips">
+                  @for (spec of availableSpecialties(); track spec) {
+                    <button
+                      type="button"
+                      class="tp-chip-btn"
+                      [class.tp-chip-active]="isSpecialtySelected(spec)"
+                      (click)="toggleSpecialty(spec)"
+                    >
+                      <span>{{ spec }}</span>
+                      @if (isSpecialtySelected(spec)) {
+                        <tp-icon name="check" size="xs"></tp-icon>
+                      }
+                    </button>
+                  }
+                </div>
+                @if (step2Form.get('especialidades')?.invalid && step2Form.get('especialidades')?.touched) {
+                  <span class="tp-form-error">Selecione pelo menos uma especialidade.</span>
+                }
+              </div>
+
+              <!-- Experiência -->
+              <div class="tp-form-field">
+                <label class="tp-form-label">Nível de Experiência</label>
+                <div class="tp-radio-group">
+                  @for (exp of experienceLevels; track exp) {
+                    <label class="tp-radio-card" [class.tp-radio-card-active]="step2Form.get('experiencia')?.value === exp">
+                      <input
+                        type="radio"
+                        formControlName="experiencia"
+                        [value]="exp"
+                        class="tp-radio-input"
+                      />
+                      <span class="tp-radio-label">{{ exp }}</span>
+                    </label>
+                  }
+                </div>
+              </div>
+
+              <!-- Descrição / Bio -->
+              <div class="tp-form-field">
+                <label for="prof-desc" class="tp-form-label">Apresentação Profissional (Opcional)</label>
+                <textarea
+                  id="prof-desc"
+                  formControlName="descricao"
+                  rows="3"
+                  placeholder="Conte em poucas linhas sobre sua experiência, pontualidade e dedicação."
+                  class="tp-form-textarea"
+                ></textarea>
+              </div>
+
+              <div class="tp-wizard-actions tp-actions-split">
+                <button
+                  type="button"
+                  id="btn-prof-prev-2"
+                  class="tp-btn-secondary"
+                  (click)="prevStep()"
+                >
+                  <tp-icon name="chevron-left" size="sm"></tp-icon>
+                  <span>Voltar</span>
+                </button>
+                <button
+                  type="button"
+                  id="btn-prof-next-2"
+                  class="tp-btn-primary"
+                  (click)="nextStep()"
+                >
+                  <span>Continuar</span>
+                  <tp-icon name="arrow-right" size="sm"></tp-icon>
+                </button>
+              </div>
+            </form>
+          }
+
+          <!-- ETAPA 3: LOCALIZAÇÃO, DISPONIBILIDADE & CONCLUSÃO -->
+          @if (currentStep() === 3) {
+            <form [formGroup]="step3Form" class="tp-step-form" novalidate>
+              <h2 class="tp-step-title">3. Onde e quando você pode trampar?</h2>
+
+              <!-- Cidade & Estado -->
+              <div class="tp-form-row">
+                <div class="tp-form-field tp-field-flex">
+                  <label for="prof-cidade" class="tp-form-label">Cidade</label>
+                  <div class="tp-input-wrap">
+                    <input
+                      id="prof-cidade"
+                      type="text"
+                      formControlName="cidade"
+                      placeholder="Ex: São Paulo"
+                      class="tp-form-input"
+                    />
+                  </div>
+                </div>
+
+                <div class="tp-form-field tp-field-state">
+                  <label for="prof-estado" class="tp-form-label">UF</label>
+                  <select id="prof-estado" formControlName="estado" class="tp-form-select">
+                    @for (st of states; track st) {
+                      <option [value]="st">{{ st }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <!-- Raio de Atuação -->
+              <div class="tp-form-field">
+                <label for="prof-raio" class="tp-form-label">Raio Máximo de Deslocamento</label>
+                <select id="prof-raio" formControlName="raio" class="tp-form-select">
+                  @for (opt of radiusOptions; track opt.value) {
+                    <option [value]="opt.value">{{ opt.label }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Dias Disponíveis -->
+              <div class="tp-form-field">
+                <label class="tp-form-label">Dias da Semana Disponíveis</label>
+                <div class="tp-days-chips">
+                  @for (day of weekDays; track day) {
+                    <button
+                      type="button"
+                      class="tp-day-btn"
+                      [class.tp-day-active]="isDaySelected(day)"
+                      (click)="toggleDay(day)"
+                    >
+                      {{ day }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <!-- Períodos Disponíveis -->
+              <div class="tp-form-field">
+                <label class="tp-form-label">Períodos do Dia</label>
+                <div class="tp-shifts-chips">
+                  @for (shift of shifts; track shift) {
+                    <button
+                      type="button"
+                      class="tp-shift-btn"
+                      [class.tp-shift-active]="isShiftSelected(shift)"
+                      (click)="toggleShift(shift)"
+                    >
+                      {{ shift }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <!-- Checkbox Termos -->
+              <div class="tp-terms-field">
+                <label class="tp-checkbox-label">
+                  <input
+                    type="checkbox"
+                    formControlName="termosAceitos"
+                    class="tp-checkbox-input"
+                    id="prof-termos"
+                  />
+                  <span class="tp-checkbox-text">
+                    Li e concordo com os <strong>Termos de Uso</strong> e <strong>Política de Privacidade</strong> do TRAMPOU.
+                  </span>
+                </label>
+                @if (step3Form.get('termosAceitos')?.invalid && step3Form.get('termosAceitos')?.touched) {
+                  <span class="tp-form-error">Você precisa aceitar os Termos para continuar.</span>
+                }
+              </div>
+
+              <div class="tp-wizard-actions tp-actions-split">
+                <button
+                  type="button"
+                  id="btn-prof-prev-3"
+                  class="tp-btn-secondary"
+                  (click)="prevStep()"
+                  [disabled]="isLoading()"
+                >
+                  <tp-icon name="chevron-left" size="sm"></tp-icon>
+                  <span>Voltar</span>
+                </button>
+
+                <button
+                  type="button"
+                  id="btn-prof-submit"
+                  class="tp-btn-primary"
+                  (click)="submitRegistration()"
+                  [disabled]="step3Form.invalid || isLoading()"
+                >
+                  @if (isLoading()) {
+                    <span class="tp-btn-spinner"></span>
+                    <span>Criando conta...</span>
+                  } @else {
+                    <span>Finalizar Cadastro</span>
+                  }
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      } @else {
+        <!-- TELA DE SUCESSO -->
+        <div class="tp-success-card">
+          <div class="tp-success-icon-wrap">
+            <tp-icon name="check" size="lg"></tp-icon>
+          </div>
+
+          <h2 class="tp-success-title">Cadastro concluído com sucesso!</h2>
+          <p class="tp-success-desc">
+            Seja bem-vindo ao TRAMPOU! Seu perfil já está ativo e você já pode visualizar e se candidatar a turnos e diárias na sua região.
+          </p>
+
+          <button
+            type="button"
+            class="tp-btn-primary tp-btn-large"
+            id="btn-go-to-jobs"
+            (click)="goToOpportunities()"
+          >
+            <span>Encontrar trabalhos</span>
+            <tp-icon name="arrow-right" size="sm"></tp-icon>
+          </button>
+        </div>
+      }
+    </div>
+  </main>
+</div>

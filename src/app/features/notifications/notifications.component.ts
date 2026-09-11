@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import {
@@ -29,7 +29,7 @@ import {
   styleUrl: './notifications.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NotificationsComponent {
+export class NotificationsComponent implements OnInit {
   readonly notificationsService = inject(NotificationsService);
 
   activeTab = signal<NotificationFilterTab>('all');
@@ -38,16 +38,20 @@ export class NotificationsComponent {
     return this.notificationsService.getFilteredNotifications(this.activeTab());
   });
 
+  ngOnInit(): void {
+    this.notificationsService.fetchNotifications();
+  }
+
   onTabChange(tab: NotificationFilterTab): void {
     this.activeTab.set(tab);
   }
 
   onMarkAsRead(id: string): void {
-    this.notificationsService.markAsRead(id);
+    this.notificationsService.syncMarkAsRead(id);
   }
 
   onMarkAllAsRead(): void {
-    this.notificationsService.markAllAsRead();
+    this.notificationsService.syncMarkAllAsRead();
   }
 
   onDelete(id: string): void {

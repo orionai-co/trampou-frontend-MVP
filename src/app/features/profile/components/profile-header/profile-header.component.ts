@@ -21,19 +21,19 @@ export class ProfileHeaderComponent {
   }
 
   get totalReviewsCount(): number {
-    return this.activeProfile?.totalReviews ?? this.activeProfile?.reviewsCount ?? 42;
+    return this.activeProfile?.totalReviews ?? this.activeProfile?.reviewsCount ?? 0;
   }
 
   get punctualityRate(): number {
-    return this.activeProfile?.punctualityRate ?? 100;
+    return this.activeProfile?.punctualityRate ?? this.reliability?.attendanceRate ?? 0;
   }
 
   get attendanceRate(): number {
-    return this.reliability?.attendanceRate ?? this.activeProfile?.reliability?.attendanceRate ?? 100;
+    return this.reliability?.attendanceRate ?? this.activeProfile?.reliability?.attendanceRate ?? this.activeProfile?.punctualityRate ?? 0;
   }
 
   get completedShifts(): number {
-    return this.reliability?.completedShifts ?? this.activeProfile?.reliability?.completedShifts ?? this.activeProfile?.completedJobsCount ?? 42;
+    return this.reliability?.completedShifts ?? this.activeProfile?.reliability?.completedShifts ?? this.activeProfile?.completedJobsCount ?? 0;
   }
 
   get cancellationRate(): number {

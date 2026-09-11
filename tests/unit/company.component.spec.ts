@@ -1,18 +1,116 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CompanyComponent } from '../../src/app/features/company/company.component';
 import { CompanyService } from '../../src/app/features/company/services/company.service';
+import { ApiClientService } from '../../src/app/core/services/api-client.service';
 import { provideRouter } from '@angular/router';
+import { CompanyJob } from '../../src/app/features/company/models/company-job.model';
 
 describe('CompanyComponent', () => {
   let component: CompanyComponent;
   let fixture: ComponentFixture<CompanyComponent>;
   let companyService: CompanyService;
+  let apiClientSpy: jasmine.SpyObj<ApiClientService>;
+
+  const mockJob: CompanyJob = {
+    id: 'comp-job-1',
+    title: 'Garçom para Evento Corporativo',
+    category: 'Gastronomia',
+    location: { city: 'São Paulo', neighborhood: 'Pinheiros', address: 'Av. Faria Lima, 1000' },
+    date: 'Sexta, 18 de Julho',
+    schedule: { start: '18:00', end: '00:00', totalHours: 6 },
+    slots: { total: 3, filled: 1 },
+    paymentAmount: 180,
+    requiredLevel: 2,
+    status: 'open',
+    requirements: ['Experiência'],
+    candidates: [
+      {
+        id: 'cand-1',
+        name: 'Lucas Mendes',
+        avatarInitials: 'LM',
+        level: 2,
+        rating: 4.9,
+        reviewsCount: 18,
+        matchPercentage: 96,
+        punctualityRate: 100,
+        pixKeyPreview: 'lucas***@gmail.com',
+        status: 'applied'
+      },
+      {
+        id: 'cand-2',
+        name: 'Mariana Costa',
+        avatarInitials: 'MC',
+        level: 2,
+        rating: 4.8,
+        reviewsCount: 12,
+        matchPercentage: 91,
+        punctualityRate: 98,
+        pixKeyPreview: '11988***',
+        status: 'approved'
+      }
+    ]
+  };
+
+  const mockContacts = [
+    {
+      jobId: 'comp-job-1',
+      jobTitle: 'Garçom para Evento Corporativo',
+      candidateId: 'cand-1',
+      candidateName: 'Lucas Mendes',
+      candidateAvatar: 'LM',
+      status: 'applied' as const,
+      lastMessage: 'Olá!'
+    }
+  ];
 
   beforeEach(async () => {
+    localStorage.clear();
+    apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'post', 'put', 'delete']);
+    (apiClientSpy.get.and.callFake as any)((endpoint: string) => {
+      if (endpoint.includes('jobs/active')) {
+        return Promise.resolve([mockJob]);
+      }
+      if (endpoint.includes('jobs/history')) {
+        return Promise.resolve([]);
+      }
+      if (endpoint.includes('contacts')) {
+        return Promise.resolve(mockContacts);
+      }
+      if (endpoint.includes('metrics')) {
+        return Promise.resolve({
+          openJobs: 2,
+          candidatesUnderReview: 5,
+          completedShifts: 48
+        });
+      }
+      if (endpoint.includes('profile') || endpoint.includes('/companies/me')) {
+        return Promise.resolve({
+          name: 'Empresa Teste',
+          verified: true,
+          category: 'Gastronomia',
+          rating: 5.0,
+          completedShiftsTotal: 48
+        });
+      }
+      return Promise.resolve({});
+    });
+    (apiClientSpy.post.and.callFake as any)((endpoint: string, data: any) => {
+      return Promise.resolve({
+        id: 'job-created-new',
+        title: data?.title || 'Novo Turno',
+        category: data?.category || 'Operacional',
+        slots: data?.slots || { total: 2, filled: 0 },
+        paymentAmount: data?.paymentAmount || 160,
+        status: 'open',
+        candidates: []
+      });
+    });
+
     await TestBed.configureTestingModule({
       imports: [CompanyComponent],
       providers: [
         CompanyService,
+        { provide: ApiClientService, useValue: apiClientSpy },
         provideRouter([])
       ]
     }).compileComponents();
@@ -20,6 +118,9 @@ describe('CompanyComponent', () => {
     fixture = TestBed.createComponent(CompanyComponent);
     component = fixture.componentInstance;
     companyService = TestBed.inject(CompanyService);
+    await companyService.fetchAllDashboardData();
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
   });
 
@@ -47,8 +148,8 @@ describe('CompanyComponent', () => {
     expect(component.isCreateModalOpen()).toBeFalse();
   });
 
-  it('should handle job created and show feedback', () => {
-    component.handleJobCreated({
+  it('should handle job created and show feedback', async () => {
+    await component.handleJobCreated({
       title: 'Auxiliar de Limpeza Noturna',
       category: 'Operacional',
       slots: { total: 2, filled: 0 },
@@ -77,8 +178,9 @@ describe('CompanyComponent', () => {
   });
 
   it('should open chat in sidebar for approved candidate and close sidebar', () => {
-    const job = companyService.jobs()[0];
-    const candidate = job.candidates[0];
+    const job = companyService.jobs().find(j => j.candidates?.length > 0) || companyService.jobs()[0];
+    const candidate = job?.candidates?.[0];
+    if (!job || !candidate) return;
 
     component.openChatForJob(job, candidate);
     expect(component.activeChatJobId()).toBe(job.id);

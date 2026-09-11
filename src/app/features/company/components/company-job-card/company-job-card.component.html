@@ -21,20 +21,20 @@
         <span>{{ job.date }}</span>
       </div>
 
-      <div class="tp-ccard-meta-item">
+      <div class="tp-ccard-meta-item" *ngIf="job.schedule">
         <tp-icon name="clock" size="xs" customClass="tp-meta-icon"></tp-icon>
         <span>{{ job.schedule.start }} às {{ job.schedule.end }} ({{ job.schedule.totalHours }}h)</span>
       </div>
     </div>
 
-    <div class="tp-ccard-meta-item tp-ccard-address">
+    <div class="tp-ccard-meta-item tp-ccard-address" *ngIf="job.location">
       <tp-icon name="map-pin" size="xs" customClass="tp-meta-icon"></tp-icon>
       <span>{{ job.location.address }} • {{ job.location.neighborhood }}, {{ job.location.city }}</span>
     </div>
   </div>
 
   <!-- BARRA DE PREENCHIMENTO DE VAGAS -->
-  <div class="tp-ccard-slots-bar-wrap">
+  <div class="tp-ccard-slots-bar-wrap" *ngIf="job.slots">
     <div class="tp-slots-labels">
       <span class="tp-slots-title">Vagas preenchidas</span>
       <span class="tp-slots-fraction">

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CompanyPublicHeaderComponent } from '../../src/app/features/company-profile/components/company-public-header/company-public-header.component';
-import { CompanyPublicProfile, MOCK_COMPANY_PUBLIC_PROFILES } from '../../src/app/features/company-profile/models/company-profile.model';
+import { CompanyPublicProfile } from '../../src/app/features/company-profile/models/company-profile.model';
 import { NotificationsService } from '../../src/app/core/services/notifications.service';
 
 describe('CompanyPublicHeaderComponent', () => {
@@ -9,7 +9,34 @@ describe('CompanyPublicHeaderComponent', () => {
   let notificationsService: NotificationsService;
 
   const mockProfile: CompanyPublicProfile = {
-    ...MOCK_COMPANY_PUBLIC_PROFILES[0]
+    id: 'comp-001',
+    name: 'Buffet Espaço Paulista',
+    handle: '@espacopaulista',
+    avatarInitials: 'EP',
+    category: 'Gastronomia & Eventos Corporativos',
+    verified: true,
+    location: {
+      neighborhood: 'Vila Olímpia',
+      city: 'São Paulo',
+      state: 'SP',
+      distanceKm: 2.4
+    },
+    about: 'Buffet corporativo de alto padrão.',
+    cultureHighlights: ['Alimentação no local'],
+    reputation: {
+      averageRating: 4.87,
+      totalReviews: 84,
+      onTimePaymentRate: 100,
+      rehireReturnRate: 96,
+      totalCompletedShifts: 1284,
+      cancellationRate: 0
+    },
+    media: {
+      videoThumbnail: '',
+      videoTitle: '',
+      videoDuration: '',
+      photos: []
+    }
   };
 
   beforeEach(async () => {

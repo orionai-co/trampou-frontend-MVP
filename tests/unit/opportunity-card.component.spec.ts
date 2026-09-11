@@ -99,4 +99,34 @@ describe('OpportunityCardComponent', () => {
     cardEl.click();
     expect(component.viewDetails.emit).toHaveBeenCalledWith(mockOpp);
   });
+
+  it('para perfil empresa (contractor), não deve exibir botão Quero esse trampo em vaga de terceiros', () => {
+    const authService = (component as any).authService;
+    authService.currentUser.set({
+      id: 'comp-other',
+      name: 'Outra Empresa',
+      email: 'outra@trampou.com',
+      role: 'contractor'
+    });
+    fixture.detectChanges();
+
+    const applyBtn = fixture.nativeElement.querySelector('.tp-btn-apply');
+    expect(applyBtn).toBeNull();
+  });
+
+  it('para perfil empresa na sua própria vaga, deve exibir badge "Sua vaga" e botão para gerenciar no painel', () => {
+    const authService = (component as any).authService;
+    authService.currentUser.set({
+      id: 'comp-01',
+      name: 'Buffet Paulista',
+      email: 'paulista@trampou.com',
+      role: 'contractor'
+    });
+    fixture.detectChanges();
+
+    const ownJobActions = fixture.nativeElement.querySelector('.tp-contractor-own-job-actions');
+    expect(ownJobActions).toBeTruthy();
+    expect(ownJobActions.textContent).toContain('Sua vaga');
+    expect(ownJobActions.textContent).toContain('Gerenciar no Painel');
+  });
 });

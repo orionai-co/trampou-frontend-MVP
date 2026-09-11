@@ -22,74 +22,11 @@ export interface ChatRoom {
   createdAt: string;
 }
 
-const INITIAL_MOCK_ROOMS: ChatRoom[] = [
-  {
-    id: 'room-comp-job-1-cand-1',
-    jobId: 'comp-job-1',
-    jobTitle: 'Garçom para Evento Corporativo',
-    companyName: 'Buffet Espaço Paulista',
-    freelancerName: 'Lucas Mendes',
-    freelancerId: 'cand-1',
-    status: 'active',
-    createdAt: 'Hoje, 14:30',
-    messages: [
-      {
-        id: 'msg-1',
-        roomId: 'room-comp-job-1-cand-1',
-        senderId: 'company-1',
-        senderName: 'Buffet Espaço Paulista',
-        senderRole: 'company',
-        text: 'Olá Lucas! Sua presença foi aprovada para o turno de hoje. Por favor, apresente-se na lateral da Alameda Santos às 17h45 para o briefing com o metre Roberto.',
-        timestamp: '14:32'
-      },
-      {
-        id: 'msg-2',
-        roomId: 'room-comp-job-1-cand-1',
-        senderId: 'cand-1',
-        senderName: 'Lucas Mendes',
-        senderRole: 'freelancer',
-        text: 'Perfeito! Traje social preto e sapato engraxado conforme solicitado. Estarei lá pontualmente!',
-        timestamp: '14:35'
-      }
-    ]
-  },
-  {
-    id: 'room-opp-001-app-001',
-    jobId: 'opp-001',
-    jobTitle: 'Garçom para Casamento e Buffet Noturno',
-    companyName: 'Buffet Espaço Paulista',
-    freelancerName: 'Matheus Silva',
-    freelancerId: 'user-freelancer-1',
-    status: 'active',
-    createdAt: 'Hoje, 15:00',
-    messages: [
-      {
-        id: 'msg-101',
-        roomId: 'room-opp-001-app-001',
-        senderId: 'company-1',
-        senderName: 'Buffet Espaço Paulista',
-        senderRole: 'company',
-        text: 'Olá Matheus, tudo pronto para o seu turno hoje à noite? Entrada liberada na portaria de serviços.',
-        timestamp: '15:10'
-      },
-      {
-        id: 'msg-102',
-        roomId: 'room-opp-001-app-001',
-        senderId: 'user-freelancer-1',
-        senderName: 'Matheus Silva',
-        senderRole: 'freelancer',
-        text: 'Tudo certo! Já estou com o uniforme alinhado. Chego às 17h40.',
-        timestamp: '15:15'
-      }
-    ]
-  }
-];
-
 @Injectable({
   providedIn: 'root'
 })
 export class ShiftChatService {
-  private readonly _rooms = signal<ChatRoom[]>(INITIAL_MOCK_ROOMS);
+  private readonly _rooms = signal<ChatRoom[]>([]);
   readonly rooms = this._rooms.asReadonly();
 
   readonly activeRoomsCount = computed(() => {

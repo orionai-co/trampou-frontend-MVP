@@ -1,6 +1,6 @@
-import { Component, signal, computed, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, signal, computed, ChangeDetectionStrategy, inject, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { CompanyService } from './services/company.service';
 import { CampaignService } from './services/campaign.service';
 import { SponsoredCampaign } from '../../core/models/sponsored-campaign.model';
@@ -52,10 +52,11 @@ export type CompanyTab = 'active' | 'history';
   styleUrl: './company.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CompanyComponent {
+export class CompanyComponent implements OnInit {
   readonly companyService = inject(CompanyService);
   readonly campaignService = inject(CampaignService);
   readonly shiftChatService = inject(ShiftChatService);
+  private readonly route = inject(ActivatedRoute);
 
   activeTab = signal<CompanyTab>('active');
   isCreateModalOpen = signal<boolean>(false);
@@ -64,13 +65,36 @@ export class CompanyComponent {
   selectedJob = signal<CompanyJob | null>(null);
   feedbackMessage = signal<string | null>(null);
 
+  constructor() {
+    effect(() => {
+      if (this.companyService.isCreateJobModalRequested()) {
+        this.openCreateJobModal();
+        this.companyService.clearCreateJobModalRequest();
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.companyService.fetchAllDashboardData();
+    this.route.queryParams.subscribe(params => {
+      if (params['createJob'] === 'true' || params['action'] === 'new-job') {
+        this.openCreateJobModal();
+      }
+    });
+  }
+
   // Lista Reativa de Contatos Ativos para o Painel Central de Mensagens
   readonly activeChatContacts = computed<ChatContact[]>(() => {
+    const directContacts = this.companyService.contacts();
+    if (directContacts && directContacts.length > 0) {
+      return directContacts;
+    }
+
     const jobs = this.companyService.jobs();
     const contacts: ChatContact[] = [];
 
     for (const job of jobs) {
-      const approvedCandidates = job.candidates.filter(c => c.status === 'approved');
+      const approvedCandidates = (job.candidates || []).filter(c => c.status === 'approved');
       for (const cand of approvedCandidates) {
         const room = this.shiftChatService.getRoomByJobAndFreelancer(job.id, cand.id);
         const lastMsg = room?.messages && room.messages.length > 0
@@ -186,8 +210,8 @@ export class CompanyComponent {
     this.isCreateModalOpen.set(false);
   }
 
-  handleJobCreated(jobData: Partial<CompanyJob>): void {
-    const created = this.companyService.createJob(jobData);
+  async handleJobCreated(jobData: Partial<CompanyJob>): Promise<void> {
+    const created = await this.companyService.createJobRemote(jobData);
     this.activeTab.set('active');
     this.showFeedback(`Vaga "${created.title}" publicada com sucesso e já está visível para os profissionais!`);
   }

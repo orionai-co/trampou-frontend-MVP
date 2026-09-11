@@ -1,390 +1,8 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
-import { Observable, of, delay, firstValueFrom } from 'rxjs';
-import { JobApplication, JobApplicationStatus } from '../models/job-application.model';
+import { Observable, from, of } from 'rxjs';
+import { JobApplication, TRAMPOU_APPLICATIONS_STORAGE_KEY } from '../models/job-application.model';
 import { ApiClientService } from '../../../core/services/api-client.service';
 import { API_ENDPOINTS } from '../../../core/constants/api-endpoints';
-import { environment } from '../../../../environments/environment';
-
-const INITIAL_MOCK_APPLICATIONS: JobApplication[] = [
-  // 1. CONFIRMADOS (ATIVOS)
-  {
-    id: 'app-001',
-    opportunityId: 'opp-001',
-    title: 'Garçom para Casamento e Buffet Noturno',
-    companyName: 'Buffet Espaço Paulista',
-    companyRating: 4.9,
-    category: 'Eventos',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Vila Olímpia',
-      address: 'Rua Funchal, 418',
-      mapUrl: 'https://maps.google.com/?q=Rua+Funchal+418+Sao+Paulo',
-      distanceKm: 2.4
-    },
-    date: 'Hoje',
-    isToday: true,
-    schedule: {
-      start: '18:00',
-      end: '01:00',
-      totalHours: 7
-    },
-    payment: {
-      amount: 180,
-      type: 'diaria',
-      pixImmediate: true
-    },
-    status: 'accepted',
-    appliedAt: new Date(Date.now() - 3600000 * 3),
-    checkInStatus: 'pending',
-    instructions: [
-      'Entrada de serviço pela lateral do salão (Rua Funchal, 418 - Portão B)',
-      'Apresentar documento com foto na portaria e procurar por Roberto (Metre)',
-      'Traje social completo (camisa branca de manga longa, calça social preta e sapato preto)',
-      'Briefing operacional obrigatório às 17h45'
-    ],
-    contactPhone: '(11) 98765-4321'
-  },
-  {
-    id: 'app-002',
-    opportunityId: 'opp-002',
-    title: 'Auxiliar de Bar e Coquetelaria',
-    companyName: 'SkyLounge Rooftop',
-    companyRating: 4.8,
-    category: 'Gastronomia',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Itaim Bibi',
-      address: 'Av. Brigadeiro Faria Lima, 3477 - 18º andar',
-      mapUrl: 'https://maps.google.com/?q=Av+Brigadeiro+Faria+Lima+3477+Sao+Paulo',
-      distanceKm: 3.8
-    },
-    date: 'Amanhã',
-    isToday: false,
-    schedule: {
-      start: '19:00',
-      end: '02:00',
-      totalHours: 7
-    },
-    payment: {
-      amount: 160,
-      type: 'diaria',
-      pixImmediate: true
-    },
-    status: 'accepted',
-    appliedAt: new Date(Date.now() - 3600000 * 8),
-    checkInStatus: 'pending',
-    instructions: [
-      'Subir pelo elevador social até a cobertura e se identificar na recepção',
-      'Camisa preta lisa sem estampas e calçado fechado',
-      'Apoio direto ao Bartender Chefe (Alex)'
-    ],
-    contactPhone: '(11) 99123-8877'
-  },
-
-  // 2. EM ANÁLISE (AGUARDANDO RODADA DE SELEÇÃO)
-  {
-    id: 'app-003',
-    opportunityId: 'opp-004',
-    title: 'Operador de Caixa para Festival Gastronômico',
-    companyName: 'Street Gourmet Eventos',
-    companyRating: 4.7,
-    category: 'Atendimento',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Pinheiros',
-      address: 'Praça Benedito Calixto, 85',
-      mapUrl: 'https://maps.google.com/?q=Praca+Benedito+Calixto+85+Sao+Paulo',
-      distanceKm: 4.1
-    },
-    date: 'Hoje',
-    isToday: true,
-    schedule: {
-      start: '12:00',
-      end: '22:00',
-      totalHours: 10
-    },
-    payment: {
-      amount: 170,
-      type: 'diaria',
-      pixImmediate: true
-    },
-    status: 'pending',
-    appliedAt: new Date(Date.now() - 600000),
-    responseTimeRemaining: 'Resposta em até 15 min'
-  },
-  {
-    id: 'app-004',
-    opportunityId: 'opp-003',
-    title: 'Recepcionista e Credenciamento de Feira',
-    companyName: 'Expo Tech & Inovação 2026',
-    companyRating: 4.9,
-    category: 'Eventos',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Santana',
-      address: 'Rua José Bernardo Pinto, 333 (Expo Center Norte)',
-      mapUrl: 'https://maps.google.com/?q=Expo+Center+Norte+Sao+Paulo',
-      distanceKm: 7.2
-    },
-    date: 'Amanhã',
-    isToday: false,
-    schedule: {
-      start: '08:00',
-      end: '17:00',
-      totalHours: 9
-    },
-    payment: {
-      amount: 150,
-      type: 'diaria',
-      pixImmediate: true
-    },
-    status: 'pending',
-    appliedAt: new Date(Date.now() - 1800000),
-    responseTimeRemaining: 'Resposta em até 35 min'
-  },
-
-  // 3. HISTÓRICO (SERVIÇOS CONCLUÍDOS E PAGOS VIA PIX)
-  {
-    id: 'app-005',
-    opportunityId: 'opp-007',
-    title: 'Auxiliar de Salão / Cumim para Jantar',
-    companyName: 'Restaurante Terraço Jardins',
-    companyRating: 4.9,
-    category: 'Gastronomia',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Jardins',
-      address: 'Alameda Santos, 1120',
-      distanceKm: 3.1
-    },
-    date: '20 Ago',
-    schedule: {
-      start: '18:30',
-      end: '23:30',
-      totalHours: 5
-    },
-    payment: {
-      amount: 150,
-      type: 'diaria',
-      pixImmediate: true,
-      paidAt: '20/08/2026 às 23:42',
-      receiptId: 'PIX-84920481-TERRACO',
-      pixKeyType: 'Chave CPF'
-    },
-    status: 'completed',
-    appliedAt: new Date('2026-08-19T14:00:00')
-  },
-  {
-    id: 'app-006',
-    opportunityId: 'opp-009',
-    title: 'Promotor de Ativação e Degustação',
-    companyName: 'Agência Sparkle Marketing',
-    companyRating: 4.8,
-    category: 'Atendimento',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Morumbi',
-      address: 'Av. Roque Petroni Júnior, 1089',
-      distanceKm: 5.8
-    },
-    date: '17 Ago',
-    schedule: {
-      start: '10:00',
-      end: '18:00',
-      totalHours: 8
-    },
-    payment: {
-      amount: 160,
-      type: 'diaria',
-      pixImmediate: true,
-      paidAt: '17/08/2026 às 18:15',
-      receiptId: 'PIX-73918239-SPARKLE',
-      pixKeyType: 'Chave CPF'
-    },
-    status: 'completed',
-    appliedAt: new Date('2026-08-16T10:00:00')
-  },
-  {
-    id: 'app-007',
-    opportunityId: 'opp-006',
-    title: 'Conferente de Ingressos e Acesso VIP',
-    companyName: 'Arena Hall Concerts',
-    companyRating: 4.8,
-    category: 'Eventos',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Mooca',
-      address: 'Rua Juventus, 120',
-      distanceKm: 6.0
-    },
-    date: '15 Ago',
-    schedule: {
-      start: '19:00',
-      end: '00:00',
-      totalHours: 5
-    },
-    payment: {
-      amount: 140,
-      type: 'diaria',
-      pixImmediate: true,
-      paidAt: '16/08/2026 às 00:10',
-      receiptId: 'PIX-63910294-ARENA',
-      pixKeyType: 'Chave CPF'
-    },
-    status: 'completed',
-    appliedAt: new Date('2026-08-14T11:00:00')
-  },
-  {
-    id: 'app-008',
-    opportunityId: 'opp-011',
-    title: 'Garçom para Jantar Corporativo',
-    companyName: 'Buffet Mansão Real',
-    companyRating: 4.9,
-    category: 'Eventos',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Brooklin',
-      address: 'Rua Flórida, 1750',
-      distanceKm: 4.5
-    },
-    date: '12 Ago',
-    schedule: {
-      start: '18:00',
-      end: '00:00',
-      totalHours: 6
-    },
-    payment: {
-      amount: 190,
-      type: 'diaria',
-      pixImmediate: true,
-      paidAt: '12/08/2026 às 00:22',
-      receiptId: 'PIX-52910394-MANSAO',
-      pixKeyType: 'Chave CPF'
-    },
-    status: 'completed',
-    appliedAt: new Date('2026-08-11T09:00:00')
-  },
-  {
-    id: 'app-009',
-    opportunityId: 'opp-012',
-    title: 'Auxiliar de Bar e Apoio',
-    companyName: 'High Line Bar',
-    companyRating: 4.7,
-    category: 'Gastronomia',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Vila Madalena',
-      address: 'Rua Girassol, 144',
-      distanceKm: 3.2
-    },
-    date: '10 Ago',
-    schedule: {
-      start: '19:00',
-      end: '02:00',
-      totalHours: 7
-    },
-    payment: {
-      amount: 160,
-      type: 'diaria',
-      pixImmediate: true,
-      paidAt: '11/08/2026 às 02:12',
-      receiptId: 'PIX-41920394-HIGHLINE',
-      pixKeyType: 'Chave CPF'
-    },
-    status: 'completed',
-    appliedAt: new Date('2026-08-09T16:00:00')
-  },
-  {
-    id: 'app-010',
-    opportunityId: 'opp-005',
-    title: 'Auxiliar de Montagem e Estrutura',
-    companyName: 'Live Pro Produções',
-    companyRating: 4.6,
-    category: 'Operacional',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Barra Funda',
-      address: 'Av. Francisco Matarazzo, 1705',
-      distanceKm: 5.5
-    },
-    date: '06 Ago',
-    schedule: {
-      start: '07:00',
-      end: '15:00',
-      totalHours: 8
-    },
-    payment: {
-      amount: 190,
-      type: 'diaria',
-      pixImmediate: true,
-      paidAt: '06/08/2026 às 15:18',
-      receiptId: 'PIX-30919294-LIVEPRO',
-      pixKeyType: 'Chave CPF'
-    },
-    status: 'completed',
-    appliedAt: new Date('2026-08-05T18:00:00')
-  },
-  {
-    id: 'app-011',
-    opportunityId: 'opp-013',
-    title: 'Operador de Caixa e Fichas',
-    companyName: 'Oktoberfest SP',
-    companyRating: 4.8,
-    category: 'Atendimento',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Interlagos',
-      address: 'Autódromo de Interlagos',
-      distanceKm: 12.0
-    },
-    date: '02 Ago',
-    schedule: {
-      start: '12:00',
-      end: '22:00',
-      totalHours: 10
-    },
-    payment: {
-      amount: 170,
-      type: 'diaria',
-      pixImmediate: true,
-      paidAt: '02/08/2026 às 22:30',
-      receiptId: 'PIX-20919294-OKTOBER',
-      pixKeyType: 'Chave CPF'
-    },
-    status: 'completed',
-    appliedAt: new Date('2026-08-01T10:00:00')
-  },
-  {
-    id: 'app-012',
-    opportunityId: 'opp-014',
-    title: 'Recepcionista de Evento Corporativo',
-    companyName: 'Centro de Convenções Rebouças',
-    companyRating: 4.9,
-    category: 'Eventos',
-    location: {
-      city: 'São Paulo',
-      neighborhood: 'Pinheiros',
-      address: 'Av. Rebouças, 600',
-      distanceKm: 2.1
-    },
-    date: '01 Ago',
-    schedule: {
-      start: '08:00',
-      end: '14:00',
-      totalHours: 6
-    },
-    payment: {
-      amount: 120,
-      type: 'diaria',
-      pixImmediate: true,
-      paidAt: '01/08/2026 às 14:15',
-      receiptId: 'PIX-10919294-REBOUCAS',
-      pixKeyType: 'Chave CPF'
-    },
-    status: 'completed',
-    appliedAt: new Date('2026-07-31T15:00:00')
-  }
-];
 
 @Injectable({
   providedIn: 'root'
@@ -392,7 +10,9 @@ const INITIAL_MOCK_APPLICATIONS: JobApplication[] = [
 export class MyJobsService {
   private apiClient = inject(ApiClientService);
 
-  private applicationsState = signal<JobApplication[]>(INITIAL_MOCK_APPLICATIONS);
+  private applicationsState = signal<JobApplication[]>([]);
+  readonly isLoading = signal<boolean>(false);
+  readonly errorMessage = signal<string | null>(null);
 
   readonly applications = this.applicationsState.asReadonly();
 
@@ -413,86 +33,217 @@ export class MyJobsService {
 
   // Métrica 1: A Receber (Total previsto de confirmados)
   readonly toReceiveAmount = computed(() =>
-    this.acceptedJobs().reduce((sum, item) => sum + item.payment.amount, 0)
+    this.acceptedJobs().reduce((sum, item) => sum + (item.payment?.amount ?? 0), 0)
   );
 
   // Métrica 2: Recebido no Mês (Total pago via PIX dos concluídos)
   readonly receivedThisMonthAmount = computed(() =>
-    this.completedJobs().reduce((sum, item) => sum + item.payment.amount, 0)
+    this.completedJobs().reduce((sum, item) => sum + (item.payment?.amount ?? 0), 0)
   );
 
-  async fetchConfirmedJobs(): Promise<JobApplication[]> {
-    if (environment.useMock) {
-      return Promise.resolve(this.acceptedJobs());
+  constructor() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('trampou:application-created', (e: any) => {
+        const newApp: JobApplication = e?.detail;
+        if (newApp) {
+          this.applicationsState.update(list => {
+            if (list.some(a => a.id === newApp.id || a.opportunityId === newApp.opportunityId)) {
+              return list;
+            }
+            return [newApp, ...list];
+          });
+        }
+      });
+
+      window.addEventListener('trampou:application-updated', (e: any) => {
+        const updated = e?.detail;
+        if (updated?.id || updated?.opportunityId) {
+          this.applicationsState.update(list =>
+            list.map(a => {
+              if (a.id === updated.id || a.opportunityId === updated.opportunityId || a.opportunityId === updated.id) {
+                return { ...a, ...updated };
+              }
+              return a;
+            })
+          );
+        }
+      });
     }
-    return this.apiClient.get<JobApplication[]>(API_ENDPOINTS.MY_JOBS.CONFIRMED);
+  }
+
+  loadStoredApplications(): JobApplication[] {
+    if (typeof localStorage === 'undefined') return [];
+    try {
+      const raw = localStorage.getItem(TRAMPOU_APPLICATIONS_STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  persistApplicationsLocally(apps: JobApplication[]): void {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      localStorage.setItem(TRAMPOU_APPLICATIONS_STORAGE_KEY, JSON.stringify(apps));
+    } catch {}
+  }
+
+  async fetchConfirmedJobs(): Promise<JobApplication[]> {
+    this.isLoading.set(true);
+    try {
+      const data = await this.apiClient.get<JobApplication[]>(API_ENDPOINTS.MY_JOBS.CONFIRMED);
+      const apiList = (data || []).map(j => ({ ...j, status: 'accepted' as const }));
+      const storedAccepted = this.loadStoredApplications().filter(a => a.status === 'accepted');
+
+      const apiOppIds = new Set(apiList.map(a => a.opportunityId || a.id));
+      const localMissing = storedAccepted.filter(a => !apiOppIds.has(a.opportunityId) && !apiOppIds.has(a.id));
+      const merged = [...localMissing, ...apiList];
+
+      this.applicationsState.update(prev => {
+        const others = prev.filter(p => p.status !== 'accepted');
+        return [...others, ...merged];
+      });
+      return merged;
+    } catch (error: any) {
+      const storedAccepted = this.loadStoredApplications().filter(a => a.status === 'accepted');
+      this.applicationsState.update(prev => {
+        const others = prev.filter(p => p.status !== 'accepted');
+        return [...others, ...storedAccepted];
+      });
+      return storedAccepted;
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
   async fetchUnderReviewJobs(): Promise<JobApplication[]> {
-    if (environment.useMock) {
-      return Promise.resolve(this.pendingJobs());
+    this.isLoading.set(true);
+    try {
+      const data = await this.apiClient.get<JobApplication[]>(API_ENDPOINTS.MY_JOBS.UNDER_REVIEW);
+      const apiList = (data || []).map(j => ({ ...j, status: 'pending' as const }));
+      const storedPending = this.loadStoredApplications().filter(a => a.status === 'pending');
+
+      const apiOppIds = new Set(apiList.map(a => a.opportunityId || a.id));
+      const localMissing = storedPending.filter(a => !apiOppIds.has(a.opportunityId) && !apiOppIds.has(a.id));
+      const merged = [...localMissing, ...apiList];
+
+      this.applicationsState.update(prev => {
+        const others = prev.filter(p => p.status !== 'pending');
+        return [...others, ...merged];
+      });
+      return merged;
+    } catch (error: any) {
+      const storedPending = this.loadStoredApplications().filter(a => a.status === 'pending');
+      this.applicationsState.update(prev => {
+        const others = prev.filter(p => p.status !== 'pending');
+        return [...others, ...storedPending];
+      });
+      return storedPending;
+    } finally {
+      this.isLoading.set(false);
     }
-    return this.apiClient.get<JobApplication[]>(API_ENDPOINTS.MY_JOBS.UNDER_REVIEW);
   }
 
   async fetchHistoryJobs(): Promise<JobApplication[]> {
-    if (environment.useMock) {
-      return Promise.resolve(this.completedJobs());
+    this.isLoading.set(true);
+    try {
+      const data = await this.apiClient.get<JobApplication[]>(API_ENDPOINTS.MY_JOBS.HISTORY);
+      const list = (data || []).map(j => ({ ...j, status: 'completed' as const }));
+      this.applicationsState.update(prev => {
+        const others = prev.filter(p => p.status !== 'completed');
+        return [...others, ...list];
+      });
+      return list;
+    } catch (error: any) {
+      this.errorMessage.set(error?.message || 'Erro ao carregar histórico de turnos.');
+      return [];
+    } finally {
+      this.isLoading.set(false);
     }
-    return this.apiClient.get<JobApplication[]>(API_ENDPOINTS.MY_JOBS.HISTORY);
+  }
+
+  async loadAllJobs(): Promise<void> {
+    await Promise.allSettled([
+      this.fetchConfirmedJobs(),
+      this.fetchUnderReviewJobs(),
+      this.fetchHistoryJobs()
+    ]);
   }
 
   async checkIn(jobId: string): Promise<{ success: boolean; time: string }> {
-    if (environment.useMock) {
-      return firstValueFrom(this.confirmCheckIn(jobId));
+    try {
+      const res = await this.apiClient.post<{ success: boolean; time: string }>(
+        API_ENDPOINTS.MY_JOBS.CHECK_IN(jobId)
+      );
+      if (res?.success) {
+        this.applicationsState.update(list =>
+          list.map(item =>
+            item.id === jobId || item.opportunityId === jobId
+              ? { ...item, checkInStatus: 'checked_in', checkInTime: res.time }
+              : item
+          )
+        );
+      }
+      return res;
+    } catch (error) {
+      return { success: false, time: '' };
     }
-    return this.apiClient.post<{ success: boolean; time: string }>(API_ENDPOINTS.MY_JOBS.CHECK_IN(jobId));
   }
 
   async cancelShift(jobId: string): Promise<boolean> {
-    if (environment.useMock) {
-      return firstValueFrom(this.cancelApplication(jobId));
+    try {
+      const res = await this.apiClient.delete<boolean>(API_ENDPOINTS.MY_JOBS.CANCEL_SHIFT(jobId));
+      this.applicationsState.update(list =>
+        list.filter(item => item.id !== jobId && item.opportunityId !== jobId)
+      );
+
+      const stored = this.loadStoredApplications();
+      const updatedStored = stored.filter(a => a.id !== jobId && a.opportunityId !== jobId);
+      this.persistApplicationsLocally(updatedStored);
+
+      return !!res;
+    } catch (error) {
+      this.applicationsState.update(list =>
+        list.filter(item => item.id !== jobId && item.opportunityId !== jobId)
+      );
+      const stored = this.loadStoredApplications();
+      const updatedStored = stored.filter(a => a.id !== jobId && a.opportunityId !== jobId);
+      this.persistApplicationsLocally(updatedStored);
+      return false;
     }
-    return this.apiClient.delete<boolean>(API_ENDPOINTS.MY_JOBS.CANCEL_SHIFT(jobId));
   }
 
   getApplications(): Observable<JobApplication[]> {
-    return of(this.applications()).pipe(delay(150));
+    return of(this.applications());
   }
 
   confirmCheckIn(applicationId: string): Observable<{ success: boolean; time: string }> {
-    const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    this.applicationsState.update(list =>
-      list.map(item =>
-        item.id === applicationId
-          ? { ...item, checkInStatus: 'checked_in', checkInTime: time }
-          : item
-      )
-    );
-    return of({ success: true, time }).pipe(delay(200));
+    return from(this.checkIn(applicationId));
   }
 
   cancelApplication(applicationId: string): Observable<boolean> {
-    this.applicationsState.update(list =>
-      list.filter(item => item.id !== applicationId)
-    );
-    return of(true).pipe(delay(150));
+    return from(this.cancelShift(applicationId));
   }
 
-  withdrawJob(applicationId: string, reason?: string): Observable<boolean> {
-    this.applicationsState.update(list =>
-      list.filter(item => item.id !== applicationId)
-    );
-    return of(true).pipe(delay(150));
+  withdrawJob(applicationId: string, _reason?: string): Observable<boolean> {
+    return from(this.cancelShift(applicationId));
   }
 
   addPendingApplication(app: Partial<JobApplication>): void {
     const newApp: JobApplication = {
-      id: `app-${Date.now()}`,
+      id: app.id || `app-${Date.now()}`,
       opportunityId: app.opportunityId || `opp-${Date.now()}`,
-      title: app.title || 'Oportunidade',
+      title: app.title || app.opportunityTitle || 'Oportunidade',
+      opportunityTitle: app.opportunityTitle || app.title || 'Oportunidade',
       companyName: app.companyName || 'Empresa Contratante',
-      category: app.category || 'Eventos',
+      companyId: app.companyId || 'comp-001',
+      candidateId: app.candidateId || 'cand-pedro-1',
+      candidateName: app.candidateName || 'Pedro Silva',
+      candidateAvatar: app.candidateAvatar || 'PS',
+      remuneration: app.remuneration || app.payment?.amount || 150,
+      category: app.category || 'Operacional',
       location: app.location || {
         city: 'São Paulo',
         neighborhood: 'Pinheiros',
@@ -503,10 +254,20 @@ export class MyJobsService {
       schedule: app.schedule || { start: '18:00', end: '00:00', totalHours: 6 },
       payment: app.payment || { amount: 150, type: 'diaria', pixImmediate: true },
       status: 'pending',
-      appliedAt: new Date(),
-      responseTimeRemaining: 'Resposta em até 30 min'
+      appliedAt: app.appliedAt || new Date(),
+      responseTimeRemaining: app.responseTimeRemaining || 'Resposta em até 30 min'
     };
 
-    this.applicationsState.update(list => [newApp, ...list]);
+    // Salva no storage local persistente
+    const stored = this.loadStoredApplications().filter(a => a.id !== newApp.id && a.opportunityId !== newApp.opportunityId);
+    this.persistApplicationsLocally([newApp, ...stored]);
+
+    // Atualiza o estado reativo
+    this.applicationsState.update(list => [newApp, ...list.filter(a => a.id !== newApp.id && a.opportunityId !== newApp.opportunityId)]);
+
+    // Dispara evento para outros serviços
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('trampou:application-created', { detail: newApp }));
+    }
   }
 }

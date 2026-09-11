@@ -70,11 +70,12 @@ describe('ProfileAchievementsComponent', () => {
     expect(compiled.textContent).toContain('0 cancelamentos em todo o histórico.');
   });
 
-  it('should fallback to default achievements when input list is empty', () => {
-    component.achievements = [];
+  it('should render empty state when input list is empty', () => {
+    fixture.componentRef.setInput('achievements', []);
     fixture.detectChanges();
 
-    expect(component.displayedAchievements.length).toBe(4);
-    expect(component.unlockedCount).toBe(4);
+    expect(component.displayedAchievements.length).toBe(0);
+    expect(component.unlockedCount).toBe(0);
+    expect(fixture.nativeElement.textContent).toContain('Nenhuma conquista desbloqueada');
   });
 });

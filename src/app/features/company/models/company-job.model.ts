@@ -31,10 +31,13 @@ export interface CompanyJob {
   id: string;
   title: string;
   category: string;
+  companyName?: string;
+  companyId?: string;
   location: {
     city: string;
     neighborhood: string;
     address: string;
+    distanceKm?: number;
   };
   date: string;
   schedule: {

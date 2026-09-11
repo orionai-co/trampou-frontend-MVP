@@ -119,29 +119,48 @@
       </div>
     </div>
 
-    <!-- RODAPÉ DE AÇÃO: AÇÃO PRINCIPAL EM LARGURA TOTAL -->
-    <footer class="tp-post-footer-row tp-opportunity-actions" (click)="$event.stopPropagation()">
+    <!-- RODAPÉ DE AÇÃO: CONDICIONAL CONTRATANTE VS PRESTADOR -->
+    <footer *ngIf="userRole() !== 'contractor' || isOwnJob" class="tp-post-footer-row tp-opportunity-actions" (click)="$event.stopPropagation()">
       <div class="tp-main-action-wrap">
-        <tp-button
-          *ngIf="!opportunity.applied"
-          variant="primary"
-          size="md"
-          class="tp-apply-btn-prominent tp-btn-apply"
-          (btnClick)="onApply($event)"
-        >
-          <tp-icon name="zap" size="xs"></tp-icon>
-          <span>Quero esse trampo</span>
-        </tp-button>
+        @if (userRole() === 'contractor') {
+          @if (isOwnJob) {
+            <div class="tp-contractor-own-job-actions">
+              <tp-badge variant="accent" size="md" [dot]="true">
+                Sua vaga
+              </tp-badge>
+              <tp-button
+                variant="outline"
+                size="sm"
+                class="tp-btn-manage-job"
+                (btnClick)="onManageJob($event)"
+              >
+                <tp-icon name="sliders" size="xs"></tp-icon>
+                <span>Gerenciar no Painel</span>
+              </tp-button>
+            </div>
+          }
+        } @else {
+          <tp-button
+            *ngIf="!opportunity.applied"
+            variant="primary"
+            size="md"
+            class="tp-apply-btn-prominent tp-btn-apply"
+            (btnClick)="onApply($event)"
+          >
+            <tp-icon name="zap" size="xs"></tp-icon>
+            <span>Quero esse trampo</span>
+          </tp-button>
 
-        <tp-badge
-          *ngIf="opportunity.applied"
-          variant="success"
-          size="md"
-          [dot]="true"
-          class="tp-applied-badge-done"
-        >
-          Interesse Enviado
-        </tp-badge>
+          <tp-badge
+            *ngIf="opportunity.applied"
+            variant="success"
+            size="md"
+            [dot]="true"
+            class="tp-applied-badge-done"
+          >
+            Interesse Enviado
+          </tp-badge>
+        }
       </div>
     </footer>
   </div>

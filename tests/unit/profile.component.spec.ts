@@ -1,16 +1,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProfileComponent } from '../../src/app/features/profile/profile.component';
 import { UserProfileService } from '../../src/app/core/services/user-profile.service';
+import { ApiClientService } from '../../src/app/core/services/api-client.service';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
   let fixture: ComponentFixture<ProfileComponent>;
   let userProfileService: UserProfileService;
+  let apiClientSpy: jasmine.SpyObj<ApiClientService>;
 
   beforeEach(async () => {
+    apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'put']);
+    apiClientSpy.get.and.resolveTo({
+      success: true,
+      data: {
+        id: 'usr-001',
+        name: 'Matheus Silva',
+        email: 'matheus@email.com',
+        pixKey: { type: 'phone', key: '11987654321' },
+        skills: ['Garçom de Salão']
+      }
+    });
+    apiClientSpy.put.and.resolveTo({ success: true, data: { success: true } });
+
     await TestBed.configureTestingModule({
       imports: [ProfileComponent],
-      providers: [UserProfileService]
+      providers: [
+        UserProfileService,
+        { provide: ApiClientService, useValue: apiClientSpy }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProfileComponent);

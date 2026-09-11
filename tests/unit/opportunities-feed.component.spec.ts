@@ -1,23 +1,90 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { OpportunitiesFeedComponent } from '../../src/app/features/opportunities/opportunities-feed.component';
 import { OpportunityService } from '../../src/app/features/opportunities/services/opportunity.service';
+import { ApiClientService } from '../../src/app/core/services/api-client.service';
 import { buildMatchBreakdownFromOpportunity } from '../../src/app/core/models/match-breakdown.model';
+import { Opportunity } from '../../src/app/features/opportunities/models/opportunity.model';
 import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('OpportunitiesFeedComponent', () => {
   let component: OpportunitiesFeedComponent;
   let fixture: ComponentFixture<OpportunitiesFeedComponent>;
   let service: OpportunityService;
 
+  const mockList: Opportunity[] = Array.from({ length: 8 }, (_, i) => ({
+    id: `opp-${i + 1}`,
+    title: i === 0 ? 'Garçom para Casamento e Buffet Noturno' : `Vaga ${i + 1}`,
+    companyName: 'Buffet Espaço Paulista',
+    companyRating: 4.9,
+    companyReviewsCount: 84,
+    category: i % 2 === 0 ? 'Eventos' : 'Gastronomia',
+    location: {
+      city: 'São Paulo',
+      neighborhood: 'Vila Olímpia',
+      distanceKm: 2.4,
+      address: 'Rua Funchal, 418'
+    },
+    date: 'Hoje',
+    isToday: true,
+    schedule: { start: '18:00', end: '01:00', totalHours: 7 },
+    payment: { amount: 180, type: 'diaria', pixImmediate: true },
+    requiredLevel: 2,
+    matchPercentage: 98,
+    status: 'available',
+    spotsAvailable: 2,
+    spotsTotal: 6,
+    description: 'Atendimento operacional.',
+    requirements: []
+  }));
+
   beforeEach(async () => {
+    const apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'post', 'delete']);
+    (apiClientSpy.get.and.callFake as any)((url: string) => {
+      if (url.includes('/companies/featured')) {
+        return Promise.resolve([
+          {
+            id: 'feat-comp-01',
+            companyId: 'comp-001',
+            companyName: 'Buffet Espaço Paulista',
+            companyHandle: '@espacopaulista',
+            avatarInitials: 'EP',
+            verified: true,
+            rating: 4.9,
+            reviewCount: 84,
+            badgeLabel: 'Patrocinado',
+            headline: 'Conheça nossa megaestrutura gastronômica.',
+            videoUrl: '',
+            videoThumbnail: '',
+            location: 'Vila Olímpia, São Paulo',
+            distanceKm: 2.4,
+            completedShiftsCount: 84,
+            matchScore: 96,
+            matchReasons: [],
+            openJobsCount: 3
+          }
+        ]);
+      }
+      return Promise.resolve(mockList);
+    });
+
     await TestBed.configureTestingModule({
       imports: [OpportunitiesFeedComponent],
-      providers: [OpportunityService, provideRouter([])]
+      providers: [
+        OpportunityService,
+        { provide: ApiClientService, useValue: apiClientSpy },
+        provideRouter([])
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(OpportunitiesFeedComponent);
     component = fixture.componentInstance;
     service = TestBed.inject(OpportunityService);
+
+    spyOn(service, 'getOpportunities').and.callFake(() => {
+      (service as any).opportunitiesState.set(mockList);
+      return of(mockList);
+    });
   });
 
   it('should create the OpportunitiesFeedComponent', () => {
@@ -43,6 +110,7 @@ describe('OpportunitiesFeedComponent', () => {
   }));
 
   it('should open and close details modal', () => {
+    fixture.detectChanges();
     const opp = service.opportunities()[0];
     component.openDetails(opp);
     expect(component.isModalOpen()).toBeTrue();
@@ -54,6 +122,7 @@ describe('OpportunitiesFeedComponent', () => {
   });
 
   it('should open and close centralized match breakdown modal', () => {
+    fixture.detectChanges();
     const opp = service.opportunities()[0];
     const matchData = buildMatchBreakdownFromOpportunity(opp);
 

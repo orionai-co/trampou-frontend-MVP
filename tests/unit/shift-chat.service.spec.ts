@@ -15,9 +15,9 @@ describe('ShiftChatService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should load initial active rooms', () => {
-    expect(service.rooms().length).toBeGreaterThan(0);
-    expect(service.activeRoomsCount()).toBeGreaterThan(0);
+  it('should initialize with empty active rooms before creation', () => {
+    expect(service.rooms().length).toBe(0);
+    expect(service.activeRoomsCount()).toBe(0);
   });
 
   it('should get or create an ephemeral room', () => {

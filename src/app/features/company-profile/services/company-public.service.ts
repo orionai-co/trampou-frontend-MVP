@@ -1,107 +1,126 @@
 import { Injectable, signal, inject } from '@angular/core';
-import { Observable, of, delay, map, from, firstValueFrom } from 'rxjs';
-import {
-  CompanyPublicProfile,
-  MOCK_COMPANY_PUBLIC_PROFILES
-} from '../models/company-profile.model';
+import { Observable, from } from 'rxjs';
+import { CompanyPublicProfile } from '../models/company-profile.model';
 import { Opportunity } from '../../opportunities/models/opportunity.model';
-import { OpportunityService } from '../../opportunities/services/opportunity.service';
 import { ApiClientService } from '../../../core/services/api-client.service';
 import { API_ENDPOINTS } from '../../../core/constants/api-endpoints';
-import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyPublicService {
-  private opportunityService = inject(OpportunityService);
   private apiClient = inject(ApiClientService);
 
-  private companiesState = signal<CompanyPublicProfile[]>(MOCK_COMPANY_PUBLIC_PROFILES);
+  private companiesState = signal<CompanyPublicProfile[]>([]);
   private favoritedCompanyIds = signal<Set<string>>(new Set<string>());
   private followedCompanyIds = signal<Set<string>>(new Set<string>());
+  readonly isLoading = signal<boolean>(false);
+  readonly errorMessage = signal<string | null>(null);
 
   readonly companies = this.companiesState.asReadonly();
 
-  async fetchCompanyProfileById(id: string): Promise<CompanyPublicProfile> {
-    if (environment.useMock) {
-      const company = this.companiesState().find(c => c.id === id) || this.companiesState()[0];
-      return Promise.resolve(company);
+  async fetchCompanyProfileById(idOrSlug: string): Promise<CompanyPublicProfile> {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    try {
+      const profile = await this.apiClient.get<CompanyPublicProfile>(API_ENDPOINTS.COMPANIES.PUBLIC_PROFILE(idOrSlug));
+      if (profile) {
+        this.companiesState.update(list => {
+          const index = list.findIndex(c => c.id === profile.id);
+          if (index >= 0) {
+            const next = [...list];
+            next[index] = profile;
+            return next;
+          }
+          return [...list, profile];
+        });
+      }
+      return profile;
+    } catch (error: any) {
+      const msg = error?.message || 'Erro ao carregar perfil da empresa.';
+      this.errorMessage.set(msg);
+      throw error;
+    } finally {
+      this.isLoading.set(false);
     }
-    return this.apiClient.get<CompanyPublicProfile>(API_ENDPOINTS.COMPANIES.PUBLIC_PROFILE(id));
   }
 
   async fetchFeaturedCompanies(): Promise<CompanyPublicProfile[]> {
-    if (environment.useMock) {
-      return Promise.resolve(this.companiesState());
+    try {
+      const list = await this.apiClient.get<CompanyPublicProfile[]>(API_ENDPOINTS.COMPANIES.FEATURED);
+      this.companiesState.set(list || []);
+      return list || [];
+    } catch (error) {
+      return [];
     }
-    return this.apiClient.get<CompanyPublicProfile[]>(API_ENDPOINTS.COMPANIES.FEATURED);
   }
 
   async fetchOpenJobs(companyId: string): Promise<Opportunity[]> {
-    if (environment.useMock) {
-      return firstValueFrom(this.getOpenJobsByCompanyId(companyId));
+    try {
+      return await this.apiClient.get<Opportunity[]>(API_ENDPOINTS.COMPANIES.OPEN_JOBS(companyId));
+    } catch (error) {
+      return [];
     }
-    return this.apiClient.get<Opportunity[]>(API_ENDPOINTS.COMPANIES.OPEN_JOBS(companyId));
   }
 
   getCompanyProfileById(idOrSlug: string): Observable<CompanyPublicProfile | undefined> {
-    if (!environment.useMock) {
-      return from(this.apiClient.get<CompanyPublicProfile>(API_ENDPOINTS.COMPANIES.PUBLIC_PROFILE(idOrSlug)));
-    }
-    const list = this.companiesState();
-    const query = idOrSlug.toLowerCase().trim();
-
-    const company = list.find(c => {
-      if (c.id.toLowerCase() === query) return true;
-      if (c.handle.toLowerCase().replace('@', '') === query.replace('@', '')) return true;
-      const slug = c.name
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)+/g, '');
-      return slug === query;
-    });
-
-    if (!company) {
-      // Fallback para o primeiro registro do mock se ID não encontrado
-      const fallback = list[0];
-      return of(fallback).pipe(delay(150));
-    }
-
-    const isFav = this.favoritedCompanyIds().has(company.id);
-    const isFoll = this.followedCompanyIds().has(company.id);
-
-    return of({
-      ...company,
-      isFavorited: isFav,
-      isFollowing: isFoll
-    }).pipe(delay(150));
+    return from(this.fetchCompanyProfileById(idOrSlug));
   }
 
-  toggleFavoriteCompany(companyId: string): void {
+  async toggleFavoriteCompany(companyId: string): Promise<void> {
+    const isFav = this.favoritedCompanyIds().has(companyId);
     this.favoritedCompanyIds.update(set => {
       const next = new Set(set);
-      if (next.has(companyId)) {
+      if (isFav) {
         next.delete(companyId);
       } else {
         next.add(companyId);
       }
       return next;
     });
+
+    try {
+      await this.apiClient.put(API_ENDPOINTS.COMPANIES.FAVORITE(companyId));
+    } catch (err) {
+      // Reverter estado local em caso de falha de rede
+      this.favoritedCompanyIds.update(set => {
+        const next = new Set(set);
+        if (isFav) {
+          next.add(companyId);
+        } else {
+          next.delete(companyId);
+        }
+        return next;
+      });
+    }
   }
 
-  toggleFollowCompany(companyId: string): void {
+  async toggleFollowCompany(companyId: string): Promise<void> {
+    const isFoll = this.followedCompanyIds().has(companyId);
     this.followedCompanyIds.update(set => {
       const next = new Set(set);
-      if (next.has(companyId)) {
+      if (isFoll) {
         next.delete(companyId);
       } else {
         next.add(companyId);
       }
       return next;
     });
+
+    try {
+      await this.apiClient.put(API_ENDPOINTS.COMPANIES.FOLLOW(companyId));
+    } catch (err) {
+      // Reverter estado local em caso de falha de rede
+      this.followedCompanyIds.update(set => {
+        const next = new Set(set);
+        if (isFoll) {
+          next.add(companyId);
+        } else {
+          next.delete(companyId);
+        }
+        return next;
+      });
+    }
   }
 
   isFavorited(companyId: string): boolean {
@@ -112,20 +131,7 @@ export class CompanyPublicService {
     return this.followedCompanyIds().has(companyId);
   }
 
-  getOpenJobsByCompanyId(companyId: string, companyName?: string): Observable<Opportunity[]> {
-    return this.opportunityService.getOpportunities().pipe(
-      map(jobs => {
-        if (!companyName) {
-          const comp = this.companiesState().find(c => c.id === companyId);
-          companyName = comp?.name;
-        }
-        if (!companyName) {
-          return jobs.slice(0, 3);
-        }
-        const nameQuery = companyName.toLowerCase();
-        const filtered = jobs.filter(j => j.companyName.toLowerCase().includes(nameQuery));
-        return filtered.length > 0 ? filtered : jobs.slice(0, 2);
-      })
-    );
+  getOpenJobsByCompanyId(companyId: string, _companyName?: string): Observable<Opportunity[]> {
+    return from(this.fetchOpenJobs(companyId));
   }
 }

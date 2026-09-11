@@ -15,9 +15,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompanyDashboardHeaderComponent {
-  @Input() companyName = 'Buffet Espaço Paulista';
-  @Input() verified = true;
-  @Input() rating = 4.9;
+  @Input() companyName = 'Empresa';
+  @Input() verified = false;
+  @Input() rating = 5.0;
   @Input() metrics: CompanyMetrics = {
     openJobs: 0,
     candidatesUnderReview: 0,

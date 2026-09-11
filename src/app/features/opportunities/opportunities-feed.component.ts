@@ -96,6 +96,7 @@ export class OpportunitiesFeedComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOpportunities();
+    this.opportunityService.fetchFeaturedCompanies();
   }
 
   loadOpportunities(): void {
@@ -116,7 +117,9 @@ export class OpportunitiesFeedComponent implements OnInit {
         nextFilters = {
           ...nextFilters,
           sortBy: 'highest_match',
-          onlyTodayOrUrgent: false
+          onlyTodayOrUrgent: false,
+          maxDistanceKm: undefined,
+          category: 'Todas'
         };
         break;
       case 'urgent':
@@ -183,25 +186,9 @@ export class OpportunitiesFeedComponent implements OnInit {
 
   handleApplyFromModal(opp: Opportunity): void {
     this.lastAppliedTitle.set(opp.title);
-    this.closeDetails();
 
-    // Sincroniza com serviço de Meus Trabalhos
-    this.myJobsService.addPendingApplication({
-      opportunityId: opp.id,
-      title: opp.title,
-      companyName: opp.companyName,
-      category: opp.category,
-      location: {
-        city: opp.location.city,
-        neighborhood: opp.location.neighborhood,
-        address: opp.location.address || `${opp.location.neighborhood}, ${opp.location.city}`,
-        distanceKm: opp.location.distanceKm
-      },
-      date: opp.date,
-      isToday: opp.isToday,
-      schedule: opp.schedule,
-      payment: opp.payment
-    });
+    // Sincroniza e persiste a candidatura com MyJobsService e backend
+    this.opportunityService.submitApplication(opp.id, opp).catch(() => {});
     this.loadOpportunities();
 
     setTimeout(() => {
@@ -216,6 +203,7 @@ export class OpportunitiesFeedComponent implements OnInit {
   resetAllFilters(): void {
     this.filters.set({
       category: 'Todas',
+      maxDistanceKm: undefined,
       searchQuery: '',
       sortBy: 'highest_match',
       onlyTodayOrUrgent: false

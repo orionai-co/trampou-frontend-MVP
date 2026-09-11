@@ -15,7 +15,18 @@ describe('ProfileHeaderComponent', () => {
     punctualityRate: 100,
     completedJobsCount: 42,
     totalReviews: 42,
-    verified: true
+    verified: true,
+    location: {
+      city: 'São Paulo',
+      neighborhood: 'Pinheiros',
+      state: 'SP'
+    },
+    reliability: {
+      attendanceRate: 100,
+      completedShifts: 42,
+      cancellationRate: 0,
+      avgResponseTime: '< 5 min'
+    }
   };
 
   beforeEach(async () => {

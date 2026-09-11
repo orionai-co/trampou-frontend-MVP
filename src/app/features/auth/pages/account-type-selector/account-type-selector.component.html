@@ -1,0 +1,99 @@
+<div class="tp-auth-page">
+  <tp-auth-header backUrl="/auth/login"></tp-auth-header>
+
+  <main class="tp-auth-main">
+    <div class="tp-selector-container">
+      <div class="tp-selector-header">
+        <h1 class="tp-selector-title">Como você quer usar o TRAMPOU?</h1>
+        <p class="tp-selector-subtitle">
+          Escolha como você pretende utilizar a plataforma.
+        </p>
+      </div>
+
+      <div class="tp-account-cards-grid">
+        <!-- Card 1: Prestador de Serviços -->
+        <div class="tp-profile-card" (click)="chooseProfessional()" role="button" tabindex="0" (keydown.enter)="chooseProfessional()">
+          <div class="tp-profile-badge tp-badge-worker">
+            <span class="tp-badge-emoji">👷</span>
+            <span class="tp-badge-text">PRESTADOR DE SERVIÇOS</span>
+          </div>
+
+          <h2 class="tp-profile-heading">Quero trabalhar</h2>
+          <p class="tp-profile-description">
+            Encontre trabalhos, construa sua reputação profissional e conquiste novas oportunidades.
+          </p>
+
+          <ul class="tp-profile-features">
+            <li>
+              <tp-icon name="check-circle" size="xs"></tp-icon>
+              <span>Acesso a vagas operacionais diárias</span>
+            </li>
+            <li>
+              <tp-icon name="check-circle" size="xs"></tp-icon>
+              <span>Pagamento rápido e seguro via PIX</span>
+            </li>
+            <li>
+              <tp-icon name="check-circle" size="xs"></tp-icon>
+              <span>Evolução de nível e reputação na comunidade</span>
+            </li>
+          </ul>
+
+          <button
+            type="button"
+            class="tp-profile-btn tp-btn-worker"
+            id="btn-choose-professional"
+            (click)="$event.stopPropagation(); chooseProfessional()"
+          >
+            <span>Quero trabalhar</span>
+            <tp-icon name="arrow-right" size="sm"></tp-icon>
+          </button>
+        </div>
+
+        <!-- Card 2: Contratante / Empresa -->
+        <div class="tp-profile-card" (click)="chooseCompany()" role="button" tabindex="0" (keydown.enter)="chooseCompany()">
+          <div class="tp-profile-badge tp-badge-company">
+            <span class="tp-badge-emoji">🏢</span>
+            <span class="tp-badge-text">CONTRATANTE</span>
+          </div>
+
+          <h2 class="tp-profile-heading">Quero contratar</h2>
+          <p class="tp-profile-description">
+            Encontre profissionais para realizar seus trabalhos.
+          </p>
+
+          <ul class="tp-profile-features">
+            <li>
+              <tp-icon name="check-circle" size="xs"></tp-icon>
+              <span>Publicação rápida de turnos e diárias</span>
+            </li>
+            <li>
+              <tp-icon name="check-circle" size="xs"></tp-icon>
+              <span>Candidatos verificados e avaliados</span>
+            </li>
+            <li>
+              <tp-icon name="check-circle" size="xs"></tp-icon>
+              <span>Painel operacional para gestão de equipe</span>
+            </li>
+          </ul>
+
+          <button
+            type="button"
+            class="tp-profile-btn tp-btn-company"
+            id="btn-choose-company"
+            (click)="$event.stopPropagation(); chooseCompany()"
+          >
+            <span>Quero contratar</span>
+            <tp-icon name="arrow-right" size="sm"></tp-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="tp-selector-footer">
+        <p class="tp-selector-footer-text">
+          Já possui uma conta?
+          <a routerLink="/auth/login" class="tp-link-primary">Entrar</a>
+        </p>
+      </div>
+    </div>
+  </main>
+</div>

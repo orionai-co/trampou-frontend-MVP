@@ -15,11 +15,11 @@ export class ProfileCareerProgressComponent {
   @Input() careerLevel: UserCareerLevel | null = null;
 
   get currentPoints(): number {
-    return this.careerLevel?.currentPoints ?? 42;
+    return this.careerLevel?.currentPoints ?? 0;
   }
 
   get targetPoints(): number {
-    return this.careerLevel?.targetPoints ?? 50;
+    return this.careerLevel?.targetPoints ?? 20;
   }
 
   get progressPercentage(): number {
@@ -32,17 +32,19 @@ export class ProfileCareerProgressComponent {
   }
 
   get currentLevelTitle(): string {
-    return this.careerLevel?.levelName || 'Nível 2 — Experiente';
+    return this.careerLevel?.levelName || (this.careerLevel?.currentLevel ? `Nível ${this.careerLevel.currentLevel}` : 'Nível 1 — Iniciante');
   }
 
   get nextLevelTitle(): string {
-    return this.careerLevel?.nextLevelName || 'Nível 3 — Elite';
+    return this.careerLevel?.nextLevelName || (this.careerLevel?.currentLevel ? `Nível ${this.careerLevel.currentLevel + 1}` : 'Nível 2 — Experiente');
   }
 
   get benefitDescription(): string {
     if (this.careerLevel?.benefitText) {
       return this.careerLevel.benefitText;
     }
-    return `Faltam ${this.remainingShifts} turnos para o ${this.nextLevelTitle}. Profissionais Elite têm acesso prioritário a eventos corporativos de alto valor.`;
+    return this.remainingShifts > 0
+      ? `Faltam ${this.remainingShifts} turnos para avançar para o ${this.nextLevelTitle}.`
+      : `Parabéns! Você alcançou a pontuação para o ${this.nextLevelTitle}.`;
   }
 }

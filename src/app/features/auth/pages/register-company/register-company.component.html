@@ -1,0 +1,434 @@
+<div class="tp-auth-page">
+  <tp-auth-header backUrl="/auth/tipo-conta"></tp-auth-header>
+
+  <main class="tp-auth-main">
+    <div class="tp-wizard-container">
+      @if (!isSuccess()) {
+        <!-- Cabeçalho do Wizard -->
+        <div class="tp-wizard-header">
+          <div class="tp-role-tag tp-tag-company">
+            <span>🏢 CONTRATANTE / EMPRESA</span>
+          </div>
+          <h1 class="tp-wizard-title">Cadastre sua Empresa</h1>
+          <p class="tp-wizard-subtitle">
+            Crie sua conta para publicar turnos e contratar profissionais qualificados sob demanda.
+          </p>
+
+          <tp-auth-step-progress [currentStep]="currentStep()" [steps]="steps"></tp-auth-step-progress>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="tp-auth-alert tp-auth-alert-error" role="alert">
+            <tp-icon name="alert-circle" size="sm"></tp-icon>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        <div class="tp-wizard-card">
+          <!-- ETAPA 1: DADOS DO RESPONSÁVEL -->
+          @if (currentStep() === 1) {
+            <form [formGroup]="step1Form" class="tp-step-form" novalidate>
+              <h2 class="tp-step-title">1. Dados do Responsável pela Conta</h2>
+
+              <!-- Nome Completo do Responsável -->
+              <div class="tp-form-field">
+                <label for="comp-responsavel" class="tp-form-label">Nome Completo do Responsável</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step1Form.get('responsavel')?.invalid && step1Form.get('responsavel')?.touched">
+                  <input
+                    id="comp-responsavel"
+                    type="text"
+                    formControlName="responsavel"
+                    placeholder="Ex: Mariana Albuquerque"
+                    class="tp-form-input"
+                  />
+                </div>
+                @if (step1Form.get('responsavel')?.invalid && step1Form.get('responsavel')?.touched) {
+                  <span class="tp-form-error">O nome do responsável deve ter no mínimo 3 caracteres.</span>
+                }
+              </div>
+
+              <!-- E-mail Corporativo -->
+              <div class="tp-form-field">
+                <label for="comp-email" class="tp-form-label">E-mail Corporativo</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step1Form.get('email')?.invalid && step1Form.get('email')?.touched">
+                  <input
+                    id="comp-email"
+                    type="email"
+                    formControlName="email"
+                    placeholder="contato@empresa.com.br"
+                    class="tp-form-input"
+                  />
+                </div>
+                @if (step1Form.get('email')?.invalid && step1Form.get('email')?.touched) {
+                  <span class="tp-form-error">Informe um e-mail corporativo válido.</span>
+                }
+              </div>
+
+              <!-- WhatsApp -->
+              <div class="tp-form-field">
+                <label for="comp-whatsapp" class="tp-form-label">WhatsApp Corporativo</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step1Form.get('whatsapp')?.invalid && step1Form.get('whatsapp')?.touched">
+                  <input
+                    id="comp-whatsapp"
+                    type="tel"
+                    formControlName="whatsapp"
+                    placeholder="(11) 98888-8888"
+                    (input)="onWhatsappInput($event)"
+                    maxlength="15"
+                    class="tp-form-input"
+                  />
+                </div>
+                @if (step1Form.get('whatsapp')?.invalid && step1Form.get('whatsapp')?.touched) {
+                  <span class="tp-form-error">Informe um número de WhatsApp com DDD.</span>
+                }
+              </div>
+
+              <!-- Senha -->
+              <div class="tp-form-field">
+                <label for="comp-senha" class="tp-form-label">Senha de Acesso (mín. 8 caracteres, com letra e número)</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step1Form.get('senha')?.invalid && step1Form.get('senha')?.touched">
+                  <input
+                    id="comp-senha"
+                    [type]="showPassword() ? 'text' : 'password'"
+                    formControlName="senha"
+                    placeholder="Crie sua senha de acesso"
+                    class="tp-form-input"
+                  />
+                  <button
+                    type="button"
+                    (click)="togglePasswordVisibility()"
+                    class="tp-input-suffix-btn"
+                  >
+                    <tp-icon name="eye" size="sm"></tp-icon>
+                  </button>
+                </div>
+                @if (step1Form.get('senha')?.invalid && step1Form.get('senha')?.touched) {
+                  <span class="tp-form-error">A senha deve ter no mínimo 8 caracteres, com pelo menos 1 letra e 1 número.</span>
+                }
+              </div>
+
+              <!-- Confirmar Senha -->
+              <div class="tp-form-field">
+                <label for="comp-confirm-senha" class="tp-form-label">Confirmar Senha</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="(step1Form.get('confirmarSenha')?.invalid || step1Form.errors?.['passwordMismatch']) && step1Form.get('confirmarSenha')?.touched">
+                  <input
+                    id="comp-confirm-senha"
+                    [type]="showConfirmPassword() ? 'text' : 'password'"
+                    formControlName="confirmarSenha"
+                    placeholder="Repita sua senha"
+                    class="tp-form-input"
+                  />
+                  <button
+                    type="button"
+                    (click)="toggleConfirmPasswordVisibility()"
+                    class="tp-input-suffix-btn"
+                  >
+                    <tp-icon name="eye" size="sm"></tp-icon>
+                  </button>
+                </div>
+                @if (step1Form.errors?.['passwordMismatch'] && step1Form.get('confirmarSenha')?.touched) {
+                  <span class="tp-form-error">As senhas não coincidem.</span>
+                }
+              </div>
+
+              <div class="tp-wizard-actions">
+                <div></div>
+                <button
+                  type="button"
+                  id="btn-comp-next-1"
+                  class="tp-btn-primary"
+                  (click)="nextStep()"
+                >
+                  <span>Continuar</span>
+                  <tp-icon name="arrow-right" size="sm"></tp-icon>
+                </button>
+              </div>
+            </form>
+          }
+
+          <!-- ETAPA 2: DADOS DA EMPRESA & VALIDAÇÃO DE CNPJ -->
+          @if (currentStep() === 2) {
+            <form [formGroup]="step2Form" class="tp-step-form" novalidate>
+              <h2 class="tp-step-title">2. Identificação da Empresa & CNPJ</h2>
+
+              <!-- Razão Social -->
+              <div class="tp-form-field">
+                <label for="comp-razao" class="tp-form-label">Razão Social</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step2Form.get('razaoSocial')?.invalid && step2Form.get('razaoSocial')?.touched">
+                  <input
+                    id="comp-razao"
+                    type="text"
+                    formControlName="razaoSocial"
+                    placeholder="Ex: Buffet & Eventos Silva LTDA"
+                    class="tp-form-input"
+                  />
+                </div>
+                @if (step2Form.get('razaoSocial')?.invalid && step2Form.get('razaoSocial')?.touched) {
+                  <span class="tp-form-error">A razão social é obrigatória.</span>
+                }
+              </div>
+
+              <!-- Nome Fantasia -->
+              <div class="tp-form-field">
+                <label for="comp-fantasia" class="tp-form-label">Nome Fantasia (Como sua empresa será vista no app)</label>
+                <div class="tp-input-wrap">
+                  <input
+                    id="comp-fantasia"
+                    type="text"
+                    formControlName="nomeFantasia"
+                    placeholder="Ex: Buffet Silva Gourmet"
+                    class="tp-form-input"
+                  />
+                </div>
+              </div>
+
+              <!-- CNPJ com validação estrita e badge inline -->
+              <div class="tp-form-field">
+                <div class="tp-label-with-badge">
+                  <label for="comp-cnpj" class="tp-form-label">CNPJ (Receita Federal)</label>
+                  @if (cnpjStatus() === 'valid') {
+                    <span class="tp-cnpj-badge tp-cnpj-badge-valid" id="cnpj-feedback-valid">
+                      <tp-icon name="check-circle" size="xs"></tp-icon>
+                      <span>CNPJ válido</span>
+                    </span>
+                  } @else if (cnpjStatus() === 'invalid') {
+                    <span class="tp-cnpj-badge tp-cnpj-badge-invalid" id="cnpj-feedback-invalid">
+                      <tp-icon name="alert-circle" size="xs"></tp-icon>
+                      <span>CNPJ inválido. Verifique os números informados.</span>
+                    </span>
+                  }
+                </div>
+
+                <div 
+                  class="tp-input-wrap" 
+                  [class.tp-input-error]="cnpjStatus() === 'invalid' || (step2Form.get('cnpj')?.invalid && step2Form.get('cnpj')?.touched)"
+                  [class.tp-input-valid]="cnpjStatus() === 'valid'"
+                >
+                  <input
+                    id="comp-cnpj"
+                    type="text"
+                    formControlName="cnpj"
+                    placeholder="00.000.000/0000-00"
+                    (input)="onCnpjInput($event)"
+                    maxlength="18"
+                    class="tp-form-input"
+                  />
+                </div>
+                @if (step2Form.get('cnpj')?.errors?.['required'] && step2Form.get('cnpj')?.touched) {
+                  <span class="tp-form-error">O CNPJ é obrigatório para cadastrar como contratante.</span>
+                }
+              </div>
+
+              <!-- Segmento -->
+              <div class="tp-form-field">
+                <label for="comp-segmento" class="tp-form-label">Segmento de Atuação</label>
+                <select id="comp-segmento" formControlName="segmento" class="tp-form-select">
+                  @for (seg of segments; track seg) {
+                    <option [value]="seg">{{ seg }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Tipo de Contratante -->
+              <div class="tp-form-field">
+                <label class="tp-form-label">Tipo de Contratante</label>
+                <div class="tp-radio-group-vertical">
+                  @for (type of contractorTypes; track type.value) {
+                    <label class="tp-radio-card" [class.tp-radio-card-active]="step2Form.get('tipoContratante')?.value === type.value">
+                      <input
+                        type="radio"
+                        formControlName="tipoContratante"
+                        [value]="type.value"
+                        class="tp-radio-input"
+                      />
+                      <span class="tp-radio-label">{{ type.label }}</span>
+                    </label>
+                  }
+                </div>
+              </div>
+
+              <div class="tp-wizard-actions tp-actions-split">
+                <button
+                  type="button"
+                  id="btn-comp-prev-2"
+                  class="tp-btn-secondary"
+                  (click)="prevStep()"
+                >
+                  <tp-icon name="chevron-left" size="sm"></tp-icon>
+                  <span>Voltar</span>
+                </button>
+                <button
+                  type="button"
+                  id="btn-comp-next-2"
+                  class="tp-btn-primary"
+                  (click)="nextStep()"
+                >
+                  <span>Continuar</span>
+                  <tp-icon name="arrow-right" size="sm"></tp-icon>
+                </button>
+              </div>
+            </form>
+          }
+
+          <!-- ETAPA 3: LOCALIZAÇÃO, PERFIL & CONCLUSÃO -->
+          @if (currentStep() === 3) {
+            <form [formGroup]="step3Form" class="tp-step-form" novalidate>
+              <h2 class="tp-step-title">3. Endereço Comercial & Conclusão</h2>
+
+              <!-- Cidade & Estado -->
+              <div class="tp-form-row">
+                <div class="tp-form-field tp-field-flex">
+                  <label for="comp-cidade" class="tp-form-label">Cidade Sede</label>
+                  <div class="tp-input-wrap">
+                    <input
+                      id="comp-cidade"
+                      type="text"
+                      formControlName="cidade"
+                      placeholder="Ex: São Paulo"
+                      class="tp-form-input"
+                    />
+                  </div>
+                </div>
+
+                <div class="tp-form-field tp-field-state">
+                  <label for="comp-estado" class="tp-form-label">UF</label>
+                  <select id="comp-estado" formControlName="estado" class="tp-form-select">
+                    @for (st of states; track st) {
+                      <option [value]="st">{{ st }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <!-- Endereço Comercial -->
+              <div class="tp-form-field">
+                <label for="comp-endereco" class="tp-form-label">Endereço Comercial</label>
+                <div class="tp-input-wrap" [class.tp-input-error]="step3Form.get('endereco')?.invalid && step3Form.get('endereco')?.touched">
+                  <input
+                    id="comp-endereco"
+                    type="text"
+                    formControlName="endereco"
+                    placeholder="Ex: Av. Paulista, 1000 - Bela Vista"
+                    class="tp-form-input"
+                  />
+                </div>
+                @if (step3Form.get('endereco')?.invalid && step3Form.get('endereco')?.touched) {
+                  <span class="tp-form-error">Informe o endereço comercial completo.</span>
+                }
+              </div>
+
+              <!-- Descrição Institucional (Opcional) -->
+              <div class="tp-form-field">
+                <label for="comp-descricao" class="tp-form-label">Apresentação da Empresa (Opcional)</label>
+                <textarea
+                  id="comp-descricao"
+                  formControlName="descricao"
+                  rows="3"
+                  placeholder="Conte aos profissionais sobre seu negócio e a dinâmica de trabalho dos seus eventos."
+                  class="tp-form-textarea"
+                ></textarea>
+              </div>
+
+              <!-- Site & Instagram (Opcionais) -->
+              <div class="tp-form-row">
+                <div class="tp-form-field tp-field-flex">
+                  <label for="comp-site" class="tp-form-label">Website (Opcional)</label>
+                  <div class="tp-input-wrap">
+                    <input
+                      id="comp-site"
+                      type="url"
+                      formControlName="site"
+                      placeholder="https://suaempresa.com.br"
+                      class="tp-form-input"
+                    />
+                  </div>
+                </div>
+
+                <div class="tp-form-field tp-field-flex">
+                  <label for="comp-instagram" class="tp-form-label">Instagram (Opcional)</label>
+                  <div class="tp-input-wrap">
+                    <input
+                      id="comp-instagram"
+                      type="text"
+                      formControlName="instagram"
+                      placeholder="@suaempresa"
+                      class="tp-form-input"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Checkbox Termos -->
+              <div class="tp-terms-field">
+                <label class="tp-checkbox-label">
+                  <input
+                    type="checkbox"
+                    formControlName="termosAceitos"
+                    class="tp-checkbox-input"
+                    id="comp-termos"
+                  />
+                  <span class="tp-checkbox-text">
+                    Declaro que represento legalmente esta empresa e concordo com os <strong>Termos de Uso</strong> e a <strong>Política de Privacidade</strong> do TRAMPOU.
+                  </span>
+                </label>
+                @if (step3Form.get('termosAceitos')?.invalid && step3Form.get('termosAceitos')?.touched) {
+                  <span class="tp-form-error">Você precisa aceitar os Termos para concluir o cadastro corporativo.</span>
+                }
+              </div>
+
+              <div class="tp-wizard-actions tp-actions-split">
+                <button
+                  type="button"
+                  id="btn-comp-prev-3"
+                  class="tp-btn-secondary"
+                  (click)="prevStep()"
+                  [disabled]="isLoading()"
+                >
+                  <tp-icon name="chevron-left" size="sm"></tp-icon>
+                  <span>Voltar</span>
+                </button>
+
+                <button
+                  type="button"
+                  id="btn-comp-submit"
+                  class="tp-btn-primary"
+                  (click)="submitRegistration()"
+                  [disabled]="step3Form.invalid || isLoading()"
+                >
+                  @if (isLoading()) {
+                    <span class="tp-btn-spinner"></span>
+                    <span>Criando conta empresarial...</span>
+                  } @else {
+                    <span>Concluir Cadastro</span>
+                  }
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      } @else {
+        <!-- TELA DE SUCESSO -->
+        <div class="tp-success-card">
+          <div class="tp-success-icon-wrap tp-success-company">
+            <tp-icon name="check" size="lg"></tp-icon>
+          </div>
+
+          <h2 class="tp-success-title">Empresa cadastrada com sucesso!</h2>
+          <p class="tp-success-desc">
+            Sua conta corporativa está pronta para uso. Acesse agora seu painel de gestão para publicar novos turnos e gerenciar candidaturas.
+          </p>
+
+          <button
+            type="button"
+            class="tp-btn-primary tp-btn-large"
+            id="btn-go-to-company"
+            (click)="goToCompanyDashboard()"
+          >
+            <span>Encontrar profissionais</span>
+            <tp-icon name="arrow-right" size="sm"></tp-icon>
+          </button>
+        </div>
+      }
+    </div>
+  </main>
+</div>

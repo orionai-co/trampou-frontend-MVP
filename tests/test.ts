@@ -61,3 +61,8 @@ import './unit/campaign.service.spec';
 import './unit/boost-campaign-modal.component.spec';
 import './unit/company-campaign-metrics.component.spec';
 import './unit/match-breakdown.component.spec';
+import './unit/cnpj.validator.spec';
+import './unit/auth.service.spec';
+import './unit/login.component.spec';
+import './unit/register-professional.component.spec';
+import './unit/register-company.component.spec';

@@ -33,6 +33,7 @@ export interface OpportunityPayment {
 
 export interface Opportunity {
   id: string;
+  companyId?: string;
   title: string;
   companyName: string;
   companyRating: number;

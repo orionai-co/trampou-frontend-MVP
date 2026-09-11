@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserProfileService } from '../../core/services/user-profile.service';
 import { PixKeyConfig } from './models/user-profile.model';
@@ -25,12 +25,17 @@ import { ReviewsListComponent } from './components/reviews-list/reviews-list.com
   styleUrl: './profile.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   readonly profileService = inject(UserProfileService);
   readonly userProfile = this.profileService;
 
+  ngOnInit(): void {
+    this.profileService.fetchUserProfile();
+    this.profileService.fetchReputation();
+  }
+
   onPixKeyChange(config: PixKeyConfig): void {
-    this.profileService.updatePixKey(config);
+    this.profileService.updatePixKeyRemote(config);
   }
 
   onEditPixKey(): void {

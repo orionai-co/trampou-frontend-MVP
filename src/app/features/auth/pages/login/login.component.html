@@ -1,0 +1,121 @@
+<div class="tp-auth-page">
+  <tp-auth-header></tp-auth-header>
+
+  <main class="tp-auth-main">
+    <div class="tp-auth-card">
+      <div class="tp-auth-card-header">
+        <h1 class="tp-auth-title">Bem-vindo ao TRAMPOU</h1>
+        <p class="tp-auth-subtitle">
+          Encontre oportunidades ou os profissionais certos para o seu próximo trabalho.
+        </p>
+      </div>
+
+      @if (errorMessage()) {
+        <div class="tp-auth-alert tp-auth-alert-error" role="alert">
+          <tp-icon name="alert-circle" size="sm"></tp-icon>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      @if (forgotPasswordSent()) {
+        <div class="tp-auth-alert tp-auth-alert-info" role="status">
+          <tp-icon name="check-circle" size="sm"></tp-icon>
+          <span>As instruções de recuperação foram enviadas para o e-mail informado.</span>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="tp-auth-form" novalidate>
+        <!-- Campo E-mail -->
+        <div class="tp-form-field">
+          <label for="login-email" class="tp-form-label">E-mail</label>
+          <div class="tp-input-wrap" [class.tp-input-error]="email?.invalid && email?.touched">
+            <tp-icon name="user" size="sm" customClass="tp-input-prefix-icon"></tp-icon>
+            <input
+              id="login-email"
+              type="email"
+              formControlName="email"
+              placeholder="seu.email@exemplo.com"
+              autocomplete="email"
+              class="tp-form-input"
+            />
+          </div>
+          @if (email?.invalid && email?.touched) {
+            <span class="tp-form-error" role="alert">
+              @if (email?.errors?.['required']) {
+                O e-mail é obrigatório.
+              } @else if (email?.errors?.['email']) {
+                Informe um e-mail válido.
+              }
+            </span>
+          }
+        </div>
+
+        <!-- Campo Senha -->
+        <div class="tp-form-field">
+          <div class="tp-label-with-action">
+            <label for="login-password" class="tp-form-label">Senha</label>
+            <button
+              type="button"
+              (click)="onForgotPassword()"
+              class="tp-link-action"
+            >
+              Esqueci minha senha
+            </button>
+          </div>
+          <div class="tp-input-wrap" [class.tp-input-error]="password?.invalid && password?.touched">
+            <tp-icon name="shield-check" size="sm" customClass="tp-input-prefix-icon"></tp-icon>
+            <input
+              id="login-password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Sua senha secreta"
+              autocomplete="current-password"
+              class="tp-form-input"
+            />
+            <button
+              type="button"
+              (click)="togglePasswordVisibility()"
+              class="tp-input-suffix-btn"
+              [attr.aria-label]="showPassword() ? 'Ocultar senha' : 'Exibir senha'"
+            >
+              <tp-icon name="eye" size="sm"></tp-icon>
+            </button>
+          </div>
+          @if (password?.invalid && password?.touched) {
+            <span class="tp-form-error" role="alert">
+              @if (password?.errors?.['required']) {
+                A senha é obrigatória.
+              } @else if (password?.errors?.['minlength']) {
+                A senha deve ter no mínimo 6 caracteres.
+              }
+            </span>
+          }
+        </div>
+
+        <!-- Botão Entrar -->
+        <div class="tp-form-actions">
+          <button
+            type="submit"
+            id="btn-login-submit"
+            class="tp-btn-primary"
+            [disabled]="form.invalid || isLoading()"
+          >
+            @if (isLoading()) {
+              <span class="tp-btn-spinner"></span>
+              <span>Entrando...</span>
+            } @else {
+              <span>Entrar</span>
+            }
+          </button>
+        </div>
+      </form>
+
+      <div class="tp-auth-footer">
+        <p class="tp-auth-footer-text">
+          Ainda não tenho uma conta?
+          <a routerLink="/auth/tipo-conta" class="tp-link-primary">Cadastre-se</a>
+        </p>
+      </div>
+    </div>
+  </main>
+</div>

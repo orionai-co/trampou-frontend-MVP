@@ -3,10 +3,13 @@ import {
   Input,
   Output,
   EventEmitter,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  inject
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Opportunity } from '../../models/opportunity.model';
+import { AuthService } from '../../../../core/services/auth.service';
 import {
   MatchBreakdownData,
   buildMatchBreakdownFromOpportunity
@@ -31,6 +34,38 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class OpportunityCardComponent {
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+
+  readonly userRole = this.authService.userRole;
+  readonly currentUser = this.authService.currentUser;
+
+  get isOwnJob(): boolean {
+    if (this.userRole() !== 'contractor') return false;
+    const user = this.currentUser();
+    if (!user) return false;
+
+    if (this.opportunity?.companyName && user.name) {
+      const oppName = this.opportunity.companyName.trim().toLowerCase();
+      const userName = user.name.trim().toLowerCase();
+      if (oppName === userName) return true;
+    }
+
+    if ((this.opportunity as any)?.companyId && (this.opportunity as any).companyId === user.id) {
+      return true;
+    }
+
+    if (this.opportunity?.companyName === 'Empresa Contratante' && user.role === 'contractor') {
+      return true;
+    }
+
+    return false;
+  }
+
+  onManageJob(event: MouseEvent): void {
+    event.stopPropagation();
+    this.router.navigate(['/empresa']);
+  }
   @Input({ required: true }) opportunity!: Opportunity;
 
   @Output() viewDetails = new EventEmitter<Opportunity>();

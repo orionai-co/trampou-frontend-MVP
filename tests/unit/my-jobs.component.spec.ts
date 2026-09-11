@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MyJobsComponent } from '../../src/app/features/my-jobs/my-jobs.component';
 import { MyJobsService } from '../../src/app/features/my-jobs/services/my-jobs.service';
+import { ApiClientService } from '../../src/app/core/services/api-client.service';
 import { provideRouter } from '@angular/router';
 
 describe('MyJobsComponent', () => {
@@ -8,15 +9,83 @@ describe('MyJobsComponent', () => {
   let fixture: ComponentFixture<MyJobsComponent>;
   let service: MyJobsService;
 
+  const mockAccepted: any[] = [
+    {
+      id: 'app-001',
+      opportunityId: 'opp-001',
+      title: 'Garçom para Casamento e Buffet Noturno',
+      companyName: 'Buffet Espaço Paulista',
+      companyRating: 4.9,
+      category: 'Eventos',
+      location: { city: 'São Paulo', neighborhood: 'Vila Olímpia', address: 'Rua Funchal, 418', distanceKm: 2.4 },
+      date: 'Hoje',
+      isToday: true,
+      schedule: { start: '18:00', end: '01:00', totalHours: 7 },
+      payment: { amount: 180, type: 'diaria', pixImmediate: true },
+      status: 'accepted',
+      appliedAt: new Date(),
+      checkInStatus: 'pending'
+    }
+  ];
+
+  const mockPending: any[] = [
+    {
+      id: 'app-003',
+      opportunityId: 'opp-004',
+      title: 'Operador de Caixa para Festival Gastronômico',
+      companyName: 'Street Gourmet Eventos',
+      companyRating: 4.7,
+      category: 'Atendimento',
+      location: { city: 'São Paulo', neighborhood: 'Pinheiros', address: 'Praça Benedito Calixto, 85', distanceKm: 4.1 },
+      date: 'Hoje',
+      isToday: true,
+      schedule: { start: '12:00', end: '18:00', totalHours: 6 },
+      payment: { amount: 150, type: 'diaria', pixImmediate: true },
+      status: 'pending',
+      appliedAt: new Date()
+    }
+  ];
+
+  const mockCompleted: any[] = [
+    {
+      id: 'app-008',
+      opportunityId: 'opp-011',
+      title: 'Garçom de Salão e Atendimento VIP',
+      companyName: 'Mansão Faria Lima Eventos',
+      companyRating: 4.9,
+      category: 'Eventos',
+      location: { city: 'São Paulo', neighborhood: 'Jardins', address: 'Alameda Gabriel', distanceKm: 2.9 },
+      date: '12 Ago',
+      schedule: { start: '18:00', end: '00:00', totalHours: 6 },
+      payment: { amount: 1280, type: 'diaria', pixImmediate: true },
+      status: 'completed',
+      appliedAt: new Date(),
+      receiptId: 'PIX-123'
+    }
+  ];
+
   beforeEach(async () => {
+    const apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'post', 'delete']);
+    (apiClientSpy.get.and.callFake as any)((url: string) => {
+      if (url.includes('/confirmed')) return Promise.resolve(mockAccepted);
+      if (url.includes('/under-review')) return Promise.resolve(mockPending);
+      if (url.includes('/history')) return Promise.resolve(mockCompleted);
+      return Promise.resolve([]);
+    });
+
     await TestBed.configureTestingModule({
       imports: [MyJobsComponent],
-      providers: [MyJobsService, provideRouter([])]
+      providers: [
+        MyJobsService,
+        { provide: ApiClientService, useValue: apiClientSpy },
+        provideRouter([])
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MyJobsComponent);
     component = fixture.componentInstance;
     service = TestBed.inject(MyJobsService);
+    await service.loadAllJobs();
     fixture.detectChanges();
   });
 

@@ -36,6 +36,21 @@ export const API_ENDPOINTS = {
     CREATE: '/campaigns',
     METRICS: '/campaigns/metrics'
   },
+  // Usuário Logado & Perfil
+  USER_PROFILE: {
+    ME: '/users/me',
+    UPDATE_PIX: '/users/me/pix-key',
+    REPUTATION: '/users/me/reputation'
+  },
+  // Painel Operacional da Empresa (/empresa)
+  COMPANY_DASHBOARD: {
+    PROFILE: '/companies/me',
+    ACTIVE_JOBS: '/companies/me/jobs/active',
+    HISTORY_JOBS: '/companies/me/jobs/history',
+    CONTACTS: '/companies/me/contacts',
+    METRICS: '/companies/me/metrics',
+    CREATE_JOB: '/company/jobs'
+  },
   // Avisos & Notificações
   NOTIFICATIONS: {
     LIST: '/notifications',

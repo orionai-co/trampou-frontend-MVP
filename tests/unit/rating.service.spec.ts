@@ -19,13 +19,13 @@ describe('RatingService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should load initial reviews', () => {
-    expect(service.reviews().length).toBeGreaterThan(0);
+  it('should initialize with empty reviews', () => {
+    expect(service.reviews().length).toBe(0);
   });
 
   it('should submit a review for freelancer and update user profile rating', () => {
     const initialCount = service.reviews().length;
-    const initialProfileReviews = userProfileService.currentUser().reviewsCount || 42;
+    const initialProfileReviews = userProfileService.currentUser().reviewsCount || 0;
 
     const review = service.submitReview({
       shiftId: 'shift-test-1',

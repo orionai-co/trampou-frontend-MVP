@@ -1,13 +1,59 @@
 import { TestBed } from '@angular/core/testing';
 import { CompanyPublicService } from '../../src/app/features/company-profile/services/company-public.service';
-import { OpportunityService } from '../../src/app/features/opportunities/services/opportunity.service';
+import { ApiClientService } from '../../src/app/core/services/api-client.service';
+import { CompanyPublicProfile } from '../../src/app/features/company-profile/models/company-profile.model';
 
 describe('CompanyPublicService', () => {
   let service: CompanyPublicService;
+  let apiClientSpy: jasmine.SpyObj<ApiClientService>;
+
+  const mockProfile: CompanyPublicProfile = {
+    id: 'comp-001',
+    name: 'Buffet Espaço Paulista',
+    handle: '@espacopaulista',
+    category: 'Gastronomia',
+    verified: true,
+    location: {
+      neighborhood: 'Vila Olímpia',
+      city: 'São Paulo',
+      state: 'SP',
+      fullAddress: 'Rua Funchal, 418',
+      distanceKm: 2.4
+    },
+    about: 'Buffet de alta gastronomia.',
+    cultureHighlights: ['Ambiente acolhedor'],
+    reputation: {
+      averageRating: 4.9,
+      totalReviews: 84,
+      onTimePaymentRate: 100,
+      rehireReturnRate: 96,
+      totalCompletedShifts: 120,
+      cancellationRate: 0
+    },
+    media: {
+      videoUrl: '',
+      videoThumbnail: '',
+      videoTitle: '',
+      videoDuration: '',
+      photos: []
+    }
+  };
 
   beforeEach(() => {
+    apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'post', 'put', 'delete']);
+    (apiClientSpy.get.and.callFake as any)((url: string) => {
+      if (url.includes('/jobs')) {
+        return Promise.resolve([{ id: 'opp-001', title: 'Garçom', companyName: 'Buffet Espaço Paulista' }]);
+      }
+      return Promise.resolve(mockProfile);
+    });
+    apiClientSpy.put.and.returnValue(Promise.resolve({ success: true }));
+
     TestBed.configureTestingModule({
-      providers: [CompanyPublicService, OpportunityService]
+      providers: [
+        CompanyPublicService,
+        { provide: ApiClientService, useValue: apiClientSpy }
+      ]
     });
     service = TestBed.inject(CompanyPublicService);
   });
@@ -33,23 +79,23 @@ describe('CompanyPublicService', () => {
     });
   });
 
-  it('should toggle favorite status for a company', () => {
+  it('should toggle favorite status for a company', async () => {
     expect(service.isFavorited('comp-001')).toBeFalse();
 
-    service.toggleFavoriteCompany('comp-001');
+    await service.toggleFavoriteCompany('comp-001');
     expect(service.isFavorited('comp-001')).toBeTrue();
 
-    service.toggleFavoriteCompany('comp-001');
+    await service.toggleFavoriteCompany('comp-001');
     expect(service.isFavorited('comp-001')).toBeFalse();
   });
 
-  it('should toggle follow status for a company', () => {
+  it('should toggle follow status for a company', async () => {
     expect(service.isFollowing('comp-001')).toBeFalse();
 
-    service.toggleFollowCompany('comp-001');
+    await service.toggleFollowCompany('comp-001');
     expect(service.isFollowing('comp-001')).toBeTrue();
 
-    service.toggleFollowCompany('comp-001');
+    await service.toggleFollowCompany('comp-001');
     expect(service.isFollowing('comp-001')).toBeFalse();
   });
 

@@ -42,7 +42,7 @@ export class PixSettingsComponent implements OnChanges {
   }
 
   get pixTypeLabel(): string {
-    if (!this.pixKey) return 'Chave PIX';
+    if (!this.pixKey || !this.pixKey.key) return 'Chave PIX';
     switch (this.pixKey.type) {
       case 'cpf': return 'Chave CPF';
       case 'phone': return 'Chave Celular / Telefone';

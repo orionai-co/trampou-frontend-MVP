@@ -3,7 +3,7 @@ export type JobApplicationStatus = 'accepted' | 'pending' | 'completed' | 'cance
 export interface JobLocation {
   city: string;
   neighborhood: string;
-  address: string;
+  address?: string;
   mapUrl?: string;
   distanceKm?: number;
 }
@@ -23,11 +23,19 @@ export interface JobPayment {
   pixKeyType?: string;
 }
 
+export const TRAMPOU_APPLICATIONS_STORAGE_KEY = 'trampou_user_applications';
+
 export interface JobApplication {
   id: string;
   opportunityId: string;
   title: string;
+  opportunityTitle?: string;
   companyName: string;
+  companyId?: string;
+  candidateId?: string;
+  candidateName?: string;
+  candidateAvatar?: string;
+  remuneration?: number;
   companyRating?: number;
   category: string;
   location: JobLocation;

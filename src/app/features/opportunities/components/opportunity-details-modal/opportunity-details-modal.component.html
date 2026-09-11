@@ -7,50 +7,70 @@
   [hasFooter]="true"
   (closed)="onClose()"
 >
-  <!-- STEPPER PROGRESS BAR (4 ETAPAS COMPACTAS) -->
-  <div class="tp-stepper-container" aria-label="Progresso da Candidatura">
-    <!-- Passo 1 -->
-    <div class="tp-step-item" [class.tp-step-active]="currentStep() === 1" [class.tp-step-done]="currentStep() > 1">
-      <div class="tp-step-circle">
-        <tp-icon *ngIf="currentStep() > 1" name="check" size="xs"></tp-icon>
-        <span *ngIf="currentStep() <= 1">1</span>
+  <!-- STEPPER PROGRESS BAR: 2 ETAPAS (EMPRESA/AUDITORIA) OU 4 ETAPAS (PRESTADOR/CANDIDATURA) -->
+  @if (userRole() === 'contractor') {
+    <div class="tp-stepper-container" aria-label="Navegação dos Detalhes">
+      <div class="tp-step-item" [class.tp-step-active]="currentStep() === 1" (click)="goToStep(1)" style="cursor: pointer">
+        <div class="tp-step-circle">
+          <span>1</span>
+        </div>
+        <span class="tp-step-label">Resumo</span>
       </div>
-      <span class="tp-step-label">Resumo</span>
-    </div>
 
-    <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 2"></div>
+      <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 2"></div>
 
-    <!-- Passo 2 -->
-    <div class="tp-step-item" [class.tp-step-active]="currentStep() === 2" [class.tp-step-done]="currentStep() > 2">
-      <div class="tp-step-circle">
-        <tp-icon *ngIf="currentStep() > 2" name="check" size="xs"></tp-icon>
-        <span *ngIf="currentStep() <= 2">2</span>
+      <div class="tp-step-item" [class.tp-step-active]="currentStep() === 2" (click)="goToStep(2)" style="cursor: pointer">
+        <div class="tp-step-circle">
+          <span>2</span>
+        </div>
+        <span class="tp-step-label">Requisitos</span>
       </div>
-      <span class="tp-step-label">Requisitos</span>
     </div>
-
-    <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 3"></div>
-
-    <!-- Passo 3 -->
-    <div class="tp-step-item" [class.tp-step-active]="currentStep() === 3" [class.tp-step-done]="currentStep() > 3">
-      <div class="tp-step-circle">
-        <tp-icon *ngIf="currentStep() > 3" name="check" size="xs"></tp-icon>
-        <span *ngIf="currentStep() <= 3">3</span>
+  } @else {
+    <div class="tp-stepper-container" aria-label="Progresso da Candidatura">
+      <!-- Passo 1 -->
+      <div class="tp-step-item" [class.tp-step-active]="currentStep() === 1" [class.tp-step-done]="currentStep() > 1">
+        <div class="tp-step-circle">
+          <tp-icon *ngIf="currentStep() > 1" name="check" size="xs"></tp-icon>
+          <span *ngIf="currentStep() <= 1">1</span>
+        </div>
+        <span class="tp-step-label">Resumo</span>
       </div>
-      <span class="tp-step-label">PIX & Acordo</span>
-    </div>
 
-    <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 4"></div>
+      <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 2"></div>
 
-    <!-- Passo 4 -->
-    <div class="tp-step-item" [class.tp-step-active]="currentStep() === 4" [class.tp-step-done]="currentStep() === 4">
-      <div class="tp-step-circle">
-        <tp-icon *ngIf="currentStep() === 4" name="check-circle" size="xs"></tp-icon>
-        <span *ngIf="currentStep() < 4">4</span>
+      <!-- Passo 2 -->
+      <div class="tp-step-item" [class.tp-step-active]="currentStep() === 2" [class.tp-step-done]="currentStep() > 2">
+        <div class="tp-step-circle">
+          <tp-icon *ngIf="currentStep() > 2" name="check" size="xs"></tp-icon>
+          <span *ngIf="currentStep() <= 2">2</span>
+        </div>
+        <span class="tp-step-label">Requisitos</span>
       </div>
-      <span class="tp-step-label">Sucesso</span>
+
+      <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 3"></div>
+
+      <!-- Passo 3 -->
+      <div class="tp-step-item" [class.tp-step-active]="currentStep() === 3" [class.tp-step-done]="currentStep() > 3">
+        <div class="tp-step-circle">
+          <tp-icon *ngIf="currentStep() > 3" name="check" size="xs"></tp-icon>
+          <span *ngIf="currentStep() <= 3">3</span>
+        </div>
+        <span class="tp-step-label">PIX & Acordo</span>
+      </div>
+
+      <div class="tp-step-line" [class.tp-step-line-filled]="currentStep() >= 4"></div>
+
+      <!-- Passo 4 -->
+      <div class="tp-step-item" [class.tp-step-active]="currentStep() === 4" [class.tp-step-done]="currentStep() === 4">
+        <div class="tp-step-circle">
+          <tp-icon *ngIf="currentStep() === 4" name="check-circle" size="xs"></tp-icon>
+          <span *ngIf="currentStep() < 4">4</span>
+        </div>
+        <span class="tp-step-label">Sucesso</span>
+      </div>
     </div>
-  </div>
+  }
 
   <!-- =========================================================================
        ETAPA 1 — O TRAMPO, DATA E REMUNERAÇÃO
@@ -264,79 +284,108 @@
        RODAPÉ DO MODAL (AÇÕES CONTEXTUAIS)
        ========================================================================= -->
   <div tpModalFooter class="tp-modal-footer-content">
-    <!-- ETAPA 1: AÇÕES -->
-    <ng-container *ngIf="currentStep() === 1">
+    @if (userRole() === 'contractor') {
+      <!-- AÇÕES EXCLUSIVAS PARA EMPRESA (MODO AUDITORIA / SOMENTE LEITURA) -->
       <tp-button variant="outline" (btnClick)="onClose()">
         Voltar ao Feed
       </tp-button>
 
-      <tp-button
-        *ngIf="!opportunity.applied"
-        variant="primary"
-        (btnClick)="goToStep(2)"
-      >
-        <span>Ver Requisitos</span>
-        <tp-icon name="chevron-right" size="xs"></tp-icon>
-      </tp-button>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        @if (currentStep() === 1) {
+          <tp-button variant="secondary" (btnClick)="goToStep(2)">
+            <span>Ver Requisitos</span>
+            <tp-icon name="chevron-right" size="xs"></tp-icon>
+          </tp-button>
+        } @else {
+          <tp-button variant="secondary" (btnClick)="goToStep(1)">
+            <tp-icon name="chevron-left" size="xs"></tp-icon>
+            <span>Voltar ao Resumo</span>
+          </tp-button>
+        }
 
-      <tp-badge
-        *ngIf="opportunity.applied"
-        variant="success"
-        size="md"
-        [dot]="true"
-      >
-        <tp-icon name="check-circle" size="xs"></tp-icon>
-        Interesse Enviado
-      </tp-badge>
-    </ng-container>
+        @if (isOwnJob) {
+          <tp-button variant="primary" (btnClick)="onManageInCompanyPanel()">
+            <tp-icon name="sliders" size="xs"></tp-icon>
+            <span>Gerenciar no Painel</span>
+          </tp-button>
+        }
+      </div>
+    } @else {
+      <!-- AÇÕES ORIGINAIS PARA PRESTADOR (ROLE: 'PROFESSIONAL' - 100% INTACTO) -->
+      <!-- ETAPA 1: AÇÕES -->
+      <ng-container *ngIf="currentStep() === 1">
+        <tp-button variant="outline" (btnClick)="onClose()">
+          Voltar ao Feed
+        </tp-button>
 
-    <!-- ETAPA 2: AÇÕES -->
-    <ng-container *ngIf="currentStep() === 2">
-      <tp-button variant="outline" (btnClick)="goToStep(1)">
-        <tp-icon name="chevron-left" size="xs"></tp-icon>
-        <span>Voltar</span>
-      </tp-button>
+        <tp-button
+          *ngIf="!opportunity.applied"
+          variant="primary"
+          (btnClick)="goToStep(2)"
+        >
+          <span>Ver Requisitos</span>
+          <tp-icon name="chevron-right" size="xs"></tp-icon>
+        </tp-button>
 
-      <tp-button
-        variant="primary"
-        (btnClick)="goToStep(3)"
-      >
-        <span>Avançar para Compromisso</span>
-        <tp-icon name="chevron-right" size="xs"></tp-icon>
-      </tp-button>
-    </ng-container>
+        <tp-badge
+          *ngIf="opportunity.applied"
+          variant="success"
+          size="md"
+          [dot]="true"
+        >
+          <tp-icon name="check-circle" size="xs"></tp-icon>
+          Interesse Enviado
+        </tp-badge>
+      </ng-container>
 
-    <!-- ETAPA 3: AÇÕES -->
-    <ng-container *ngIf="currentStep() === 3">
-      <tp-button variant="outline" (btnClick)="goToStep(2)">
-        <tp-icon name="chevron-left" size="xs"></tp-icon>
-        <span>Voltar</span>
-      </tp-button>
+      <!-- ETAPA 2: AÇÕES -->
+      <ng-container *ngIf="currentStep() === 2">
+        <tp-button variant="outline" (btnClick)="goToStep(1)">
+          <tp-icon name="chevron-left" size="xs"></tp-icon>
+          <span>Voltar</span>
+        </tp-button>
 
-      <tp-button
-        variant="primary"
-        [loading]="isSubmitting()"
-        [disabled]="!isChecklistComplete()"
-        (btnClick)="onConfirmApply()"
-      >
-        <tp-icon name="zap" size="xs"></tp-icon>
-        <span>Confirmar e Enviar Candidatura</span>
-      </tp-button>
-    </ng-container>
+        <tp-button
+          variant="primary"
+          (btnClick)="goToStep(3)"
+        >
+          <span>Avançar para Compromisso</span>
+          <tp-icon name="chevron-right" size="xs"></tp-icon>
+        </tp-button>
+      </ng-container>
 
-    <!-- ETAPA 4: AÇÕES -->
-    <ng-container *ngIf="currentStep() === 4">
-      <tp-button variant="outline" (btnClick)="onClose()">
-        Voltar ao Feed
-      </tp-button>
+      <!-- ETAPA 3: AÇÕES -->
+      <ng-container *ngIf="currentStep() === 3">
+        <tp-button variant="outline" (btnClick)="goToStep(2)">
+          <tp-icon name="chevron-left" size="xs"></tp-icon>
+          <span>Voltar</span>
+        </tp-button>
 
-      <tp-button
-        variant="primary"
-        (btnClick)="onNavigateToMyJobs()"
-      >
-        <span>Acompanhar em "Meus Trabalhos"</span>
-        <tp-icon name="chevron-right" size="xs"></tp-icon>
-      </tp-button>
-    </ng-container>
+        <tp-button
+          variant="primary"
+          [loading]="isSubmitting()"
+          [disabled]="!isChecklistComplete()"
+          (btnClick)="onConfirmApply()"
+        >
+          <tp-icon name="zap" size="xs"></tp-icon>
+          <span>Confirmar e Enviar Candidatura</span>
+        </tp-button>
+      </ng-container>
+
+      <!-- ETAPA 4: AÇÕES -->
+      <ng-container *ngIf="currentStep() === 4">
+        <tp-button variant="outline" (btnClick)="onClose()">
+          Voltar ao Feed
+        </tp-button>
+
+        <tp-button
+          variant="primary"
+          (btnClick)="onNavigateToMyJobs()"
+        >
+          <span>Acompanhar em "Meus Trabalhos"</span>
+          <tp-icon name="chevron-right" size="xs"></tp-icon>
+        </tp-button>
+      </ng-container>
+    }
   </div>
 </tp-modal>

@@ -214,6 +214,17 @@
   gap: 2px;
 }
 
+.tp-pending-tag-row {
+  margin-bottom: 2px;
+}
+
+.tp-pending-shift-details {
+  display: flex;
+  align-items: center;
+  gap: var(--tp-spacing-sm);
+  padding: 4px 0 2px 0;
+}
+
 .tp-pending-status-bar {
   display: flex;
   align-items: center;

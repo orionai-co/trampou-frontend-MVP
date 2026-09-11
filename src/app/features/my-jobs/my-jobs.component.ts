@@ -18,6 +18,8 @@ import {
   RatingModalComponent
 } from '../../shared/components';
 
+import { UserProfileService } from '../../core/services/user-profile.service';
+
 export type MyJobsTab = 'accepted' | 'pending' | 'completed';
 
 @Component({
@@ -43,6 +45,7 @@ export type MyJobsTab = 'accepted' | 'pending' | 'completed';
 export class MyJobsComponent implements OnInit {
   readonly myJobsService = inject(MyJobsService);
   readonly shiftChatService = inject(ShiftChatService);
+  readonly userProfileService = inject(UserProfileService);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -53,7 +56,7 @@ export class MyJobsComponent implements OnInit {
   activeChatJobId = signal<string>('');
   activeChatJobTitle = signal<string>('');
   activeChatCompanyName = signal<string>('');
-  activeChatFreelancerName = signal<string>('Matheus Silva');
+  activeChatFreelancerName = signal<string>(this.userProfileService.name() || 'Profissional');
   activeChatFreelancerId = signal<string>('user-freelancer-1');
   isMobileChatOpen = signal<boolean>(false);
 
@@ -102,6 +105,7 @@ export class MyJobsComponent implements OnInit {
   feedbackMessage = signal<string | null>(null);
 
   ngOnInit(): void {
+    this.myJobsService.loadAllJobs();
     this.route.queryParams
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(params => {
@@ -183,7 +187,7 @@ export class MyJobsComponent implements OnInit {
     this.activeChatJobId.set(jobId);
     this.activeChatJobTitle.set(job.title);
     this.activeChatCompanyName.set(job.companyName);
-    this.activeChatFreelancerName.set('Matheus Silva');
+    this.activeChatFreelancerName.set(this.userProfileService.name() || 'Profissional');
     this.activeChatFreelancerId.set('user-freelancer-1');
     this.isMobileChatOpen.set(true);
   }
@@ -198,7 +202,7 @@ export class MyJobsComponent implements OnInit {
       this.activeChatJobId.set(contact.jobId);
       this.activeChatJobTitle.set(contact.jobTitle);
       this.activeChatCompanyName.set(contact.candidateName);
-      this.activeChatFreelancerName.set('Matheus Silva');
+      this.activeChatFreelancerName.set(this.userProfileService.name() || 'Profissional');
       this.activeChatFreelancerId.set('user-freelancer-1');
       this.isMobileChatOpen.set(true);
     }
