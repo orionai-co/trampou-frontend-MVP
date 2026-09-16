@@ -7,6 +7,11 @@ import { ChatContact } from '../../../shared/components';
 import { AuthService } from '../../../core/services/auth.service';
 import { OpportunityService, TRAMPOU_COMPANY_JOBS_STORAGE_KEY } from '../../opportunities/services/opportunity.service';
 import { TRAMPOU_APPLICATIONS_STORAGE_KEY } from '../../my-jobs/models/job-application.model';
+import {
+  BoostCampaignStorageItem,
+  TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY,
+  TRAMPOU_BOOST_DISMISSED_STORAGE_KEY
+} from '../../../core/models/sponsored-campaign.model';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +40,9 @@ export class CompanyService {
     completedShifts: 0
   });
 
+  readonly activeBoostCampaign = signal<BoostCampaignStorageItem | null>(null);
+  readonly hasActiveBoostCampaign = computed<boolean>(() => !!this.activeBoostCampaign());
+
   readonly isLoading = signal<boolean>(false);
   readonly contactsLoading = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
@@ -43,6 +51,8 @@ export class CompanyService {
   readonly isCreateJobModalRequested = signal<boolean>(false);
 
   constructor() {
+    this.loadStoredBoostCampaigns();
+
     if (typeof window !== 'undefined') {
       window.addEventListener('trampou:application-created', (e: any) => {
         const app = e?.detail;
@@ -50,6 +60,169 @@ export class CompanyService {
           this._jobs.update(list => this.enrichJobsWithApplications(list));
         }
       });
+
+      window.addEventListener('trampou:boost-updated', () => {
+        this.loadStoredBoostCampaigns();
+      });
+    }
+  }
+
+  /**
+   * Lê as campanhas de impulsionamento salvas no storage compartilhado
+   */
+  loadStoredBoostCampaigns(): BoostCampaignStorageItem | null {
+    if (typeof localStorage === 'undefined') return null;
+    try {
+      const isDismissed = localStorage.getItem(TRAMPOU_BOOST_DISMISSED_STORAGE_KEY) === 'true';
+      if (isDismissed) {
+        this.activeBoostCampaign.set(null);
+        return null;
+      }
+
+      const raw = localStorage.getItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY);
+      if (!raw) {
+        this.activeBoostCampaign.set(null);
+        return null;
+      }
+      const parsed = JSON.parse(raw);
+      const list: BoostCampaignStorageItem[] = Array.isArray(parsed) ? parsed : [parsed];
+      const active = list.find(c => c && c.active === true && c.status !== 'cancelled') || null;
+      this.activeBoostCampaign.set(active);
+      return active;
+    } catch {
+      this.activeBoostCampaign.set(null);
+      return null;
+    }
+  }
+
+  /**
+   * Salva a campanha no storage compartilhado, sincroniza com o backend e dispara evento global
+   */
+  saveBoostCampaign(item: BoostCampaignStorageItem): void {
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.removeItem(TRAMPOU_BOOST_DISMISSED_STORAGE_KEY);
+        const raw = localStorage.getItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY);
+        const existing: BoostCampaignStorageItem[] = raw ? JSON.parse(raw) : [];
+        const list = Array.isArray(existing) ? existing : [existing];
+
+        // Marca anteriores como inativas para manter a nova ativa
+        const updated = [
+          { ...item, active: true, status: 'active' as const },
+          ...list.map(c => ({ ...c, active: false, status: c.status || ('completed' as const) }))
+        ];
+
+        localStorage.setItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY, JSON.stringify(updated));
+      } catch (err) {
+        console.error('Erro ao salvar campanha no localStorage:', err);
+      }
+    }
+
+    this.activeBoostCampaign.set({ ...item, active: true, status: 'active' });
+
+    // Envia para a API .NET caso exista endpoint
+    try {
+      Promise.resolve(this.apiClient.post(API_ENDPOINTS.CAMPAIGNS.CREATE, {
+        id: item.id,
+        companyId: item.companyId,
+        type: item.objective,
+        title: item.objective === 'boost_job' ? `Impulsionamento de Vagas — ${item.companyName}` : `Destaque — ${item.companyName}`,
+        headline: item.headline,
+        videoUrl: item.videoUrl,
+        videoThumbnail: item.videoThumbnail || '',
+        durationDays: item.days,
+        targeting: {
+          radiusKm: item.radiusKm,
+          category: 'Gastronomia & Eventos',
+          minLevel: 2
+        }
+      })).catch(() => {});
+    } catch {}
+
+    // Dispara evento global para atualização imediata entre abas e componentes
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('trampou:boost-updated', { detail: item }));
+    }
+  }
+
+  /**
+   * Pausa ou cancela a campanha de impulsionamento ativa, removendo do topo do feed
+   */
+  cancelBoostCampaign(): void {
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem(TRAMPOU_BOOST_DISMISSED_STORAGE_KEY, 'true');
+        const raw = localStorage.getItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const list: BoostCampaignStorageItem[] = Array.isArray(parsed) ? parsed : [parsed];
+          const updated = list.map(c => ({
+            ...c,
+            active: false,
+            status: 'cancelled' as const,
+            deletedAt: new Date().toISOString()
+          }));
+          localStorage.setItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY, JSON.stringify(updated));
+        } else {
+          localStorage.setItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY, JSON.stringify([{
+            id: 'dismissed',
+            companyId: 'comp-001',
+            companyName: 'Buffet Espaço Paulista',
+            objective: 'featured_company',
+            headline: '',
+            videoUrl: '',
+            radiusKm: 10,
+            days: 7,
+            price: 99,
+            active: false,
+            status: 'cancelled',
+            deletedAt: new Date().toISOString(),
+            createdAt: new Date().toISOString()
+          }]));
+        }
+      } catch (err) {
+        console.error('Erro ao cancelar campanha no storage:', err);
+      }
+    }
+
+    this.activeBoostCampaign.set(null);
+
+    // Tenta avisar o backend caso exista endpoint
+    try {
+      Promise.resolve(this.apiClient.delete(API_ENDPOINTS.CAMPAIGNS.ACTIVE)).catch(() => {});
+    } catch {}
+
+    // Dispara evento global para remover o destaque do feed imediatamente
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('trampou:boost-updated', { detail: null }));
+    }
+  }
+
+  /**
+   * Atualiza os dados de uma campanha ativa existente
+   */
+  updateBoostCampaign(item: BoostCampaignStorageItem): void {
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.removeItem(TRAMPOU_BOOST_DISMISSED_STORAGE_KEY);
+        const raw = localStorage.getItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY);
+        const existing: BoostCampaignStorageItem[] = raw ? JSON.parse(raw) : [];
+        const list = Array.isArray(existing) ? existing : [existing];
+        const others = list.filter(c => c.id !== item.id);
+        const updated = [
+          { ...item, active: true, status: 'active' as const },
+          ...others.map(c => ({ ...c, active: false }))
+        ];
+        localStorage.setItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY, JSON.stringify(updated));
+      } catch (err) {
+        console.error('Erro ao atualizar campanha no storage:', err);
+      }
+    }
+
+    this.activeBoostCampaign.set({ ...item, active: true, status: 'active' });
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('trampou:boost-updated', { detail: item }));
     }
   }
 
@@ -81,15 +254,17 @@ export class CompanyService {
                 id: candId,
                 name: candName,
                 avatarInitials: app.candidateAvatar || 'PS',
-                level: 2,
-                rating: 4.9,
-                reviewsCount: 18,
-                matchPercentage: 96,
+                level: 1,
+                rating: 0,
+                reviewsCount: 0,
+                completedShiftsCount: 0,
+                matchPercentage: 95,
                 punctualityRate: 100,
-                pixKeyPreview: 'pedro***@gmail.com',
+                pixKeyPreview: 'pix***@trampou.com',
                 status: app.status === 'accepted' ? 'approved' : app.status === 'rejected' ? 'rejected' : 'applied',
-                roleTitle: job.title,
-                bio: 'Profissional pontual e qualificado para suporte operacional.'
+                roleTitle: job.title || 'Profissional Cadastrado',
+                bio: 'Profissional cadastrado na plataforma Trampou.',
+                recentReviews: []
               };
               jobCandidates.push(newCand);
               existingCandIds.add(candId);
@@ -151,6 +326,7 @@ export class CompanyService {
     this.isLoading.set(true);
     this.contactsLoading.set(true);
     this.errorMessage.set(null);
+    this.loadStoredBoostCampaigns();
 
     try {
       const [profileRes, activeJobsRes, historyJobsRes, contactsRes, metricsRes] = await Promise.allSettled([
@@ -224,6 +400,41 @@ export class CompanyService {
     } catch {}
   }
 
+  private removeJobLocally(jobId: string): void {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      // 1. Remove de TRAMPOU_COMPANY_JOBS_STORAGE_KEY ('trampou_company_created_jobs')
+      const raw1 = localStorage.getItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY);
+      if (raw1) {
+        try {
+          const list1: CompanyJob[] = JSON.parse(raw1) || [];
+          const filtered1 = list1.filter(j => j && j.id !== jobId);
+          localStorage.setItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY, JSON.stringify(filtered1));
+        } catch {}
+      }
+
+      // 2. Remove de 'trampou_company_jobs'
+      const raw2 = localStorage.getItem('trampou_company_jobs');
+      if (raw2) {
+        try {
+          const list2: CompanyJob[] = JSON.parse(raw2) || [];
+          const filtered2 = list2.filter(j => j && j.id !== jobId);
+          localStorage.setItem('trampou_company_jobs', JSON.stringify(filtered2));
+        } catch {}
+      }
+
+      // 3. Registra em trampou_deleted_job_ids para evitar que qualquer cache reidrate a vaga excluída
+      try {
+        const rawDel = localStorage.getItem('trampou_deleted_job_ids');
+        const deletedIds: string[] = rawDel ? JSON.parse(rawDel) : [];
+        if (!deletedIds.includes(jobId)) {
+          deletedIds.push(jobId);
+          localStorage.setItem('trampou_deleted_job_ids', JSON.stringify(deletedIds));
+        }
+      } catch {}
+    } catch {}
+  }
+
   private notifyJobsUpdated(job?: CompanyJob): void {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('trampou:jobs-updated', { detail: job }));
@@ -239,15 +450,26 @@ export class CompanyService {
       const jobs = await this.apiClient.get<CompanyJob[]>(API_ENDPOINTS.COMPANY_DASHBOARD.ACTIVE_JOBS);
       let list = Array.isArray(jobs) ? jobs : [];
 
+      // Filtra vagas marcadas como deletadas
+      if (typeof localStorage !== 'undefined') {
+        try {
+          const deletedRaw = localStorage.getItem('trampou_deleted_job_ids');
+          const deletedIds = new Set<string>(deletedRaw ? JSON.parse(deletedRaw) : []);
+          list = list.filter(j => j && !deletedIds.has(j.id));
+        } catch {}
+      }
+
       // Mescla com vagas locais salvas no localStorage
       if (typeof localStorage !== 'undefined') {
         try {
           const raw = localStorage.getItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY);
+          const deletedRaw = localStorage.getItem('trampou_deleted_job_ids');
+          const deletedIds = new Set<string>(deletedRaw ? JSON.parse(deletedRaw) : []);
           if (raw) {
             const localJobs: CompanyJob[] = JSON.parse(raw);
             if (Array.isArray(localJobs)) {
               const apiIds = new Set(list.map(j => j.id));
-              const extras = localJobs.filter(j => j && (j.status === 'open' || (j.status as any) === 'Aberta') && !apiIds.has(j.id));
+              const extras = localJobs.filter(j => j && (j.status === 'open' || (j.status as any) === 'Aberta') && !apiIds.has(j.id) && !deletedIds.has(j.id));
               list = [...extras, ...list];
             }
           }
@@ -326,6 +548,63 @@ export class CompanyService {
       this.persistJobLocally(fallbackJob);
       this.notifyJobsUpdated(fallbackJob);
       return fallbackJob;
+    }
+  }
+
+  /**
+   * Atualiza dados de uma vaga existente no backend, storage local e propaga para o feed
+   */
+  async updateJob(updatedJob: CompanyJob): Promise<CompanyJob> {
+    this._jobs.update(list => list.map(j => (j.id === updatedJob.id ? updatedJob : j)));
+    this.persistJobLocally(updatedJob);
+    this.notifyJobsUpdated(updatedJob);
+
+    try {
+      await this.apiClient.put(`${API_ENDPOINTS.COMPANY_DASHBOARD.ACTIVE_JOBS}/${updatedJob.id}`, updatedJob);
+    } catch {
+      // safe fallback
+    }
+
+    return updatedJob;
+  }
+
+  /**
+   * Cancela e exclui uma vaga ativa, removendo do backend SQLite, storage local e propagando para o feed
+   */
+  async cancelOrDeleteJob(jobId: string): Promise<void> {
+    const existing = this.getJobById(jobId);
+
+    const cancelledJob: CompanyJob = {
+      ...(existing || { id: jobId } as CompanyJob),
+      status: 'cancelled'
+    };
+
+    // Atualiza estado reativo marcando como cancelada (remove de activeJobs e move para histórico)
+    this._jobs.update(list => list.map(j => (j.id === jobId ? cancelledJob : j)));
+
+    // Remove do storage local (trampou_company_jobs e trampou_company_created_jobs)
+    this.removeJobLocally(jobId);
+
+    // Notifica feed de oportunidades e Meus Trabalhos
+    this.notifyJobsUpdated(cancelledJob);
+
+    // Dispara requisições HTTP DELETE para a API .NET
+    try {
+      await this.apiClient.delete(`${API_ENDPOINTS.COMPANY_DASHBOARD.ACTIVE_JOBS}/${jobId}`);
+    } catch {
+      // safe fallback
+    }
+
+    try {
+      await this.apiClient.delete(`/company/jobs/${jobId}`);
+    } catch {
+      // safe fallback
+    }
+
+    try {
+      await this.apiClient.delete(`/opportunities/${jobId}`);
+    } catch {
+      // safe fallback
     }
   }
 

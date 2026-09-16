@@ -413,6 +413,48 @@
   transform: translateY(-1px);
 }
 
+.tp-feat-own-ad-badge {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 18px;
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--tp-radius-md);
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+  transition: all var(--tp-transition-fast);
+  cursor: pointer;
+}
+
+.tp-feat-own-ad-badge:hover {
+  background: linear-gradient(135deg, #0369a1, #075985);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.tp-feat-audit-badge {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  background-color: #f8fafc;
+  color: #64748b;
+  border: 1px dashed #cbd5e1;
+  border-radius: var(--tp-radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  user-select: none;
+}
+
 /* =========================================================================
    RESPONSIVIDADE MOBILE
    ========================================================================= */

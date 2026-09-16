@@ -32,11 +32,52 @@
   gap: 8px;
 }
 
+.tp-ccard-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .tp-ccard-badges {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.tp-ccard-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.tp-ccard-icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--tp-radius-md);
+  border: 1px solid var(--tp-color-border);
+  background: var(--tp-color-surface);
+  color: var(--tp-color-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--tp-transition-fast);
+}
+
+.tp-ccard-icon-btn:hover {
+  background: var(--tp-color-surface-subtle);
+  color: var(--tp-color-primary-900);
+  border-color: var(--tp-color-border-hover);
+  transform: translateY(-1px);
+}
+
+.tp-ccard-btn-delete:hover {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
 }
 
 .tp-level-chip {

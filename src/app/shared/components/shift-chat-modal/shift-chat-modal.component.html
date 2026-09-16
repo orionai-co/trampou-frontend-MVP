@@ -23,8 +23,8 @@
         <div
           *ngFor="let msg of currentRoom()?.messages"
           class="tp-chat-msg-row"
-          [class.tp-msg-outgoing]="msg.senderRole === currentUserRole"
-          [class.tp-msg-incoming]="msg.senderRole !== currentUserRole"
+          [class.tp-msg-outgoing]="isOutgoing(msg)"
+          [class.tp-msg-incoming]="!isOutgoing(msg) && msg.senderId !== 'system'"
           [class.tp-msg-system]="msg.senderId === 'system'"
         >
           <!-- Mensagem do Sistema -->

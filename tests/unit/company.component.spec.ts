@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CompanyComponent } from '../../src/app/features/company/company.component';
 import { CompanyService } from '../../src/app/features/company/services/company.service';
 import { ApiClientService } from '../../src/app/core/services/api-client.service';
@@ -274,5 +274,77 @@ describe('CompanyComponent', () => {
     component.onContactSearchInput(mockEvent);
     expect(component.contactSearchTerm()).toBe('Barista');
   });
+
+  it('should open edit job modal and update job via handleJobUpdated', fakeAsync(() => {
+    component.openEditJobModal(mockJob);
+    expect(component.jobToEdit()).toBe(mockJob);
+    expect(component.isCreateModalOpen()).toBeTrue();
+
+    const updatedJob = { ...mockJob, title: 'Garçom Atualizado', paymentAmount: 250 };
+    component.handleJobUpdated(updatedJob);
+    tick();
+
+    expect(component.feedbackMessage()).toContain('Garçom Atualizado');
+    expect(companyService.getJobById('comp-job-1')?.title).toBe('Garçom Atualizado');
+  }));
+
+  it('should open confirm delete job modal and delete job on confirmation', fakeAsync(() => {
+    component.openDeleteJobConfirm(mockJob);
+    expect(component.jobToDelete()).toBe(mockJob);
+    expect(component.isConfirmDeleteJobOpen()).toBeTrue();
+
+    component.confirmDeleteJob();
+    tick();
+
+    expect(component.isConfirmDeleteJobOpen()).toBeFalse();
+    expect(component.feedbackMessage()).toContain('encerrada com sucesso');
+    expect(companyService.activeJobs().some(j => j.id === mockJob.id)).toBeFalse();
+  }));
+
+  it('should open edit boost modal with active campaign data', fakeAsync(() => {
+    companyService.saveBoostCampaign({
+      id: 'boost-123',
+      companyId: 'comp-001',
+      companyName: 'Empresa Teste',
+      objective: 'featured_company',
+      headline: 'Destaque VIP',
+      videoUrl: 'https://video.mp4',
+      radiusKm: 15,
+      days: 7,
+      price: 99,
+      active: true,
+      createdAt: new Date().toISOString()
+    });
+
+    component.openEditBoostModal();
+    expect(component.campaignToEdit()?.id).toBe('boost-123');
+    expect(component.isBoostModalOpen()).toBeTrue();
+  }));
+
+  it('should open confirm cancel boost modal and cancel campaign on confirmation', fakeAsync(() => {
+    companyService.saveBoostCampaign({
+      id: 'boost-123',
+      companyId: 'comp-001',
+      companyName: 'Empresa Teste',
+      objective: 'featured_company',
+      headline: 'Destaque VIP',
+      videoUrl: 'https://video.mp4',
+      radiusKm: 15,
+      days: 7,
+      price: 99,
+      active: true,
+      createdAt: new Date().toISOString()
+    });
+
+    component.openCancelBoostConfirm();
+    expect(component.isConfirmCancelBoostOpen()).toBeTrue();
+
+    component.confirmCancelBoost();
+    tick();
+
+    expect(component.isConfirmCancelBoostOpen()).toBeFalse();
+    expect(companyService.hasActiveBoostCampaign()).toBeFalse();
+    expect(component.feedbackMessage()).toContain('Impulsionamento encerrado com sucesso');
+  }));
 });
 

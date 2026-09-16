@@ -80,11 +80,16 @@ describe('OpportunitiesFeedComponent', () => {
     fixture = TestBed.createComponent(OpportunitiesFeedComponent);
     component = fixture.componentInstance;
     service = TestBed.inject(OpportunityService);
+    localStorage.clear();
 
     spyOn(service, 'getOpportunities').and.callFake(() => {
       (service as any).opportunitiesState.set(mockList);
       return of(mockList);
     });
+  });
+
+  afterEach(() => {
+    localStorage.clear();
   });
 
   it('should create the OpportunitiesFeedComponent', () => {
@@ -175,14 +180,45 @@ describe('OpportunitiesFeedComponent', () => {
     expect(component.activeTab()).toBe('for_you');
   }));
 
-  it('should render featured company card interleaved in feed after second job card', fakeAsync(() => {
+  it('should render featured company card at the top of the feed', fakeAsync(() => {
     fixture.detectChanges();
     tick(300);
     fixture.detectChanges();
 
+    const sectionEl = fixture.nativeElement.querySelector('.tp-feed-cards-list');
+    expect(sectionEl).toBeTruthy();
+    const firstChild = sectionEl.children[0];
+    expect(firstChild.tagName.toLowerCase()).toBe('tp-featured-company-card');
+    expect(firstChild.textContent).toContain('Buffet Espaço Paulista');
+    expect(firstChild.textContent).toContain('Patrocinado');
+  }));
+
+  it('should reactively update featured company card on trampou:boost-updated event', fakeAsync(() => {
+    fixture.detectChanges();
+    tick(300);
+
+    const newBoostItem = {
+      id: 'camp-reactive-123',
+      companyId: 'comp-999',
+      companyName: 'Bistrô Paris 6',
+      objective: 'featured_company',
+      headline: 'Nova campanha ativada em tempo real!',
+      videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-restaurant-kitchen-staff-working-42998-large.mp4',
+      radiusKm: 15,
+      days: 7,
+      price: 99,
+      active: true,
+      createdAt: new Date().toISOString()
+    };
+    localStorage.setItem('trampou_boost_campaigns', JSON.stringify([newBoostItem]));
+    window.dispatchEvent(new CustomEvent('trampou:boost-updated', { detail: newBoostItem }));
+
+    tick(100);
+    fixture.detectChanges();
+
     const featuredCard = fixture.nativeElement.querySelector('tp-featured-company-card');
     expect(featuredCard).toBeTruthy();
-    expect(featuredCard.textContent).toContain('Buffet Espaço Paulista');
-    expect(featuredCard.textContent).toContain('Patrocinado');
+    expect(featuredCard.textContent).toContain('Bistrô Paris 6');
+    expect(featuredCard.textContent).toContain('Nova campanha ativada em tempo real!');
   }));
 });

@@ -4,7 +4,7 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { JobApplication } from './models/job-application.model';
 import { MyJobsService } from './services/my-jobs.service';
-import { ShiftChatService } from '../../core/services/shift-chat.service';
+import { ShiftChatService, buildChannelId } from '../../core/services/shift-chat.service';
 import { JobStatusItemComponent } from './components/job-status-item/job-status-item.component';
 import { CheckInModalComponent } from './components/check-in-modal/check-in-modal.component';
 import {
@@ -19,6 +19,7 @@ import {
 } from '../../shared/components';
 
 import { UserProfileService } from '../../core/services/user-profile.service';
+import { AuthService } from '../../core/services/auth.service';
 
 export type MyJobsTab = 'accepted' | 'pending' | 'completed';
 
@@ -46,31 +47,41 @@ export class MyJobsComponent implements OnInit {
   readonly myJobsService = inject(MyJobsService);
   readonly shiftChatService = inject(ShiftChatService);
   readonly userProfileService = inject(UserProfileService);
+  private readonly authService = inject(AuthService, { optional: true });
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
   activeTab = signal<MyJobsTab>('accepted');
   selectedJob = signal<JobApplication | null>(null);
 
-  // Chat Efêmero Integrado (Master-Detail em 3 Colunas)
+  getEffectiveFreelancerId(job?: JobApplication): string {
+    const user = this.authService?.currentUser();
+    return job?.candidateId || user?.id || 'cand-pedro-1';
+  }
+
+  // Chat Integrado (Master-Detail em 3 Colunas)
   activeChatJobId = signal<string>('');
   activeChatJobTitle = signal<string>('');
   activeChatCompanyName = signal<string>('');
   activeChatFreelancerName = signal<string>(this.userProfileService.name() || 'Profissional');
-  activeChatFreelancerId = signal<string>('user-freelancer-1');
+  activeChatFreelancerId = signal<string>(this.getEffectiveFreelancerId());
   isMobileChatOpen = signal<boolean>(false);
 
   // Lista Reativa de Contatos Ativos (Empresas parceiras com turnos confirmados)
   readonly activeChatContacts = computed<ChatContact[]>(() => {
+    // Escuta reativa do signal de salas para atualizar a lista ao vivo
+    this.shiftChatService.rooms();
     const accepted = this.myJobsService.acceptedJobs();
     const contacts: ChatContact[] = [];
 
     for (const job of accepted) {
       const jobId = job.opportunityId || job.id;
-      const room = this.shiftChatService.getRoomByJobId(jobId);
-      const lastMsg = room?.messages && room.messages.length > 0
-        ? room.messages[room.messages.length - 1]
-        : undefined;
+      const candId = this.getEffectiveFreelancerId(job);
+      const channelId = buildChannelId(jobId, candId);
+      const room = this.shiftChatService.getRoomByJobAndFreelancer(jobId, candId) || this.shiftChatService.getRoomByJobId(jobId);
+      const storedMsgs = this.shiftChatService.getMessagesByChannel(channelId);
+      const msgs = storedMsgs.length > 0 ? storedMsgs : (room?.messages || []);
+      const lastMsg = msgs.length > 0 ? msgs[msgs.length - 1] : undefined;
 
       const initials = job.companyName
         .split(' ')
@@ -82,7 +93,7 @@ export class MyJobsComponent implements OnInit {
       contacts.push({
         jobId,
         jobTitle: job.title,
-        candidateId: 'user-freelancer-1',
+        candidateId: candId,
         candidateName: job.companyName,
         avatarInitials: initials || 'EM',
         category: job.category,
@@ -184,11 +195,19 @@ export class MyJobsComponent implements OnInit {
   // Abertura de Chat na Sidebar / Coluna 3
   openChatForJob(job: JobApplication): void {
     const jobId = job.opportunityId || job.id;
+    const candId = this.getEffectiveFreelancerId(job);
     this.activeChatJobId.set(jobId);
     this.activeChatJobTitle.set(job.title);
     this.activeChatCompanyName.set(job.companyName);
     this.activeChatFreelancerName.set(this.userProfileService.name() || 'Profissional');
-    this.activeChatFreelancerId.set('user-freelancer-1');
+    this.activeChatFreelancerId.set(candId);
+    this.shiftChatService.getOrCreateRoom(
+      jobId,
+      job.title,
+      job.companyName,
+      this.userProfileService.name() || 'Profissional',
+      candId
+    );
     this.isMobileChatOpen.set(true);
   }
 
@@ -199,11 +218,19 @@ export class MyJobsComponent implements OnInit {
     if (app) {
       this.openChatForJob(app);
     } else {
+      const candId = contact.candidateId || this.getEffectiveFreelancerId();
       this.activeChatJobId.set(contact.jobId);
       this.activeChatJobTitle.set(contact.jobTitle);
       this.activeChatCompanyName.set(contact.candidateName);
       this.activeChatFreelancerName.set(this.userProfileService.name() || 'Profissional');
-      this.activeChatFreelancerId.set('user-freelancer-1');
+      this.activeChatFreelancerId.set(candId);
+      this.shiftChatService.getOrCreateRoom(
+        contact.jobId,
+        contact.jobTitle,
+        contact.candidateName,
+        this.userProfileService.name() || 'Profissional',
+        candId
+      );
       this.isMobileChatOpen.set(true);
     }
   }

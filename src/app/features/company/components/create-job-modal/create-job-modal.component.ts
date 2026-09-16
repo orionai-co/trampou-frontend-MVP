@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, signal, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+  ChangeDetectionStrategy,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CompanyJob } from '../../models/company-job.model';
@@ -40,10 +49,13 @@ export interface CreateJobFormData {
   styleUrl: './create-job-modal.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreateJobModalComponent {
+export class CreateJobModalComponent implements OnChanges {
   @Input() isOpen = false;
+  @Input() jobToEdit?: CompanyJob | null;
+
   @Output() closed = new EventEmitter<void>();
   @Output() jobCreated = new EventEmitter<Partial<CompanyJob>>();
+  @Output() jobUpdated = new EventEmitter<CompanyJob>();
 
   currentStep = signal<1 | 2 | 3>(1);
 
@@ -74,21 +86,57 @@ export class CreateJobModalComponent {
   errorMessage = signal<string | null>(null);
 
   get stepTitle(): string {
+    const isEdit = !!this.jobToEdit;
     switch (this.currentStep()) {
-      case 1: return 'Passo 1 de 3: Função & Logística';
-      case 2: return 'Passo 2 de 3: Vagas & Valor';
-      case 3: return 'Passo 3 de 3: Instruções & Publicação';
-      default: return 'Publicar Vaga';
+      case 1: return isEdit ? 'Editar Vaga: Função & Logística' : 'Passo 1 de 3: Função & Logística';
+      case 2: return isEdit ? 'Editar Vaga: Vagas & Valor' : 'Passo 2 de 3: Vagas & Valor';
+      case 3: return isEdit ? 'Editar Vaga: Revisão & Salvar' : 'Passo 3 de 3: Instruções & Publicação';
+      default: return isEdit ? 'Editar Vaga' : 'Publicar Vaga';
     }
   }
 
   get stepSubtitle(): string {
+    const isEdit = !!this.jobToEdit;
     switch (this.currentStep()) {
       case 1: return 'Defina a função, categoria, data, horário e endereço do turno';
       case 2: return 'Defina quantas pessoas precisa, nível e valor do repasse via PIX';
-      case 3: return 'Revise as instruções de vestimenta e confirme a publicação';
+      case 3: return isEdit ? 'Revise os dados da vaga e salve as alterações' : 'Revise as instruções de vestimenta e confirme a publicação';
       default: return '';
     }
+  }
+
+  get submitButtonLabel(): string {
+    return this.jobToEdit ? 'Salvar Alterações da Vaga' : 'Publicar Vaga Agora';
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['jobToEdit'] && this.jobToEdit) {
+      this.populateForEdit(this.jobToEdit);
+    } else if (changes['isOpen'] && this.isOpen && !this.jobToEdit) {
+      this.resetForm();
+    }
+  }
+
+  private populateForEdit(job: CompanyJob): void {
+    this.currentStep.set(1);
+    this.errorMessage.set(null);
+    this.formData.set({
+      title: job.title || '',
+      category: job.category || 'Gastronomia',
+      date: job.date || 'Hoje',
+      startTime: job.schedule?.start || '18:00',
+      endTime: job.schedule?.end || '23:30',
+      totalHours: job.schedule?.totalHours || 5.5,
+      city: job.location?.city || 'São Paulo',
+      neighborhood: job.location?.neighborhood || 'Jardins',
+      address: job.location?.address || '',
+      slotsTotal: job.slots?.total || 1,
+      requiredLevel: (job.requiredLevel || 1) as 1 | 2 | 3,
+      paymentAmount: job.paymentAmount || 150,
+      requirementsText: (job.requirements && job.requirements.length > 0)
+        ? job.requirements.join('\n')
+        : 'Aparência profissional e pontualidade'
+    });
   }
 
   setCategory(cat: string): void {
@@ -168,32 +216,62 @@ export class CreateJobModalComponent {
       .map(r => r.trim())
       .filter(r => r.length > 0);
 
-    const payload: Partial<CompanyJob> = {
-      title: data.title.trim(),
-      category: data.category,
-      date: data.date,
-      schedule: {
-        start: data.startTime,
-        end: data.endTime,
-        totalHours: data.totalHours || 5
-      },
-      location: {
-        city: data.city.trim() || 'São Paulo',
-        neighborhood: data.neighborhood.trim() || 'Centro',
-        address: data.address.trim()
-      },
-      slots: {
-        total: data.slotsTotal,
-        filled: 0
-      },
-      paymentAmount: Number(data.paymentAmount),
-      requiredLevel: data.requiredLevel,
-      status: 'open',
-      requirements: requirements.length > 0 ? requirements : ['Aparência profissional e pontualidade'],
-      candidates: []
-    };
+    if (this.jobToEdit) {
+      const updatedJob: CompanyJob = {
+        ...this.jobToEdit,
+        title: data.title.trim(),
+        category: data.category,
+        date: data.date,
+        schedule: {
+          start: data.startTime,
+          end: data.endTime,
+          totalHours: data.totalHours || 5
+        },
+        location: {
+          city: data.city.trim() || 'São Paulo',
+          neighborhood: data.neighborhood.trim() || 'Centro',
+          address: data.address.trim(),
+          distanceKm: this.jobToEdit.location?.distanceKm ?? 2.0
+        },
+        slots: {
+          total: data.slotsTotal,
+          filled: Math.min(data.slotsTotal, this.jobToEdit.slots?.filled || 0)
+        },
+        paymentAmount: Number(data.paymentAmount),
+        requiredLevel: data.requiredLevel,
+        requirements: requirements.length > 0 ? requirements : ['Aparência profissional e pontualidade']
+      };
 
-    this.jobCreated.emit(payload);
+      this.jobUpdated.emit(updatedJob);
+    } else {
+      const payload: Partial<CompanyJob> = {
+        title: data.title.trim(),
+        category: data.category,
+        date: data.date,
+        schedule: {
+          start: data.startTime,
+          end: data.endTime,
+          totalHours: data.totalHours || 5
+        },
+        location: {
+          city: data.city.trim() || 'São Paulo',
+          neighborhood: data.neighborhood.trim() || 'Centro',
+          address: data.address.trim()
+        },
+        slots: {
+          total: data.slotsTotal,
+          filled: 0
+        },
+        paymentAmount: Number(data.paymentAmount),
+        requiredLevel: data.requiredLevel,
+        status: 'open',
+        requirements: requirements.length > 0 ? requirements : ['Aparência profissional e pontualidade'],
+        candidates: []
+      };
+
+      this.jobCreated.emit(payload);
+    }
+
     this.resetForm();
     this.closed.emit();
   }

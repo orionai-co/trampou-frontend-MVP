@@ -1,126 +1,378 @@
 <tp-modal
   [isOpen]="isOpen"
-  title="🚀 Impulsionar Empresa no Feed"
-  subtitle="Ganhe visibilidade prioritária para os melhores profissionais da sua região"
-  maxWidth="900px"
+  [title]="modalTitle()"
+  [subtitle]="modalSubtitle()"
+  maxWidth="920px"
   [hasFooter]="true"
   (closed)="onClose()"
 >
+  <!-- INDICADOR VISUAL DE PROGRESSO (STEPPER EM 3 PASSOS) -->
+  <div class="tp-boost-stepper-header" aria-label="Progresso do Impulsionamento">
+    <!-- Passo 1: Criativo -->
+    <button
+      type="button"
+      class="tp-boost-step-item"
+      [class.tp-boost-step-active]="currentStep() === 1"
+      [class.tp-boost-step-done]="currentStep() > 1"
+      (click)="goToStep(1)"
+    >
+      <div class="tp-boost-step-circle">
+        <tp-icon *ngIf="currentStep() > 1" name="check" size="xs"></tp-icon>
+        <span *ngIf="currentStep() <= 1">1</span>
+      </div>
+      <div class="tp-boost-step-text">
+        <span class="tp-boost-step-num">Passo 1</span>
+        <span class="tp-boost-step-name">Criativo</span>
+      </div>
+    </button>
+
+    <div class="tp-boost-step-line" [class.tp-boost-line-done]="currentStep() > 1"></div>
+
+    <!-- Passo 2: Alcance -->
+    <button
+      type="button"
+      class="tp-boost-step-item"
+      [class.tp-boost-step-active]="currentStep() === 2"
+      [class.tp-boost-step-done]="currentStep() > 2"
+      [disabled]="!isStep1Valid()"
+      (click)="goToStep(2)"
+    >
+      <div class="tp-boost-step-circle">
+        <tp-icon *ngIf="currentStep() > 2" name="check" size="xs"></tp-icon>
+        <span *ngIf="currentStep() <= 2">2</span>
+      </div>
+      <div class="tp-boost-step-text">
+        <span class="tp-boost-step-num">Passo 2</span>
+        <span class="tp-boost-step-name">Alcance</span>
+      </div>
+    </button>
+
+    <div class="tp-boost-step-line" [class.tp-boost-line-done]="currentStep() > 2"></div>
+
+    <!-- Passo 3: Investimento -->
+    <button
+      type="button"
+      class="tp-boost-step-item"
+      [class.tp-boost-step-active]="currentStep() === 3"
+      [disabled]="!isStep1Valid()"
+      (click)="goToStep(3)"
+    >
+      <div class="tp-boost-step-circle">
+        <span>3</span>
+      </div>
+      <div class="tp-boost-step-text">
+        <span class="tp-boost-step-num">Passo 3</span>
+        <span class="tp-boost-step-name">Investimento</span>
+      </div>
+    </button>
+  </div>
+
   <div class="tp-boost-modal-layout">
     
-    <!-- COLUNA ESQUERDA: CONFIGURAÇÕES DA CAMPANHA -->
+    <!-- COLUNA ESQUERDA: ETAPAS DO FORMULÁRIO -->
     <div class="tp-boost-form-col">
 
-      <!-- 1. TIPO DE DESTAQUE -->
-      <div class="tp-boost-section">
-        <label class="tp-boost-label">1. Objetivo do Impulsionamento</label>
-        <div class="tp-boost-type-grid">
-          <button
-            type="button"
-            class="tp-type-option-card"
-            [class.tp-type-selected]="selectedType() === 'featured_company'"
-            (click)="selectType('featured_company')"
-          >
-            <div class="tp-type-icon-wrap">
-              <tp-icon name="sparkles" size="sm"></tp-icon>
-            </div>
-            <div class="tp-type-info">
-              <strong>Apresentar Empresa & Cultura</strong>
-              <small>Vídeo em destaque no topo do feed para todos os talentos</small>
-            </div>
-          </button>
+      <!-- =====================================================================
+           PASSO 1: CONTEÚDO & MÍDIA (CRIATIVO)
+           ===================================================================== -->
+      <div *ngIf="currentStep() === 1" class="tp-step-panel">
+        
+        <!-- 1. Objetivo do Impulsionamento -->
+        <div class="tp-boost-section">
+          <label class="tp-boost-label">1. Objetivo do Impulsionamento</label>
+          <div class="tp-boost-type-grid">
+            <button
+              type="button"
+              class="tp-type-option-card"
+              [class.tp-type-selected]="selectedType() === 'featured_company'"
+              (click)="selectType('featured_company')"
+            >
+              <div class="tp-type-icon-wrap">
+                <tp-icon name="sparkles" size="sm"></tp-icon>
+              </div>
+              <div class="tp-type-info">
+                <strong>Apresentar Empresa & Cultura</strong>
+                <small>Vídeo em destaque no topo do feed para todos os talentos</small>
+              </div>
+            </button>
 
-          <button
-            type="button"
-            class="tp-type-option-card"
-            [class.tp-type-selected]="selectedType() === 'boost_job'"
-            (click)="selectType('boost_job')"
-          >
-            <div class="tp-type-icon-wrap">
-              <tp-icon name="briefcase" size="sm"></tp-icon>
-            </div>
-            <div class="tp-type-info">
-              <strong>Impulsionar Vagas Abertas</strong>
-              <small>Notificação push e prioridade para fechar turnos urgentes</small>
-            </div>
-          </button>
+            <button
+              type="button"
+              class="tp-type-option-card"
+              [class.tp-type-selected]="selectedType() === 'boost_job'"
+              (click)="selectType('boost_job')"
+            >
+              <div class="tp-type-icon-wrap">
+                <tp-icon name="briefcase" size="sm"></tp-icon>
+              </div>
+              <div class="tp-type-info">
+                <strong>Impulsionar Vagas Abertas</strong>
+                <small>Notificação push e prioridade para fechar turnos urgentes</small>
+              </div>
+            </button>
+          </div>
         </div>
-      </div>
 
-      <!-- 2. HEADLINE / FRASE DE DESTAQUE -->
-      <div class="tp-boost-section">
-        <label class="tp-boost-label" for="campaignHeadline">
-          2. Headline do Card
-          <span class="tp-char-hint">{{ headline().length }}/120</span>
-        </label>
-        <textarea
-          id="campaignHeadline"
-          class="tp-boost-textarea"
-          rows="2"
-          maxlength="120"
-          [ngModel]="headline()"
-          (ngModelChange)="updateHeadline($event)"
-          placeholder="Ex: Conheça nosso espaço, nossa equipe e como é trabalhar nos nossos turnos..."
-        ></textarea>
-      </div>
+        <!-- 2. Headline do Card -->
+        <div class="tp-boost-section">
+          <label class="tp-boost-label" for="campaignHeadline">
+            2. Headline do Card
+            <span class="tp-char-hint">{{ headline().length }}/120</span>
+          </label>
+          <textarea
+            id="campaignHeadline"
+            class="tp-boost-textarea"
+            [class.tp-textarea-error]="headline().trim().length > 0 && headline().trim().length < 5"
+            [class.tp-input--error]="headline().trim().length > 0 && headline().trim().length < 5"
+            rows="2"
+            maxlength="120"
+            [ngModel]="headline()"
+            (ngModelChange)="updateHeadline($event)"
+            placeholder="Ex: Conheça nosso espaço, nossa equipe e como é trabalhar nos nossos turnos..."
+          ></textarea>
+          <span *ngIf="headline().trim().length > 0 && headline().trim().length < 5" class="tp-field-error-msg">
+            * A headline deve conter pelo menos 5 caracteres para avançar.
+          </span>
+        </div>
 
-      <!-- 3. SELEÇÃO DO VÍDEO -->
-      <div class="tp-boost-section">
-        <label class="tp-boost-label">3. Vídeo Institucional</label>
-        <div class="tp-video-selector-grid">
+        <!-- 3. Vídeo Institucional (Upload Real do Dispositivo) -->
+        <div class="tp-boost-section">
+          <div class="tp-section-header-row">
+            <label class="tp-boost-label">3. Vídeo Institucional</label>
+            <span class="tp-hint-tag" *ngIf="uploadedVideo()">Vídeo anexado</span>
+          </div>
+
+          <input
+            #videoFileInput
+            type="file"
+            accept="video/mp4,video/webm,video/quicktime"
+            hidden
+            (change)="onVideoFileSelected($event)"
+          />
+
+          <!-- Quando nenhum vídeo for anexado: Área de Upload Visual Destacada -->
           <div
-            *ngFor="let vid of availableVideos; let i = index"
-            class="tp-video-thumb-option"
-            [class.tp-video-option-selected]="selectedVideoIndex() === i"
-            (click)="selectVideo(i)"
+            *ngIf="!uploadedVideo()"
+            class="tp-video-upload-area"
+            (click)="triggerFileInput(videoFileInput)"
+            role="button"
+            tabindex="0"
+            aria-label="Anexar vídeo do computador ou celular"
           >
-            <img [src]="vid.thumbnail" [alt]="vid.title" />
-            <span class="tp-video-option-duration">{{ vid.duration }}</span>
-            <span class="tp-video-option-name">{{ vid.title }}</span>
-            <span class="tp-video-check-mark" *ngIf="selectedVideoIndex() === i">
-              <tp-icon name="check" size="xs"></tp-icon>
+            <div class="tp-upload-icon-circle">
+              <tp-icon name="upload" size="md"></tp-icon>
+            </div>
+            <strong class="tp-upload-title">Anexar vídeo do computador ou celular</strong>
+            <span class="tp-upload-sub">Formatos suportados: MP4, WebM, MOV (até 50MB)</span>
+            <button type="button" class="tp-btn-browse-file">
+              <tp-icon name="upload" size="xs"></tp-icon>
+              <span>Selecionar Arquivo</span>
+            </button>
+          </div>
+
+          <!-- Quando houver vídeo anexado: Card com detalhes e ações -->
+          <div *ngIf="uploadedVideo() as video" class="tp-uploaded-video-card">
+            <div class="tp-uploaded-video-body">
+              <div class="tp-uploaded-media-thumb">
+                <video [src]="video.url" muted playsinline></video>
+                <div class="tp-uploaded-play-overlay">
+                  <tp-icon name="play" size="sm"></tp-icon>
+                </div>
+              </div>
+
+              <div class="tp-uploaded-info">
+                <div class="tp-uploaded-filename-row">
+                  <strong class="tp-uploaded-filename" [title]="video.fileName">{{ video.fileName }}</strong>
+                  <span class="tp-badge-ready">
+                    <tp-icon name="check-circle" size="xs"></tp-icon>
+                    <span>Pronto para veiculação</span>
+                  </span>
+                </div>
+                <div class="tp-uploaded-meta">
+                  <span>{{ video.fileSizeText }}</span>
+                  <span class="tp-meta-bullet">•</span>
+                  <span>Vídeo Local do Dispositivo</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tp-uploaded-video-footer">
+              <button
+                type="button"
+                class="tp-btn-video-action tp-btn-replace"
+                (click)="triggerFileInput(videoFileInput)"
+              >
+                <tp-icon name="refresh-cw" size="xs"></tp-icon>
+                <span>Substituir vídeo</span>
+              </button>
+              <button
+                type="button"
+                class="tp-btn-video-action tp-btn-remove"
+                (click)="removeUploadedVideo($event)"
+              >
+                <tp-icon name="x" size="xs"></tp-icon>
+                <span>Remover</span>
+              </button>
+            </div>
+          </div>
+
+          <span *ngIf="!uploadedVideo() && headline().trim().length >= 5" class="tp-field-hint-msg">
+            * Anexe um vídeo institucional para poder avançar para a próxima etapa.
+          </span>
+        </div>
+
+      </div>
+
+      <!-- =====================================================================
+           PASSO 2: SEGMENTAÇÃO LOCAL (ALCANCE)
+           ===================================================================== -->
+      <div *ngIf="currentStep() === 2" class="tp-step-panel">
+        
+        <!-- 4. Raio de Alcance Geográfico -->
+        <div class="tp-boost-section">
+          <div class="tp-section-header-row">
+            <label class="tp-boost-label">4. Raio de Alcance Geográfico</label>
+            <span class="tp-badge-radius">{{ selectedRadius() }} km selecionados</span>
+          </div>
+
+          <div class="tp-radius-pills-row">
+            <button
+              *ngFor="let rad of radiusOptions"
+              type="button"
+              class="tp-radius-pill"
+              [class.tp-radius-selected]="selectedRadius() === rad.value"
+              (click)="selectRadius(rad.value)"
+            >
+              <span class="tp-radius-title">{{ rad.label }}</span>
+              <span class="tp-radius-sublabel">{{ rad.sublabel }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- INDICADOR DE IMPACTO ESTIMADO DE PROFISSIONAIS NA REGIÃO -->
+        <div class="tp-impact-indicator-card">
+          <div class="tp-impact-header">
+            <div class="tp-impact-icon-badge">
+              <tp-icon name="users" size="sm"></tp-icon>
+            </div>
+            <div class="tp-impact-title-wrap">
+              <span class="tp-impact-eyebrow">Impacto Estimado na Região</span>
+              <strong class="tp-impact-number">{{ currentImpact().professionalsRange }}</strong>
+            </div>
+            <span class="tp-impact-tag">{{ currentImpact().reachLabel }}</span>
+          </div>
+
+          <p class="tp-impact-desc">
+            {{ currentImpact().description }}
+          </p>
+
+          <div class="tp-impact-stats-grid">
+            <div class="tp-impact-stat-box">
+              <span class="tp-stat-lbl">Estimativa de Visualizações</span>
+              <strong class="tp-stat-val">👁️ {{ currentImpact().estimatedDailyViews }}</strong>
+            </div>
+            <div class="tp-impact-stat-box">
+              <span class="tp-stat-lbl">Taxa de Resposta Local</span>
+              <strong class="tp-stat-val text-success">✦ 3.4x mais ágil</strong>
+            </div>
+          </div>
+
+          <div class="tp-impact-roles-wrap">
+            <span class="tp-roles-lbl">Maior concentração de talentos disponíveis:</span>
+            <div class="tp-roles-pills">
+              <span *ngFor="let role of currentImpact().topRoles" class="tp-role-pill">
+                {{ role }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =====================================================================
+           PASSO 3: PERÍODO & PAGAMENTO (INVESTIMENTO)
+           ===================================================================== -->
+      <div *ngIf="currentStep() === 3" class="tp-step-panel">
+        
+        <!-- 5. Cards de Período & Investimento -->
+        <div class="tp-boost-section">
+          <label class="tp-boost-label">5. Período & Investimento</label>
+          <div class="tp-plans-grid">
+            <button
+              *ngFor="let plan of plans"
+              type="button"
+              class="tp-plan-card"
+              [class.tp-plan-selected]="selectedDuration() === plan.durationDays"
+              [class.tp-plan-popular]="plan.isPopular"
+              (click)="selectDuration(plan.durationDays)"
+            >
+              <span class="tp-plan-popular-badge" *ngIf="plan.isPopular">Mais Escolhido</span>
+              <span class="tp-plan-days">{{ plan.durationDays }} Dias</span>
+              <div class="tp-plan-price-wrap">
+                <small>R$</small>
+                <strong class="tp-plan-val">{{ plan.price }}</strong>
+              </div>
+              <span class="tp-plan-reach">👁️ {{ plan.estimatedReach }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RESUMO FINANCEIRO DO IMPULSIONAMENTO -->
+        <div class="tp-finance-summary-card">
+          <div class="tp-finance-header">
+            <div class="tp-finance-icon-badge">
+              <tp-icon name="banknote" size="sm"></tp-icon>
+            </div>
+            <div class="tp-finance-title-wrap">
+              <span class="tp-finance-eyebrow">Resumo do Investimento</span>
+              <strong class="tp-finance-title">Plano {{ selectedPlan().durationDays }} Dias de Destaque</strong>
+            </div>
+          </div>
+
+          <div class="tp-finance-details-list">
+            <div class="tp-finance-line">
+              <span class="tp-line-item">Período de veiculação:</span>
+              <strong class="tp-line-val">{{ selectedPlan().durationDays }} dias consecutivos</strong>
+            </div>
+
+            <div class="tp-finance-line">
+              <span class="tp-line-item">Custo diário equivalente:</span>
+              <strong class="tp-line-val">R$ {{ dailyCost() }} / dia</strong>
+            </div>
+
+            <div class="tp-finance-line">
+              <span class="tp-line-item">Alcance mínimo estimado:</span>
+              <strong class="tp-line-val">{{ selectedPlan().estimatedReach }} impressões qualificadas</strong>
+            </div>
+
+            <div class="tp-finance-line">
+              <span class="tp-line-item">Raio segmentado:</span>
+              <strong class="tp-line-val">{{ selectedRadius() }} km ({{ currentImpact().reachLabel }})</strong>
+            </div>
+
+            <div class="tp-finance-divider"></div>
+
+            <div class="tp-finance-line tp-finance-total-line">
+              <div class="tp-total-lbl-wrap">
+                <span class="tp-total-lbl">Total do Impulsionamento</span>
+                <small class="tp-total-sub">Ativação imediata via PIX</small>
+              </div>
+              <strong class="tp-finance-total-val">R$ {{ selectedPlan().price }},00</strong>
+            </div>
+          </div>
+
+          <div class="tp-finance-badges-row">
+            <span class="tp-finance-badge">
+              <tp-icon name="check-circle" size="xs"></tp-icon>
+              <span>Sem fidelidade</span>
+            </span>
+            <span class="tp-finance-badge">
+              <tp-icon name="shield-check" size="xs"></tp-icon>
+              <span>Garantia de visualizações</span>
             </span>
           </div>
         </div>
-      </div>
 
-      <!-- 4. RAIO DE ALCANCE GEOGRÁFICO -->
-      <div class="tp-boost-section">
-        <label class="tp-boost-label">4. Raio de Alcance Geográfico</label>
-        <div class="tp-radius-pills-row">
-          <button
-            *ngFor="let rad of radiusOptions"
-            type="button"
-            class="tp-radius-pill"
-            [class.tp-radius-selected]="selectedRadius() === rad.value"
-            (click)="selectRadius(rad.value)"
-          >
-            <span>{{ rad.label }}</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- 5. DURAÇÃO E VALOR SIMULADO -->
-      <div class="tp-boost-section">
-        <label class="tp-boost-label">5. Período & Investimento</label>
-        <div class="tp-plans-grid">
-          <button
-            *ngFor="let plan of plans"
-            type="button"
-            class="tp-plan-card"
-            [class.tp-plan-selected]="selectedDuration() === plan.durationDays"
-            [class.tp-plan-popular]="plan.isPopular"
-            (click)="selectDuration(plan.durationDays)"
-          >
-            <span class="tp-plan-popular-badge" *ngIf="plan.isPopular">Mais Escolhido</span>
-            <span class="tp-plan-days">{{ plan.durationDays }} Dias</span>
-            <div class="tp-plan-price-wrap">
-              <small>R$</small>
-              <strong class="tp-plan-val">{{ plan.price }}</strong>
-            </div>
-            <span class="tp-plan-reach">👁️ {{ plan.estimatedReach }}</span>
-          </button>
-        </div>
       </div>
 
     </div>
@@ -150,13 +402,30 @@
           </div>
 
           <div class="tp-mini-video-preview">
-            <img [src]="currentVideo().thumbnail" alt="Preview de vídeo" />
-            <div class="tp-mini-video-overlay">
+            <video
+              *ngIf="uploadedVideo() as video"
+              controls
+              class="tp-mini-real-video"
+              [src]="selectedVideoUrl()"
+              playsinline
+            ></video>
+
+            <!-- Placeholder quando nenhum vídeo foi anexado ainda -->
+            <div *ngIf="!uploadedVideo()" class="tp-mini-video-placeholder">
+              <div class="tp-mini-ph-icon">
+                <tp-icon name="upload" size="md"></tp-icon>
+              </div>
+              <p class="tp-mini-ph-text">Seu vídeo institucional aparecerá aqui após o anexo.</p>
+            </div>
+
+            <div class="tp-mini-video-overlay" *ngIf="uploadedVideo() as video">
               <span class="tp-mini-play-tag">
                 <tp-icon name="play" size="xs"></tp-icon>
-                <span>{{ currentVideo().duration }}</span>
+                <span>{{ video.fileSizeText }}</span>
               </span>
-              <span class="tp-mini-tag-pill">Vídeo Institucional</span>
+              <span class="tp-mini-tag-pill">
+                {{ selectedType() === 'featured_company' ? 'Vídeo Institucional' : 'Vagas Urgentes' }}
+              </span>
             </div>
           </div>
 
@@ -165,9 +434,9 @@
           </p>
 
           <div class="tp-mini-footer">
-            <span class="tp-mini-match">✦ 96% Match Operacional</span>
+            <span class="tp-mini-match">✦ {{ selectedRadius() <= 10 ? '98%' : '94%' }} Match Operacional</span>
             <div class="tp-mini-cta-btn">
-              <span>Conhecer Empresa ({{ openJobsCount }} vagas)</span>
+              <span>{{ selectedType() === 'featured_company' ? 'Conhecer Empresa (' + openJobsCount + ' vagas)' : 'Ver Vagas Disponíveis' }}</span>
             </div>
           </div>
         </div>
@@ -185,28 +454,80 @@
 
   </div>
 
-  <!-- FOOTER DO MODAL -->
+  <!-- RODAPÉ DO MODAL (ADAPTADO POR ETAPA) -->
   <div tpModalFooter class="tp-boost-modal-footer">
-    <div class="tp-footer-summary">
-      <span class="tp-summary-lbl">Total do Impulsionamento:</span>
-      <strong class="tp-summary-val">R$ {{ selectedPlan().price }},00</strong>
-      <span class="tp-summary-days">({{ selectedPlan().durationDays }} dias de veiculação)</span>
+    
+    <!-- LADO ESQUERDO DO RODAPÉ -->
+    <div class="tp-footer-info">
+      <!-- Passo 1 -->
+      <span *ngIf="currentStep() === 1" class="tp-step-status-hint">
+        Etapa 1 de 3 • Conteúdo & Mídia do Card
+      </span>
+
+      <!-- Passo 2 -->
+      <span *ngIf="currentStep() === 2" class="tp-step-status-hint">
+        Etapa 2 de 3 • Segmentação: {{ selectedRadius() }} km
+      </span>
+
+      <!-- Passo 3 -->
+      <div *ngIf="currentStep() === 3" class="tp-footer-summary">
+        <span class="tp-summary-lbl">Total da Campanha:</span>
+        <strong class="tp-summary-val">R$ {{ selectedPlan().price }},00</strong>
+        <span class="tp-summary-days">({{ selectedPlan().durationDays }} dias de veiculação)</span>
+      </div>
     </div>
 
+    <!-- LADO DIREITO: BOTÕES DE AÇÃO CONFORME ETAPA -->
     <div class="tp-footer-actions">
-      <tp-button variant="outline" size="md" (btnClick)="onClose()">
-        Cancelar
-      </tp-button>
+      
+      <!-- Passo 1: Cancelar e Avançar para Segmentação -->
+      <ng-container *ngIf="currentStep() === 1">
+        <tp-button variant="outline" size="md" (btnClick)="onClose()">
+          Cancelar
+        </tp-button>
 
-      <tp-button
-        variant="primary"
-        size="md"
-        customClass="tp-btn-confirm-boost"
-        (btnClick)="confirmCampaign()"
-      >
-        <tp-icon name="sparkles" size="xs"></tp-icon>
-        <span>Confirmar & Ativar Campanha</span>
-      </tp-button>
+        <tp-button
+          variant="primary"
+          size="md"
+          [disabled]="!isStep1Valid()"
+          (btnClick)="nextStep()"
+        >
+          <span>Avançar para Segmentação →</span>
+        </tp-button>
+      </ng-container>
+
+      <!-- Passo 2: Voltar e Avançar para Orçamento -->
+      <ng-container *ngIf="currentStep() === 2">
+        <tp-button variant="outline" size="md" (btnClick)="prevStep()">
+          <span>← Voltar</span>
+        </tp-button>
+
+        <tp-button
+          variant="primary"
+          size="md"
+          (btnClick)="nextStep()"
+        >
+          <span>Avançar para Orçamento →</span>
+        </tp-button>
+      </ng-container>
+
+      <!-- Passo 3: Voltar e Confirmar & Ativar Campanha -->
+      <ng-container *ngIf="currentStep() === 3">
+        <tp-button variant="outline" size="md" (btnClick)="prevStep()">
+          <span>← Voltar</span>
+        </tp-button>
+
+        <tp-button
+          variant="primary"
+          size="md"
+          customClass="tp-btn-confirm-boost"
+          (btnClick)="confirmCampaign()"
+        >
+          <tp-icon name="sparkles" size="xs"></tp-icon>
+          <span>{{ confirmButtonLabel() }}</span>
+        </tp-button>
+      </ng-container>
+
     </div>
   </div>
 </tp-modal>

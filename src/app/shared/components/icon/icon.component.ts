@@ -40,7 +40,12 @@ export type IconName =
   | 'pause'
   | 'volume-2'
   | 'volume-x'
-  | 'loader';
+  | 'loader'
+  | 'upload'
+  | 'refresh-cw'
+  | 'edit'
+  | 'trash'
+  | 'more-vertical';
 
 export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 

@@ -96,4 +96,22 @@ describe('CompanyJobCardComponent', () => {
 
     expect(component.viewCandidates.emit).toHaveBeenCalledWith(mockJob);
   });
+
+  it('should emit editJob when clicking the edit button in card header', () => {
+    spyOn(component.editJob, 'emit');
+    const editBtn = fixture.nativeElement.querySelector('button[title="Editar Vaga"]') as HTMLButtonElement;
+    expect(editBtn).toBeTruthy();
+    editBtn.click();
+
+    expect(component.editJob.emit).toHaveBeenCalledWith(mockJob);
+  });
+
+  it('should emit deleteJob when clicking the delete button in card header', () => {
+    spyOn(component.deleteJob, 'emit');
+    const deleteBtn = fixture.nativeElement.querySelector('button[title="Excluir / Encerrar Vaga"]') as HTMLButtonElement;
+    expect(deleteBtn).toBeTruthy();
+    deleteBtn.click();
+
+    expect(component.deleteJob.emit).toHaveBeenCalledWith(mockJob);
+  });
 });

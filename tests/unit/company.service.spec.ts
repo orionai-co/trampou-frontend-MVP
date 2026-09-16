@@ -158,4 +158,82 @@ describe('CompanyService', () => {
     expect(job).toBeTruthy();
     expect(job?.title).toBe('Garçom para Evento Corporativo');
   }));
+
+  it('should update job and persist changes via updateJob', fakeAsync(() => {
+    service.fetchAllDashboardData();
+    tick();
+
+    const existing = service.getJobById('comp-job-1')!;
+    const updated = { ...existing, title: 'Garçom Chefe de Fila', paymentAmount: 220 };
+
+    service.updateJob(updated);
+    tick();
+
+    const result = service.getJobById('comp-job-1');
+    expect(result?.title).toBe('Garçom Chefe de Fila');
+    expect(result?.paymentAmount).toBe(220);
+  }));
+
+  it('should cancel/delete job and update status to cancelled via cancelOrDeleteJob', fakeAsync(() => {
+    service.fetchAllDashboardData();
+    tick();
+
+    expect(service.activeJobs().some(j => j.id === 'comp-job-1')).toBeTrue();
+
+    service.cancelOrDeleteJob('comp-job-1');
+    tick();
+
+    expect(service.activeJobs().some(j => j.id === 'comp-job-1')).toBeFalse();
+    const cancelledJob = service.getJobById('comp-job-1');
+    expect(cancelledJob?.status).toBe('cancelled');
+  }));
+
+  it('should cancel active boost campaign via cancelBoostCampaign', fakeAsync(() => {
+    service.saveBoostCampaign({
+      id: 'camp-test-99',
+      companyId: 'comp-001',
+      companyName: 'Buffet Teste',
+      objective: 'featured_company',
+      headline: 'Destaque ativo',
+      videoUrl: 'https://video.mp4',
+      radiusKm: 10,
+      days: 7,
+      price: 99,
+      active: true,
+      createdAt: new Date().toISOString()
+    });
+
+    expect(service.hasActiveBoostCampaign()).toBeTrue();
+
+    service.cancelBoostCampaign();
+
+    expect(service.hasActiveBoostCampaign()).toBeFalse();
+    expect(service.activeBoostCampaign()).toBeNull();
+    expect(localStorage.getItem('trampou_boost_dismissed')).toBe('true');
+
+    // Simula reload (F5) - loadStoredBoostCampaigns não deve reidratar
+    const reloaded = service.loadStoredBoostCampaigns();
+    expect(reloaded).toBeNull();
+    expect(service.hasActiveBoostCampaign()).toBeFalse();
+  }));
+
+  it('should remove dismissed flag when creating a new boost campaign', fakeAsync(() => {
+    localStorage.setItem('trampou_boost_dismissed', 'true');
+    service.saveBoostCampaign({
+      id: 'camp-test-100',
+      companyId: 'comp-001',
+      companyName: 'Buffet Novo',
+      objective: 'featured_company',
+      headline: 'Novo Destaque Ativo',
+      videoUrl: 'https://video2.mp4',
+      radiusKm: 15,
+      days: 7,
+      price: 99,
+      active: true,
+      createdAt: new Date().toISOString()
+    });
+
+    expect(localStorage.getItem('trampou_boost_dismissed')).toBeNull();
+    expect(service.hasActiveBoostCampaign()).toBeTrue();
+  }));
 });

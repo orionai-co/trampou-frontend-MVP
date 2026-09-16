@@ -5,11 +5,17 @@ import {
   OpportunityFilters
 } from '../models/opportunity.model';
 import { FeaturedCompany } from '../../../core/models/sponsored-content.model';
+import {
+  BoostCampaignStorageItem,
+  TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY,
+  TRAMPOU_BOOST_DISMISSED_STORAGE_KEY
+} from '../../../core/models/sponsored-campaign.model';
 import { ApiClientService } from '../../../core/services/api-client.service';
 import { API_ENDPOINTS } from '../../../core/constants/api-endpoints';
 import { AuthService } from '../../../core/services/auth.service';
 import { MyJobsService } from '../../my-jobs/services/my-jobs.service';
 import { UserProfileService } from '../../../core/services/user-profile.service';
+import { VideoStorageService } from '../../../core/services/video-storage.service';
 
 export const TRAMPOU_COMPANY_JOBS_STORAGE_KEY = 'trampou_company_created_jobs';
 
@@ -21,6 +27,7 @@ export class OpportunityService {
   private authService = inject(AuthService, { optional: true });
   private myJobsService = inject(MyJobsService, { optional: true });
   private userProfileService = inject(UserProfileService, { optional: true });
+  private videoStorageService = inject(VideoStorageService);
 
   private opportunitiesState = signal<Opportunity[]>([]);
   private featuredCompaniesState = signal<FeaturedCompany[]>([]);
@@ -36,10 +43,101 @@ export class OpportunityService {
   private lastFilters?: OpportunityFilters;
 
   constructor() {
+    this.loadStoredBoostCampaigns();
+
     if (typeof window !== 'undefined') {
       window.addEventListener('trampou:jobs-updated', () => {
         this.fetchOpportunities(this.lastFilters).catch(() => {});
       });
+
+      window.addEventListener('trampou:boost-updated', (evt: any) => {
+        const detail = evt?.detail;
+        if (detail && detail.videoUrl) {
+          this.featuredCompaniesState.update(curr => {
+            if (curr.length > 0 && curr[0].id === detail.id) {
+              return [{ ...curr[0], videoUrl: detail.videoUrl, videoThumbnail: detail.videoFileName ? '' : curr[0].videoThumbnail }, ...curr.slice(1)];
+            }
+            return curr;
+          });
+        }
+        this.loadStoredBoostCampaigns();
+      });
+    }
+  }
+
+  /**
+   * Lê as campanhas ativas salvas em trampou_boost_campaigns e popula a empresa em destaque do feed
+   */
+  loadStoredBoostCampaigns(): FeaturedCompany | null {
+    if (typeof localStorage === 'undefined') return null;
+    try {
+      const raw = localStorage.getItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY);
+      const isDismissed = localStorage.getItem(TRAMPOU_BOOST_DISMISSED_STORAGE_KEY) === 'true';
+
+      if (!raw) {
+        if (isDismissed) {
+          this.featuredCompaniesState.set([]);
+        }
+        return null;
+      }
+      const parsed = JSON.parse(raw);
+      const items: BoostCampaignStorageItem[] = Array.isArray(parsed) ? parsed : [parsed];
+      const active = items.find(i => i && i.active === true && i.status !== 'cancelled');
+      if (!active) {
+        this.featuredCompaniesState.set([]);
+        return null;
+      }
+
+      if (isDismissed) {
+        localStorage.removeItem(TRAMPOU_BOOST_DISMISSED_STORAGE_KEY);
+      }
+
+      const hasCustomVideo = !!(active.videoFileName || active.videoStorageKey);
+
+      const featCompany: FeaturedCompany = {
+        id: active.id || 'feat-001',
+        companyId: active.companyId || 'comp-001',
+        companyName: active.companyName || 'Buffet Espaço Paulista',
+        companyHandle: '@' + (active.companyName || 'espacopaulista').toLowerCase().replace(/\s+/g, ''),
+        avatarInitials: (active.companyName || 'EP').substring(0, 2).toUpperCase(),
+        verified: true,
+        rating: 4.9,
+        reviewCount: 84,
+        badgeLabel: active.objective === 'boost_job' ? 'Patrocinado' : 'Empresa em Destaque',
+        headline: active.headline || 'Conheça nosso espaço e junte-se à nossa equipe.',
+        videoUrl: active.videoUrl || (hasCustomVideo ? '' : 'https://assets.mixkit.co/videos/preview/mixkit-restaurant-kitchen-staff-working-42998-large.mp4'),
+        videoFileName: active.videoFileName,
+        videoStorageKey: active.videoStorageKey || 'active_boost_video',
+        videoThumbnail: hasCustomVideo ? '' : (active.videoThumbnail || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80'),
+        videoDurationText: active.videoDurationText || (hasCustomVideo ? 'Vídeo Anexado' : '0:45'),
+        location: 'São Paulo, SP',
+        distanceKm: active.radiusKm || 10,
+        completedShiftsCount: 84,
+        matchScore: 96,
+        matchReasons: ['Destaque prioritário no topo do feed', 'Empresa verificada Trampou', 'Pagamento garantido via PIX'],
+        openJobsCount: 3
+      };
+
+      this.featuredCompaniesState.set([featCompany]);
+
+      // Tenta recuperar do IndexedDB a URL ativa no caso de refresh (F5)
+      if (hasCustomVideo) {
+        const key = active.videoStorageKey || 'active_boost_video';
+        this.videoStorageService.getVideoUrl(key).then(activeBlobUrl => {
+          if (activeBlobUrl) {
+            this.featuredCompaniesState.update(current => {
+              if (current.length > 0 && current[0].id === featCompany.id) {
+                return [{ ...current[0], videoUrl: activeBlobUrl, videoThumbnail: '' }, ...current.slice(1)];
+              }
+              return current;
+            });
+          }
+        }).catch(() => {});
+      }
+
+      return featCompany;
+    } catch {
+      return null;
     }
   }
 
@@ -184,13 +282,43 @@ export class OpportunityService {
   }
 
   async fetchFeaturedCompanies(): Promise<FeaturedCompany[]> {
+    this.loadStoredBoostCampaigns();
+
+    if (typeof localStorage !== 'undefined') {
+      const isDismissed = localStorage.getItem(TRAMPOU_BOOST_DISMISSED_STORAGE_KEY) === 'true';
+      if (isDismissed) {
+        this.featuredCompaniesState.set([]);
+        return [];
+      }
+
+      const raw = localStorage.getItem(TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          const items: BoostCampaignStorageItem[] = Array.isArray(parsed) ? parsed : [parsed];
+          const hasActive = items.some(i => i && i.active === true && i.status !== 'cancelled');
+          if (!hasActive) {
+            this.featuredCompaniesState.set([]);
+            return [];
+          }
+        } catch {}
+      }
+    }
+
     try {
       const data = await this.apiClient.get<FeaturedCompany[]>(API_ENDPOINTS.COMPANIES.FEATURED);
       const list = data || [];
-      this.featuredCompaniesState.set(list);
-      return list;
+      this.featuredCompaniesState.update(current => {
+        if (current.length > 0) {
+          const storedBoost = current[0];
+          const others = list.filter(c => c.id !== storedBoost.id && c.companyId !== storedBoost.companyId);
+          return [storedBoost, ...others];
+        }
+        return list;
+      });
+      return this.featuredCompaniesState();
     } catch (error) {
-      return [];
+      return this.featuredCompaniesState();
     }
   }
 
@@ -270,17 +398,21 @@ export class OpportunityService {
   private mergeWithStoredCompanyJobs(apiList: Opportunity[]): Opportunity[] {
     if (typeof localStorage === 'undefined') return apiList;
     try {
-      const raw = localStorage.getItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY) || localStorage.getItem('trampou_company_jobs');
-      if (!raw) return apiList;
-      const parsed = JSON.parse(raw);
-      if (!Array.isArray(parsed)) return apiList;
+      const deletedRaw = localStorage.getItem('trampou_deleted_job_ids');
+      const deletedIds = new Set<string>(deletedRaw ? JSON.parse(deletedRaw) : []);
+      const cleanApiList = apiList.filter(o => !deletedIds.has(o.id));
 
-      const existingIds = new Set(apiList.map(o => o.id));
-      const existingTitles = new Set(apiList.map(o => `${o.title.toLowerCase().trim()}::${o.companyName.toLowerCase().trim()}`));
+      const raw = localStorage.getItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY) || localStorage.getItem('trampou_company_jobs');
+      if (!raw) return cleanApiList;
+      const parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return cleanApiList;
+
+      const existingIds = new Set(cleanApiList.map(o => o.id));
+      const existingTitles = new Set(cleanApiList.map(o => `${o.title.toLowerCase().trim()}::${o.companyName.toLowerCase().trim()}`));
       const additional: Opportunity[] = [];
 
       for (const j of parsed) {
-        if (!j || (j.status !== 'open' && j.status !== 'Aberta')) continue;
+        if (!j || (j.status !== 'open' && j.status !== 'Aberta') || deletedIds.has(j.id)) continue;
         const opp = this.convertCompanyJobToOpportunity(j);
         const titleKey = `${opp.title.toLowerCase().trim()}::${opp.companyName.toLowerCase().trim()}`;
         if (!existingIds.has(opp.id) && !existingTitles.has(titleKey)) {
@@ -290,7 +422,7 @@ export class OpportunityService {
         }
       }
 
-      return [...additional, ...apiList];
+      return [...additional, ...cleanApiList];
     } catch {
       return apiList;
     }

@@ -11,6 +11,8 @@ export interface FeaturedCompany {
   badgeLabel: 'Patrocinado' | 'Empresa em Destaque';
   headline: string; // Ex: 'Conheça nosso espaço, nossa equipe e como é trabalhar conosco.'
   videoUrl?: string;
+  videoFileName?: string;
+  videoStorageKey?: string;
   videoThumbnail: string; // Imagem representativa do ambiente/vídeo institucional
   videoDurationText?: string; // Ex: '0:45'
   location: string; // Ex: 'Vila Olímpia, São Paulo'

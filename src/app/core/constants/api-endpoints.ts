@@ -56,5 +56,10 @@ export const API_ENDPOINTS = {
     LIST: '/notifications',
     MARK_AS_READ: (id: string) => `/notifications/${id}/read`,
     MARK_ALL_READ: '/notifications/read-all'
+  },
+  // Mensagens do Chat Unificado
+  MESSAGES: {
+    CHANNEL: (channelId: string) => `/messages/${channelId}`,
+    SEND: '/messages'
   }
 } as const;

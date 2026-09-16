@@ -19,6 +19,18 @@ export class CompanyJobCardComponent {
   @Input({ required: true }) job!: CompanyJob;
   @Output() viewCandidates = new EventEmitter<CompanyJob>();
   @Output() completeJob = new EventEmitter<CompanyJob>();
+  @Output() editJob = new EventEmitter<CompanyJob>();
+  @Output() deleteJob = new EventEmitter<CompanyJob>();
+
+  onEditJob(event: Event): void {
+    event.stopPropagation();
+    this.editJob.emit(this.job);
+  }
+
+  onDeleteJob(event: Event): void {
+    event.stopPropagation();
+    this.deleteJob.emit(this.job);
+  }
 
   get appliedCandidatesCount(): number {
     if (!this.job || !this.job.candidates) return 0;

@@ -10,7 +10,8 @@
           <h2 class="tp-metrics-title">Desempenho do Destaque Institucional</h2>
           <span class="tp-campaign-status-tag" *ngIf="campaignService.hasActiveCampaign()">
             <span class="tp-status-pulse"></span>
-            <span>Campanha Ativa • {{ campaignService.daysRemaining() }} dias restantes</span>
+            <span *ngIf="campaignService.currentMetrics().impressions === 0">Campanha em veiculação • coletando métricas</span>
+            <span *ngIf="campaignService.currentMetrics().impressions > 0">Campanha Ativa • {{ campaignService.daysRemaining() }} dias restantes</span>
           </span>
           <span class="tp-campaign-inactive-tag" *ngIf="!campaignService.hasActiveCampaign()">
             <span>Nenhuma campanha ativa</span>
@@ -32,6 +33,28 @@
         <tp-icon name="sparkles" size="xs"></tp-icon>
         <span>{{ campaignService.hasActiveCampaign() ? 'Novo Impulsionamento' : '🚀 Destacar Empresa' }}</span>
       </button>
+
+      <ng-container *ngIf="campaignService.hasActiveCampaign()">
+        <button
+          type="button"
+          class="tp-boost-subaction-btn tp-boost-btn-secondary"
+          (click)="onEditClick()"
+          aria-label="Editar Anúncio Impulsionado"
+        >
+          <tp-icon name="edit" size="xs"></tp-icon>
+          <span>Editar Anúncio</span>
+        </button>
+
+        <button
+          type="button"
+          class="tp-boost-subaction-btn tp-boost-btn-danger"
+          (click)="onCancelClick()"
+          aria-label="Pausar ou Excluir Anúncio Impulsionado"
+        >
+          <tp-icon name="trash" size="xs"></tp-icon>
+          <span>Pausar / Excluir</span>
+        </button>
+      </ng-container>
     </div>
   </header>
 
@@ -67,7 +90,9 @@
         <span>views</span>
       </div>
       <div class="tp-mbox-footer">
-        <span class="tp-mbox-sub">Taxa de visualização: 66%</span>
+        <span class="tp-mbox-sub">
+          {{ campaignService.currentMetrics().impressions > 0 ? ('Taxa de visualização: ' + ((campaignService.currentMetrics().videoViews / campaignService.currentMetrics().impressions) * 100).toFixed(0) + '%') : 'Aguardando visualizações' }}
+        </span>
       </div>
     </div>
 
@@ -98,10 +123,12 @@
       </div>
       <div class="tp-mbox-val">
         <strong>{{ formatNumber(campaignService.currentMetrics().applicationsCount) }}</strong>
-        <span>profissionais</span>
+        <span>{{ campaignService.currentMetrics().applicationsCount === 1 ? 'profissional' : 'profissionais' }}</span>
       </div>
       <div class="tp-mbox-footer">
-        <span class="tp-mbox-sub tp-sub-green">✦ Conversão qualificada</span>
+        <span class="tp-mbox-sub tp-sub-green">
+          {{ campaignService.currentMetrics().applicationsCount > 0 ? '✦ Inscrições recebidas' : 'Aguardando candidaturas' }}
+        </span>
       </div>
     </div>
   </div>

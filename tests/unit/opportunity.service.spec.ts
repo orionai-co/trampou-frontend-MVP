@@ -92,6 +92,10 @@ describe('OpportunityService', () => {
     service = TestBed.inject(OpportunityService);
   });
 
+  afterEach(() => {
+    localStorage.clear();
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
@@ -153,6 +157,59 @@ describe('OpportunityService', () => {
     const list = await service.fetchOpportunities();
     expect(list.some(o => o.id === 'custom-company-job-99')).toBeTrue();
     expect(list.some(o => o.title === 'Recepcionista Bilíngue')).toBeTrue();
+  });
+
+  it('should not populate featured companies when trampou_boost_dismissed is true', async () => {
+    localStorage.setItem('trampou_boost_dismissed', 'true');
+    const result = await service.fetchFeaturedCompanies();
+    expect(result.length).toBe(0);
+    expect(service.featuredCompanies().length).toBe(0);
+    expect(service.loadStoredBoostCampaigns()).toBeNull();
+  });
+
+  it('should not populate featured companies when boost campaigns are cancelled or inactive', async () => {
+    localStorage.setItem('trampou_boost_campaigns', JSON.stringify([{
+      id: 'camp-old',
+      companyId: 'comp-001',
+      companyName: 'Buffet Espaço Paulista',
+      objective: 'featured_company',
+      headline: 'Old headline',
+      videoUrl: '',
+      radiusKm: 10,
+      days: 7,
+      price: 99,
+      active: false,
+      status: 'cancelled',
+      createdAt: new Date().toISOString()
+    }]));
+
+    const result = await service.fetchFeaturedCompanies();
+    expect(result.length).toBe(0);
+    expect(service.featuredCompanies().length).toBe(0);
+    expect(service.loadStoredBoostCampaigns()).toBeNull();
+  });
+
+  it('should populate featured company when there is an active boost campaign in storage', () => {
+    localStorage.setItem('trampou_boost_campaigns', JSON.stringify([{
+      id: 'camp-active-1',
+      companyId: 'comp-001',
+      companyName: 'Buffet Novo Destaque',
+      objective: 'featured_company',
+      headline: 'Vagas abertas com PIX imediato',
+      videoUrl: 'https://test.com/v.mp4',
+      radiusKm: 12,
+      days: 7,
+      price: 99,
+      active: true,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    }]));
+
+    const feat = service.loadStoredBoostCampaigns();
+    expect(feat).toBeTruthy();
+    expect(feat?.companyName).toBe('Buffet Novo Destaque');
+    expect(service.featuredCompanies().length).toBe(1);
+    expect(service.featuredCompanies()[0].headline).toBe('Vagas abertas com PIX imediato');
   });
 });
 

@@ -22,9 +22,19 @@ export class CompanyCampaignMetricsComponent {
   readonly campaignService = inject(CampaignService);
 
   @Output() openBoostModal = new EventEmitter<void>();
+  @Output() editBoost = new EventEmitter<void>();
+  @Output() cancelBoost = new EventEmitter<void>();
 
   onBoostClick(): void {
     this.openBoostModal.emit();
+  }
+
+  onEditClick(): void {
+    this.editBoost.emit();
+  }
+
+  onCancelClick(): void {
+    this.cancelBoost.emit();
   }
 
   formatNumber(val: number): string {

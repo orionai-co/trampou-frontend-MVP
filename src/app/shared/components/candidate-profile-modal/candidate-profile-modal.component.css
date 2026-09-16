@@ -331,6 +331,68 @@
   margin: 0;
 }
 
+/* Estado Vazio de Avaliações */
+.tp-reviews-empty {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: var(--tp-radius-md);
+}
+
+.tp-empty-star-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fef3c7;
+  color: #d97706;
+  flex-shrink: 0;
+}
+
+.tp-empty-reviews-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tp-reviews-empty-badge,
+.tp-badge-newbie {
+  align-self: flex-start;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #047857;
+  background-color: #d1fae5;
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.tp-rep-newbie {
+  font-size: 0.95rem;
+  color: #047857;
+  font-weight: 700;
+}
+
+.tp-empty-reviews-text {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--tp-color-primary-900);
+  margin: 2px 0 0 0;
+}
+
+.tp-empty-reviews-sub {
+  font-size: 0.72rem;
+  color: var(--tp-color-text-tertiary);
+  line-height: 1.35;
+}
+
 /* 5. Informações PIX */
 .tp-pix-notice {
   display: flex;

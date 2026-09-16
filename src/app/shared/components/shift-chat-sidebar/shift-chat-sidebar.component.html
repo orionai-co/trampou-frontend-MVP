@@ -54,8 +54,8 @@
         <div
           *ngFor="let msg of currentRoom()?.messages"
           class="tp-csidebar-msg-row"
-          [class.tp-cmsg-outgoing]="msg.senderRole === currentUserRole"
-          [class.tp-cmsg-incoming]="msg.senderRole !== currentUserRole"
+          [class.tp-cmsg-outgoing]="isOutgoing(msg)"
+          [class.tp-cmsg-incoming]="!isOutgoing(msg) && msg.senderId !== 'system'"
           [class.tp-cmsg-system]="msg.senderId === 'system'"
         >
           <!-- Mensagem do Sistema -->

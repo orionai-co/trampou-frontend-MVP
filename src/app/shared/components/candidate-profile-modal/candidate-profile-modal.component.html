@@ -43,6 +43,7 @@
     </div>
 
     <!-- 2. GRADE DE MÉTRICAS DE REPUTAÇÃO (CARDS RÁPIDOS) -->
+    <!-- 2. GRADE DE MÉTRICAS DE REPUTAÇÃO (CARDS RÁPIDOS) -->
     <div class="tp-reputation-grid">
       <!-- Card Nota Média -->
       <div class="tp-rep-card tp-rep-rating">
@@ -50,8 +51,10 @@
           <tp-icon name="star" size="sm" customClass="tp-rep-star-icon"></tp-icon>
         </div>
         <div class="tp-rep-info">
-          <span class="tp-rep-value">{{ candidate.rating.toFixed(1) }}</span>
-          <span class="tp-rep-label">{{ candidate.reviewsCount }} avaliações</span>
+          <span class="tp-rep-value" *ngIf="candidate.reviewsCount > 0">{{ candidate.rating.toFixed(1) }}</span>
+          <span class="tp-rep-value tp-rep-newbie" *ngIf="candidate.reviewsCount === 0">Novo</span>
+          <span class="tp-rep-label" *ngIf="candidate.reviewsCount > 0">{{ candidate.reviewsCount }} avaliações</span>
+          <span class="tp-rep-label tp-badge-newbie" *ngIf="candidate.reviewsCount === 0">Novo no Trampou</span>
         </div>
       </div>
 
@@ -61,7 +64,7 @@
           <tp-icon name="clock" size="sm" customClass="tp-rep-clock-icon"></tp-icon>
         </div>
         <div class="tp-rep-info">
-          <span class="tp-rep-value">{{ candidate.punctualityRate }}%</span>
+          <span class="tp-rep-value">{{ candidate.punctualityRate || 100 }}%</span>
           <span class="tp-rep-label">Pontualidade nos turnos</span>
         </div>
       </div>
@@ -73,7 +76,7 @@
         </div>
         <div class="tp-rep-info">
           <span class="tp-rep-value">{{ getCompletedShifts(candidate) }}</span>
-          <span class="tp-rep-label">Turnos pagos no app</span>
+          <span class="tp-rep-label">{{ getCompletedShifts(candidate) === 0 ? '0 turnos concluídos' : 'Turnos pagos no app' }}</span>
         </div>
       </div>
 
@@ -111,12 +114,13 @@
       <div class="tp-section-header-row">
         <h4 class="tp-prof-section-title">
           <tp-icon name="star" size="xs"></tp-icon>
-          <span>Últimas Avaliações Recebidas</span>
+          <span>Avaliações de Contratantes</span>
         </h4>
-        <span class="tp-reviews-summary">Nota média {{ candidate.rating.toFixed(1) }} / 5.0</span>
+        <span class="tp-reviews-summary" *ngIf="hasReviews(candidate)">Nota média {{ candidate.rating.toFixed(1) }} / 5.0</span>
       </div>
 
-      <div class="tp-reviews-feed">
+      <!-- Feed de avaliações quando houver -->
+      <div class="tp-reviews-feed" *ngIf="getRecentReviews(candidate).length > 0">
         <div *ngFor="let review of getRecentReviews(candidate)" class="tp-review-item">
           <div class="tp-review-top">
             <div class="tp-review-company">
@@ -134,6 +138,18 @@
             </div>
           </div>
           <p class="tp-review-comment">"{{ review.comment }}"</p>
+        </div>
+      </div>
+
+      <!-- Estado vazio quando não houver avaliações -->
+      <div class="tp-reviews-empty" *ngIf="getRecentReviews(candidate).length === 0">
+        <div class="tp-empty-star-icon">
+          <tp-icon name="star" size="md"></tp-icon>
+        </div>
+        <div class="tp-empty-reviews-info">
+          <span class="tp-reviews-empty-badge">Novo no Trampou</span>
+          <p class="tp-empty-reviews-text">Este profissional ainda não possui avaliações de contratantes no Trampou.</p>
+          <span class="tp-empty-reviews-sub">O histórico e as avaliações serão exibidos aqui após a realização dos primeiros turnos.</span>
         </div>
       </div>
     </div>

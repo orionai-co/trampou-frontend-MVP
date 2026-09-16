@@ -47,10 +47,12 @@
       <video
         #videoPlayer
         class="tp-featured-video"
-        [src]="company.videoUrl || 'https://assets.mixkit.co/videos/preview/mixkit-restaurant-kitchen-staff-working-42998-large.mp4'"
-        [poster]="company.videoThumbnail"
+        [src]="resolvedVideoUrl() || company.videoUrl || 'https://assets.mixkit.co/videos/preview/mixkit-restaurant-kitchen-staff-working-42998-large.mp4'"
+        [poster]="company.videoThumbnail || ''"
         [muted]="isMuted()"
+        controls
         playsinline
+        preload="metadata"
         loop
         (timeupdate)="onTimeUpdate()"
         (ended)="onVideoEnded()"
@@ -65,7 +67,7 @@
           (click)="$event.stopPropagation(); togglePlayVideo()"
         >
           <tp-icon [name]="isPlaying() ? 'pause' : 'play'" size="sm"></tp-icon>
-          <span>{{ isPlaying() ? 'Pausar' : (company.videoDurationText || '0:45') }}</span>
+          <span>{{ isPlaying() ? 'Pausar' : (company.videoFileName ? 'Reproduzir Vídeo' : (company.videoDurationText || '0:45')) }}</span>
         </button>
 
         <div class="tp-video-overlay-right">
@@ -79,7 +81,7 @@
           </button>
           <span class="tp-feat-video-tag">
             <tp-icon name="eye" size="xs"></tp-icon>
-            <span>Vídeo Institucional • {{ company.videoDurationText || '0:45' }}</span>
+            <span>{{ company.videoFileName ? company.videoFileName : ('Vídeo Institucional • ' + (company.videoDurationText || '0:45')) }}</span>
           </span>
         </div>
       </div>
@@ -123,9 +125,11 @@
     </div>
   </div>
 
-  <!-- 4. RODAPÉ COM AÇÃO PRINCIPAL -->
+  <!-- 4. RODAPÉ COM AÇÃO PRINCIPAL CONDICIONADA AO PERFIL -->
   <footer class="tp-feat-footer">
+    <!-- Para Freelancers: Botão de ação de candidatura / conhecer empresa -->
     <button
+      *ngIf="!isContractor()"
       type="button"
       class="tp-feat-action-btn"
       (click)="onExplore()"
@@ -135,5 +139,27 @@
       <span>Conhecer Empresa & Ver Vagas ({{ company.openJobsCount }})</span>
       <tp-icon name="arrow-right" size="xs"></tp-icon>
     </button>
+
+    <!-- Para Empresas: Se for anúncio da própria empresa logada -->
+    <a
+      *ngIf="isContractor() && isOwnAd()"
+      class="tp-feat-own-ad-badge"
+      [routerLink]="['/empresa']"
+      title="Gerenciar campanha no Painel da Empresa"
+    >
+      <tp-icon name="sparkles" size="xs"></tp-icon>
+      <span>Seu Anúncio Ativo (Gerenciar no Painel)</span>
+      <tp-icon name="arrow-right" size="xs"></tp-icon>
+    </a>
+
+    <!-- Para Empresas: Se for anúncio de outra empresa (Visualização de Auditoria) -->
+    <div
+      *ngIf="isContractor() && !isOwnAd()"
+      class="tp-feat-audit-badge"
+      title="Visualização corporativa de auditoria sem ação de candidatura"
+    >
+      <tp-icon name="shield-check" size="xs"></tp-icon>
+      <span>Visualização de Auditoria • Anúncio Corporativo</span>
+    </div>
   </footer>
 </article>

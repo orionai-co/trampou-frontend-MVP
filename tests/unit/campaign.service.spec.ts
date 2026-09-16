@@ -35,6 +35,8 @@ describe('CampaignService', () => {
   };
 
   beforeEach(async () => {
+    localStorage.removeItem('trampou_boost_campaigns');
+    localStorage.removeItem('trampou_boost_dismissed');
     apiClientSpy = jasmine.createSpyObj('ApiClientService', ['get', 'post']);
     (apiClientSpy.get.and.callFake as any)((url: string) => {
       if (url.includes('/active')) return Promise.resolve(mockActiveCampaign);
@@ -51,6 +53,11 @@ describe('CampaignService', () => {
     });
     service = TestBed.inject(CampaignService);
     await service.fetchActiveCampaign();
+  });
+
+  afterEach(() => {
+    localStorage.removeItem('trampou_boost_campaigns');
+    localStorage.removeItem('trampou_boost_dismissed');
   });
 
   it('should be created', () => {
@@ -107,6 +114,12 @@ describe('CampaignService', () => {
       expect(service.hasActiveCampaign()).toBeFalse();
       expect(service.activeCampaign()).toBeNull();
       expect(service.currentMetrics().impressions).toBe(0);
+      expect(localStorage.getItem('trampou_boost_dismissed')).toBe('true');
+
+      // Simula F5: loadStoredCampaigns não deve reativar
+      service.loadStoredCampaigns();
+      expect(service.hasActiveCampaign()).toBeFalse();
+      expect(service.activeCampaign()).toBeNull();
     }
   });
 
@@ -119,5 +132,49 @@ describe('CampaignService', () => {
       expect(service.currentMetrics().impressions).toBe(15000);
       expect(service.currentMetrics().applicationsCount).toBe(50);
     }
+  });
+
+  it('should persist created campaign in localStorage and dispatch trampou:boost-updated event', () => {
+    spyOn(window, 'dispatchEvent').and.callThrough();
+
+    service.createCampaign({
+      type: 'featured_company',
+      title: 'Campanha Persistente',
+      headline: 'Headline persistente no storage',
+      durationDays: 7
+    });
+
+    const storedRaw = localStorage.getItem('trampou_boost_campaigns');
+    expect(storedRaw).toBeTruthy();
+    const stored = JSON.parse(storedRaw!);
+    expect(stored[0].headline).toBe('Headline persistente no storage');
+    expect(stored[0].active).toBeTrue();
+
+    expect(window.dispatchEvent).toHaveBeenCalledWith(
+      jasmine.objectContaining({ type: 'trampou:boost-updated' })
+    );
+  });
+
+  it('should restore active campaign from localStorage on loadStoredCampaigns (survives F5)', () => {
+    const mockStorageItem = {
+      id: 'camp-stored-999',
+      companyId: 'comp-001',
+      companyName: 'Restaurante Teste',
+      objective: 'featured_company',
+      headline: 'Campanha restaurada do storage',
+      videoUrl: 'https://test.com/video.mp4',
+      radiusKm: 10,
+      days: 7,
+      price: 99,
+      active: true,
+      createdAt: new Date().toISOString()
+    };
+    localStorage.setItem('trampou_boost_campaigns', JSON.stringify([mockStorageItem]));
+
+    service.loadStoredCampaigns();
+
+    expect(service.hasActiveCampaign()).toBeTrue();
+    expect(service.activeCampaign()?.headline).toBe('Campanha restaurada do storage');
+    expect(service.daysRemaining()).toBeGreaterThan(0);
   });
 });

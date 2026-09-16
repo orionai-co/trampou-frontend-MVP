@@ -11,6 +11,33 @@ import {
   UserRole
 } from '../models/auth.model';
 
+export const AUTH_USER_STORAGE_KEY = 'trampou_auth_user';
+
+export const DEFAULT_MOCK_USER: AuthUserSummary = {
+  id: 'usr-mock-preview',
+  name: 'Alex Silva',
+  email: 'alex.silva@trampou.com',
+  role: 'professional',
+  avatarUrl: undefined
+};
+
+export function getStoredOrMockUser(): AuthUserSummary {
+  if (typeof localStorage !== 'undefined') {
+    const raw = localStorage.getItem(AUTH_USER_STORAGE_KEY) || localStorage.getItem('trampou_user');
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed && (parsed.id || parsed.email)) {
+          return parsed;
+        }
+      } catch {
+        // Ignora erro de parse
+      }
+    }
+  }
+  return DEFAULT_MOCK_USER;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -22,7 +49,8 @@ export class AuthService {
 
   // Signals reativos públicos com interoperabilidade direta para leitura e gravação
   readonly userRole: WritableSignal<UserRole | null> = (() => {
-    const s = signal<UserRole | null>(null);
+    const initialUser = getStoredOrMockUser();
+    const s = signal<UserRole | null>(initialUser?.role ?? 'professional');
     const origSet = s.set.bind(s);
     return Object.assign(s, {
       set: (value: UserRole | null) => {
@@ -46,7 +74,8 @@ export class AuthService {
   })();
 
   readonly currentUser: WritableSignal<AuthUserSummary | null> = (() => {
-    const s = signal<AuthUserSummary | null>(null);
+    const initialUser = getStoredOrMockUser();
+    const s = signal<AuthUserSummary | null>(initialUser);
     const origSet = s.set.bind(s);
     return Object.assign(s, {
       set: (value: AuthUserSummary | null) => {
@@ -136,6 +165,7 @@ export class AuthService {
   logout(): void {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      localStorage.removeItem(AUTH_USER_STORAGE_KEY);
     }
     this.currentUser.set(null);
     this.userRole.set(null);
@@ -143,19 +173,22 @@ export class AuthService {
   }
 
   /**
-   * Inicializa a sessão na inicialização da aplicação, restaurando usuário via GET /auth/me se houver token
+   * Inicializa a sessão na inicialização da aplicação, restaurando usuário via GET /auth/me se houver token,
+   * ou garantindo que exista um usuário mock padrão autenticado (caso não haja nenhum no localStorage).
    */
   async initSession(): Promise<void> {
     if (typeof localStorage === 'undefined') {
-      this.currentUser.set(null);
-      this.userRole.set(null);
+      if (!this.currentUser()) {
+        this.currentUser.set(DEFAULT_MOCK_USER);
+      }
       return;
     }
 
     const token = localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
     if (!token) {
-      this.currentUser.set(null);
-      this.userRole.set(null);
+      if (!this.currentUser()) {
+        this.currentUser.set(getStoredOrMockUser());
+      }
       return;
     }
 
@@ -173,13 +206,11 @@ export class AuthService {
         const user = this.normalizeUser(rawUser);
         this.currentUser.set(user);
       } else {
-        this.currentUser.set(null);
-        this.userRole.set(null);
+        this.currentUser.set(getStoredOrMockUser());
       }
     } catch {
       localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
-      this.currentUser.set(null);
-      this.userRole.set(null);
+      this.currentUser.set(getStoredOrMockUser());
     }
   }
 

@@ -78,4 +78,50 @@ describe('CreateJobModalComponent', () => {
     }));
     expect(component.closed.emit).toHaveBeenCalled();
   });
+
+  it('should populate fields and emit jobUpdated when jobToEdit is provided', () => {
+    spyOn(component.jobUpdated, 'emit');
+    spyOn(component.closed, 'emit');
+
+    const existingJob = {
+      id: 'job-edit-456',
+      title: 'Cumim de Apoio',
+      category: 'Gastronomia',
+      date: 'Amanhã',
+      schedule: { start: '19:00', end: '01:00', totalHours: 6 },
+      location: { city: 'São Paulo', neighborhood: 'Pinheiros', address: 'Rua dos Pinheiros, 120' },
+      slots: { total: 2, filled: 1 },
+      paymentAmount: 160,
+      requiredLevel: 2 as const,
+      status: 'open' as const,
+      requirements: ['Sapato fechado'],
+      candidates: []
+    };
+
+    component.jobToEdit = existingJob;
+    component.ngOnChanges({
+      jobToEdit: {
+        currentValue: existingJob,
+        previousValue: null,
+        firstChange: true,
+        isFirstChange: () => true
+      }
+    });
+
+    expect(component.formData().title).toBe('Cumim de Apoio');
+    expect(component.formData().paymentAmount).toBe(160);
+    expect(component.submitButtonLabel).toBe('Salvar Alterações da Vaga');
+
+    // Modifica o valor e submete
+    component.formData.update(f => ({ ...f, paymentAmount: 180 }));
+    component.submitJob();
+
+    expect(component.jobUpdated.emit).toHaveBeenCalledWith(jasmine.objectContaining({
+      id: 'job-edit-456',
+      title: 'Cumim de Apoio',
+      paymentAmount: 180,
+      slots: { total: 2, filled: 1 }
+    }));
+    expect(component.closed.emit).toHaveBeenCalled();
+  });
 });

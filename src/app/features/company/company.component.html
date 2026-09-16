@@ -31,6 +31,8 @@
         <!-- 1.2 DASHBOARD DE DESEMPENHO DO IMPULSIONAMENTO & CONTEÚDO INSTITUCIONAL -->
         <tp-company-campaign-metrics
           (openBoostModal)="openBoostModal()"
+          (editBoost)="openEditBoostModal()"
+          (cancelBoost)="openCancelBoostConfirm()"
         ></tp-company-campaign-metrics>
 
         <!-- 1.3 ABAS DE NAVEGAÇÃO INTERNA: VAGAS ATIVAS & HISTÓRICO -->
@@ -83,6 +85,8 @@
                 [job]="job"
                 (viewCandidates)="openCandidatesModal(job)"
                 (completeJob)="openPayoutConfirmModal(job)"
+                (editJob)="openEditJobModal($event)"
+                (deleteJob)="openDeleteJobConfirm($event)"
               ></tp-company-job-card>
             </div>
 
@@ -194,15 +198,18 @@
     [companyName]="companyService.companyProfile().name"
     [companyRating]="companyService.companyProfile().rating"
     [openJobsCount]="companyService.activeJobs().length"
+    [campaignToEdit]="campaignToEdit()"
     (closed)="closeBoostModal()"
     (campaignCreated)="handleCampaignCreated($event)"
   ></tp-boost-campaign-modal>
 
-  <!-- MODAL DE CRIAÇÃO RÁPIDA DE VAGA (STEPPER EM 3 PASSOS) -->
+  <!-- MODAL DE CRIAÇÃO/EDIÇÃO RÁPIDA DE VAGA (STEPPER EM 3 PASSOS) -->
   <tp-create-job-modal
     [isOpen]="isCreateModalOpen()"
+    [jobToEdit]="jobToEdit()"
     (closed)="closeCreateJobModal()"
     (jobCreated)="handleJobCreated($event)"
+    (jobUpdated)="handleJobUpdated($event)"
   ></tp-create-job-modal>
 
   <!-- MODAL DE SELEÇÃO E TRIAGEM RÁPIDA DE CANDIDATOS (1 CLIQUE) -->
@@ -298,5 +305,80 @@
     (closed)="closeRatingModal()"
     (reviewSubmitted)="handleReviewSubmitted()"
   ></tp-rating-modal>
+
+  <!-- MODAL DE CONFIRMAÇÃO DE ENCERRAMENTO / EXCLUSÃO DE VAGA -->
+  <tp-modal
+    [isOpen]="isConfirmDeleteJobOpen()"
+    title="Encerrar Vaga"
+    subtitle="Confirme o encerramento do turno e retirada do feed de oportunidades"
+    maxWidth="480px"
+    [hasFooter]="true"
+    (closed)="closeDeleteJobConfirm()"
+  >
+    <div *ngIf="jobToDelete()" class="tp-delete-confirm-body">
+      <div class="tp-delete-job-preview">
+        <h4 class="tp-djob-title">{{ jobToDelete()?.title }}</h4>
+        <div class="tp-djob-meta">
+          <span>{{ jobToDelete()?.category }}</span>
+          <span>•</span>
+          <span>{{ jobToDelete()?.date }}</span>
+          <span>•</span>
+          <span>R$ {{ jobToDelete()?.paymentAmount }},00</span>
+        </div>
+      </div>
+
+      <div *ngIf="jobToDelete()?.candidates && (jobToDelete()?.candidates?.length || 0) > 0" class="tp-delete-warning-box">
+        <tp-icon name="alert-triangle" size="xs"></tp-icon>
+        <div>
+          <strong>Atenção aos candidatos inscritos:</strong>
+          <p>Esta vaga possui {{ jobToDelete()?.candidates?.length }} profissional(is) na triagem. Ao encerrar a vaga, as candidaturas ativas serão canceladas.</p>
+        </div>
+      </div>
+
+      <p class="tp-delete-desc">
+        Ao confirmar o encerramento, a vaga sairá imediatamente do feed público de oportunidades e os contadores serão atualizados.
+      </p>
+    </div>
+
+    <div tpModalFooter class="tp-modal-footer-dual">
+      <tp-button variant="outline" size="sm" (btnClick)="closeDeleteJobConfirm()">
+        Manter Vaga
+      </tp-button>
+      <tp-button variant="destructive" size="sm" (btnClick)="confirmDeleteJob()">
+        <tp-icon name="trash" size="xs"></tp-icon>
+        <span>Encerrar Vaga</span>
+      </tp-button>
+    </div>
+  </tp-modal>
+
+  <!-- MODAL DE CONFIRMAÇÃO DE ENCERRAMENTO DO IMPULSIONAMENTO ATIVO -->
+  <tp-modal
+    [isOpen]="isConfirmCancelBoostOpen()"
+    title="Encerrar Impulsionamento"
+    subtitle="Confirmação de encerramento do anúncio em destaque no feed"
+    maxWidth="480px"
+    [hasFooter]="true"
+    (closed)="closeCancelBoostConfirm()"
+  >
+    <div class="tp-delete-confirm-body">
+      <div class="tp-delete-boost-alert">
+        <tp-icon name="alert-circle" size="md"></tp-icon>
+        <p>Deseja realmente encerrar este impulsionamento? O anúncio sairá do topo do feed.</p>
+      </div>
+      <p class="tp-delete-desc">
+        O status será redefinido para sem anúncio e o card patrocinado deixará de ser exibido para os profissionais na região.
+      </p>
+    </div>
+
+    <div tpModalFooter class="tp-modal-footer-dual">
+      <tp-button variant="outline" size="sm" (btnClick)="closeCancelBoostConfirm()">
+        Cancelar
+      </tp-button>
+      <tp-button variant="destructive" size="sm" (btnClick)="confirmCancelBoost()">
+        <tp-icon name="trash" size="xs"></tp-icon>
+        <span>Encerrar Anúncio</span>
+      </tp-button>
+    </div>
+  </tp-modal>
 
 </div>

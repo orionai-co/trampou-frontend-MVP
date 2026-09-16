@@ -76,6 +76,26 @@ describe('CompanyCampaignMetricsComponent', () => {
     expect(component.openBoostModal.emit).toHaveBeenCalled();
   });
 
+  it('should emit editBoost when edit button is clicked', () => {
+    spyOn(component.editBoost, 'emit');
+
+    const editBtn = fixture.nativeElement.querySelector('button[aria-label="Editar Anúncio Impulsionado"]') as HTMLButtonElement;
+    expect(editBtn).toBeTruthy();
+    editBtn.click();
+
+    expect(component.editBoost.emit).toHaveBeenCalled();
+  });
+
+  it('should emit cancelBoost when pause/delete button is clicked', () => {
+    spyOn(component.cancelBoost, 'emit');
+
+    const cancelBtn = fixture.nativeElement.querySelector('button[aria-label="Pausar ou Excluir Anúncio Impulsionado"]') as HTMLButtonElement;
+    expect(cancelBtn).toBeTruthy();
+    cancelBtn.click();
+
+    expect(component.cancelBoost.emit).toHaveBeenCalled();
+  });
+
   it('should show empty state when there is no active campaign', () => {
     const active = campaignService.activeCampaign();
     if (active) {

@@ -11,7 +11,7 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'auth/login'
+    redirectTo: 'oportunidades'
   },
   {
     path: 'auth',
@@ -46,9 +46,11 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    // canActivate: [authGuard], // Desativado temporariamente para deploy-vercel-preview
     children: [
       {
         path: 'oportunidades',
+        // canActivate: [authGuard],
         component: OpportunitiesFeedComponent,
         title: 'Oportunidades — TRAMPOU'
       },
@@ -64,21 +66,25 @@ export const routes: Routes = [
       },
       {
         path: 'meus-trabalhos',
+        // canActivate: [authGuard],
         component: MyJobsComponent,
         title: 'Meus Trabalhos — TRAMPOU'
       },
       {
         path: 'perfil',
+        // canActivate: [authGuard],
         component: ProfileComponent,
         title: 'Meu Perfil — TRAMPOU'
       },
       {
         path: 'empresa',
+        // canActivate: [authGuard],
         component: CompanyComponent,
         title: 'Painel da Empresa — TRAMPOU'
       },
       {
         path: 'avisos',
+        // canActivate: [authGuard],
         component: NotificationsComponent,
         title: 'Avisos & Lembretes — TRAMPOU'
       },
@@ -91,6 +97,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'auth/login'
+    redirectTo: 'oportunidades'
   }
 ];

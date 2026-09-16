@@ -1,13 +1,37 @@
 <article class="tp-company-card" [class.tp-card-completed]="job.status === 'completed'">
-  <!-- CABEÇALHO DO CARD: CATEGORIA, STATUS & TÍTULO -->
+  <!-- CABEÇALHO DO CARD: CATEGORIA, STATUS, AÇÕES & TÍTULO -->
   <header class="tp-ccard-header">
-    <div class="tp-ccard-badges">
-      <tp-badge variant="neutral" size="sm">{{ job.category }}</tp-badge>
-      <tp-badge [variant]="statusBadgeVariant" [dot]="true" size="sm">{{ statusLabel }}</tp-badge>
-      <span class="tp-level-chip">
-        <tp-icon name="shield-check" size="xs"></tp-icon>
-        <span>Nível {{ job.requiredLevel }}+</span>
-      </span>
+    <div class="tp-ccard-header-top">
+      <div class="tp-ccard-badges">
+        <tp-badge variant="neutral" size="sm">{{ job.category }}</tp-badge>
+        <tp-badge [variant]="statusBadgeVariant" [dot]="true" size="sm">{{ statusLabel }}</tp-badge>
+        <span class="tp-level-chip">
+          <tp-icon name="shield-check" size="xs"></tp-icon>
+          <span>Nível {{ job.requiredLevel }}+</span>
+        </span>
+      </div>
+
+      <!-- Ações de Gerenciamento do Card (Editar / Excluir) -->
+      <div class="tp-ccard-header-actions" *ngIf="job.status !== 'completed' && job.status !== 'cancelled'">
+        <button
+          type="button"
+          class="tp-ccard-icon-btn"
+          (click)="onEditJob($event)"
+          title="Editar Vaga"
+          aria-label="Editar Vaga"
+        >
+          <tp-icon name="edit" size="xs"></tp-icon>
+        </button>
+        <button
+          type="button"
+          class="tp-ccard-icon-btn tp-ccard-btn-delete"
+          (click)="onDeleteJob($event)"
+          title="Excluir / Encerrar Vaga"
+          aria-label="Excluir ou Encerrar Vaga"
+        >
+          <tp-icon name="trash" size="xs"></tp-icon>
+        </button>
+      </div>
     </div>
 
     <h2 class="tp-ccard-title">{{ job.title }}</h2>

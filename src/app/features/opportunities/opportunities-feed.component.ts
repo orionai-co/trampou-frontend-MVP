@@ -85,6 +85,12 @@ export class OpportunitiesFeedComponent implements OnInit {
   }
 
   constructor() {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('trampou:boost-updated', () => {
+        this.opportunityService.loadStoredBoostCampaigns();
+      });
+    }
+
     effect(() => {
       const q = this.opportunityService.searchQuery();
       if (this.filters().searchQuery !== q) {
@@ -95,6 +101,7 @@ export class OpportunitiesFeedComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.opportunityService.loadStoredBoostCampaigns();
     this.loadOpportunities();
     this.opportunityService.fetchFeaturedCompanies();
   }

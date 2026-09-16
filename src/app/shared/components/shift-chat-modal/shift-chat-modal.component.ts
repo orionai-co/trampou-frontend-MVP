@@ -10,11 +10,13 @@ import {
   ChangeDetectionStrategy,
   ViewChild,
   ElementRef,
-  AfterViewChecked
+  AfterViewChecked,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ShiftChatService, ChatRoom } from '../../../core/services/shift-chat.service';
+import { ShiftChatService, ChatRoom, ChatMessage, buildChannelId } from '../../../core/services/shift-chat.service';
 import {
   TpModalComponent,
   TpIconComponent,
@@ -35,7 +37,7 @@ import {
   styleUrl: './shift-chat-modal.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ShiftChatModalComponent implements OnChanges, AfterViewChecked {
+export class ShiftChatModalComponent implements OnInit, OnDestroy, OnChanges, AfterViewChecked {
   readonly shiftChatService = inject(ShiftChatService);
 
   @Input() isOpen = false;
@@ -78,6 +80,43 @@ export class ShiftChatModalComponent implements OnChanges, AfterViewChecked {
 
   get counterpartRoleLabel(): string {
     return this.currentUserRole === 'company' ? 'Profissional Aprovado' : 'Empresa Contratante';
+  }
+
+  private onMessageSentListener = (event: any) => {
+    const msg: ChatMessage = event?.detail;
+    if (!msg || !this.currentRoom()) return;
+    const room = this.currentRoom()!;
+    const channelId = buildChannelId(room.jobId, room.freelancerId);
+    if (msg.roomId === room.id || msg.channelId === room.id || msg.channelId === channelId) {
+      const alreadyHas = room.messages.some(m => m.id === msg.id);
+      if (!alreadyHas) {
+        this.currentRoom.set({
+          ...room,
+          messages: [...room.messages, msg]
+        });
+        this.shouldScrollToBottom = true;
+      }
+    }
+  };
+
+  ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('trampou:message-sent', this.onMessageSentListener);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('trampou:message-sent', this.onMessageSentListener);
+    }
+  }
+
+  isOutgoing(msg: ChatMessage): boolean {
+    if (this.currentUserRole === 'company' || (this.currentUserRole as string) === 'contractor') {
+      return msg.senderRole === 'company' || msg.senderRole === 'contractor';
+    } else {
+      return msg.senderRole === 'freelancer' || msg.senderRole === 'professional';
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

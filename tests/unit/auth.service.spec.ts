@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { AuthService } from '../../src/app/core/services/auth.service';
+import { AuthService, AUTH_USER_STORAGE_KEY, DEFAULT_MOCK_USER } from '../../src/app/core/services/auth.service';
 import { ApiClientService, AUTH_TOKEN_STORAGE_KEY } from '../../src/app/core/services/api-client.service';
 import { API_ENDPOINTS } from '../../src/app/core/constants/api-endpoints';
 import {
@@ -16,6 +16,8 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+    localStorage.removeItem(AUTH_USER_STORAGE_KEY);
+    localStorage.removeItem('trampou_user');
 
     apiClientSpy = jasmine.createSpyObj<ApiClientService>('ApiClientService', ['get', 'post']);
     routerSpy = jasmine.createSpyObj<Router>('Router', ['navigate']);
@@ -33,13 +35,15 @@ describe('AuthService', () => {
 
   afterEach(() => {
     localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+    localStorage.removeItem(AUTH_USER_STORAGE_KEY);
+    localStorage.removeItem('trampou_user');
   });
 
-  it('deve ser instanciado com estado inicial desautenticado', () => {
+  it('deve ser instanciado com usuário mock padrão autenticado quando não houver usuário no storage', () => {
     expect(service).toBeTruthy();
-    expect(service.currentUser()).toBeNull();
-    expect(service.isAuthenticated()).toBeFalse();
-    expect(service.userRole()).toBeNull();
+    expect(service.currentUser()).toEqual(DEFAULT_MOCK_USER);
+    expect(service.isAuthenticated()).toBeTrue();
+    expect(service.userRole()).toBe('professional');
   });
 
   describe('login', () => {
@@ -223,12 +227,12 @@ describe('AuthService', () => {
   });
 
   describe('initSession', () => {
-    it('não deve disparar requisição se não houver token no storage', async () => {
+    it('não deve disparar requisição se não houver token no storage e deve manter usuário mock autenticado', async () => {
       await service.initSession();
 
       expect(apiClientSpy.get).not.toHaveBeenCalled();
-      expect(service.currentUser()).toBeNull();
-      expect(service.isAuthenticated()).toBeFalse();
+      expect(service.currentUser()).toEqual(DEFAULT_MOCK_USER);
+      expect(service.isAuthenticated()).toBeTrue();
     });
 
     it('deve restaurar a sessão chamando GET /auth/me se houver token no storage', async () => {
@@ -296,7 +300,7 @@ describe('AuthService', () => {
       }
     });
 
-    it('deve limpar token e resetar currentUser caso a requisição GET /auth/me falhe', async () => {
+    it('deve limpar token e restaurar usuário mock padrão caso a requisição GET /auth/me falhe', async () => {
       localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, 'invalid-expired-token');
 
       apiClientSpy.get.and.returnValue(Promise.reject(new Error('Unauthorized 401')));
@@ -305,9 +309,9 @@ describe('AuthService', () => {
 
       expect(apiClientSpy.get).toHaveBeenCalledWith(API_ENDPOINTS.AUTH.ME);
       expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toBeNull();
-      expect(service.currentUser()).toBeNull();
-      expect(service.isAuthenticated()).toBeFalse();
-      expect(service.userRole()).toBeNull();
+      expect(service.currentUser()).toEqual(DEFAULT_MOCK_USER);
+      expect(service.isAuthenticated()).toBeTrue();
+      expect(service.userRole()).toBe('professional');
     });
   });
 

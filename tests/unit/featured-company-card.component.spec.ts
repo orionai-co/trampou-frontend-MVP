@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FeaturedCompanyCardComponent } from '../../src/app/features/opportunities/components/featured-company-card/featured-company-card.component';
 import { FeaturedCompany } from '../../src/app/core/models/sponsored-content.model';
+import { AuthService } from '../../src/app/core/services/auth.service';
 import { provideRouter } from '@angular/router';
 
 describe('FeaturedCompanyCardComponent', () => {
@@ -131,7 +132,7 @@ describe('FeaturedCompanyCardComponent', () => {
     );
   });
 
-  it('should emit exploreCompany when action button is clicked', () => {
+  it('should emit exploreCompany when action button is clicked for professional user', () => {
     spyOn(component.exploreCompany, 'emit');
 
     const button = fixture.nativeElement.querySelector('.tp-feat-action-btn') as HTMLButtonElement;
@@ -140,5 +141,35 @@ describe('FeaturedCompanyCardComponent', () => {
 
     button.click();
     expect(component.exploreCompany.emit).toHaveBeenCalledWith(component.company);
+  });
+
+  it('should render own company active ad badge and hide explore button when user is contractor and owns the ad', () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userRole.set('contractor');
+    component.isOwnCompany = true;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const actionBtn = compiled.querySelector('.tp-feat-action-btn');
+    const ownAdBadge = compiled.querySelector('.tp-feat-own-ad-badge');
+
+    expect(actionBtn).toBeNull();
+    expect(ownAdBadge).toBeTruthy();
+    expect(ownAdBadge?.textContent).toContain('Seu Anúncio Ativo (Gerenciar no Painel)');
+  });
+
+  it('should render audit view badge and hide explore button when user is contractor and ad belongs to another company', () => {
+    const authService = TestBed.inject(AuthService);
+    authService.userRole.set('contractor');
+    component.isOwnCompany = false;
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    const actionBtn = compiled.querySelector('.tp-feat-action-btn');
+    const auditBadge = compiled.querySelector('.tp-feat-audit-badge');
+
+    expect(actionBtn).toBeNull();
+    expect(auditBadge).toBeTruthy();
+    expect(auditBadge?.textContent).toContain('Visualização de Auditoria • Anúncio Corporativo');
   });
 });

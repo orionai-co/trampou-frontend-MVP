@@ -42,32 +42,27 @@ export class CandidateProfileModalComponent {
   }
 
   getRoleTitle(candidate: Candidate | null): string {
-    if (!candidate) return 'Profissional Trampou';
-    if (candidate.roleTitle) return candidate.roleTitle;
-    if (candidate.level === 3) return 'Especialista em Gastronomia & Eventos';
-    if (candidate.level === 2) return 'Garçom de Salão • Eventos & Gastronomia';
-    return 'Atendimento & Apoio Operacional';
+    if (!candidate) return 'Profissional Cadastrado';
+    return candidate.roleTitle || 'Profissional Cadastrado';
   }
 
   getLocation(candidate: Candidate | null): string {
     if (!candidate) return 'São Paulo, SP';
-    return candidate.location || 'São Paulo, SP (Raio de 3.5 km)';
+    return candidate.location || 'São Paulo, SP';
   }
 
   getBio(candidate: Candidate | null): string {
     if (!candidate) return '';
-    return (
-      candidate.bio ||
-      'Profissional dedicado com pontualidade comprovada na plataforma Trampou, focado em agilidade, boa apresentação e excelência no atendimento ao cliente.'
-    );
+    return candidate.bio || 'Profissional cadastrado na plataforma Trampou.';
   }
 
   getCompletedShifts(candidate: Candidate | null): number {
     if (!candidate) return 0;
-    if (candidate.completedShiftsCount !== undefined) {
-      return candidate.completedShiftsCount;
-    }
-    return Math.max(candidate.reviewsCount + 6, 12);
+    return candidate.completedShiftsCount ?? (candidate.reviewsCount > 0 ? candidate.reviewsCount : 0);
+  }
+
+  hasReviews(candidate: Candidate | null): boolean {
+    return !!(candidate && (candidate.reviewsCount > 0 || (candidate.recentReviews && candidate.recentReviews.length > 0)));
   }
 
   getMatchReasons(candidate: Candidate | null): string[] {
@@ -86,36 +81,12 @@ export class CandidateProfileModalComponent {
     if (candidate.skills && candidate.skills.length > 0) {
       return candidate.skills;
     }
-    if (candidate.level === 3) {
-      return ['Chefia de Salão', 'Coquetelaria & Bar', 'Atendimento VIP', 'Organização de Buffet', 'Controle de Fluxo'];
-    }
-    if (candidate.level === 2) {
-      return ['Garçom de Salão', 'Serviço de Bandeja', 'Atendimento & Bar', 'Recepção de Eventos', 'Boas Práticas de Higiene'];
-    }
-    return ['Apoio de Salão', 'Recepção', 'Organização de Mesas', 'Atendimento Ágil'];
+    return ['Atendimento & Salão', 'Recepção', 'Organização Operacional', 'Pontualidade'];
   }
 
   getRecentReviews(candidate: Candidate | null): CandidateReview[] {
     if (!candidate) return [];
-    if (candidate.recentReviews && candidate.recentReviews.length > 0) {
-      return candidate.recentReviews;
-    }
-    return [
-      {
-        companyName: 'Buffet Vila Olímpia',
-        rating: 5.0,
-        comment: 'Excelente profissional! Chegou com antecedência, muito prestativo e com ótima postura diante dos clientes.',
-        date: 'Há 4 dias',
-        badge: 'Pontual e Proativo'
-      },
-      {
-        companyName: 'Restaurante Terraço Paulista',
-        rating: 4.8,
-        comment: 'Muito ágil e focado durante todo o turno. Recomendo para eventos corporativos e alta demanda.',
-        date: 'Há 2 semanas',
-        badge: 'Excelente Postura'
-      }
-    ];
+    return candidate.recentReviews || [];
   }
 
   onApprove(): void {

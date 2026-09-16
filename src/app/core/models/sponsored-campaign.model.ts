@@ -1,6 +1,31 @@
 export type CampaignType = 'featured_company' | 'boost_job';
 export type CampaignDurationDays = 1 | 3 | 7 | 14 | 30;
 
+export const TRAMPOU_BOOST_CAMPAIGNS_STORAGE_KEY = 'trampou_boost_campaigns';
+export const TRAMPOU_BOOST_DISMISSED_STORAGE_KEY = 'trampou_boost_dismissed';
+
+export interface BoostCampaignStorageItem {
+  id: string;
+  companyId: string;
+  companyName: string;
+  objective: string;
+  headline: string;
+  videoUrl: string;
+  videoFileName?: string;
+  videoMimeType?: string;
+  videoDurationText?: string;
+  videoStorageKey?: string;
+  videoThumbnail?: string;
+  radiusKm: number;
+  days: number;
+  price: number;
+  active: boolean;
+  status?: 'active' | 'cancelled' | 'completed';
+  deletedAt?: string;
+  createdAt: string;
+  metrics?: Partial<CampaignMetrics>;
+}
+
 export interface CampaignTargeting {
   radiusKm: number; // 10
   category: string; // 'Gastronomia & Eventos'

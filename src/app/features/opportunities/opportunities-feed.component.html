@@ -88,7 +88,17 @@
         </div>
 
         <!-- LISTA DE CARDS -->
-        <section *ngIf="!isLoading() && opportunities().length > 0" class="tp-timeline-posts-list tp-feed-cards-list" aria-label="Lista de oportunidades">
+        <section *ngIf="!isLoading() && (opportunities().length > 0 || featuredCompany())" class="tp-timeline-posts-list tp-feed-cards-list" aria-label="Lista de oportunidades">
+          
+          <!-- ANÚNCIO DE IMPULSIONAMENTO PATROCINADO NO TOPO DO FEED -->
+          <tp-featured-company-card
+            *ngIf="featuredCompany()"
+            [company]="featuredCompany()!"
+            (exploreCompany)="onExploreCompany($event)"
+            (openMatch)="openMatchModal($event)"
+          ></tp-featured-company-card>
+
+          <!-- LISTAGEM DE OPORTUNIDADES -->
           <ng-container *ngFor="let opp of opportunities(); let i = index; trackBy: trackByOppId">
             <tp-opportunity-card
               [opportunity]="opp"
@@ -96,19 +106,11 @@
               (apply)="openDetails(opp)"
               (openMatch)="openMatchModal($event)"
             ></tp-opportunity-card>
-
-            <!-- Card de Empresa em Destaque intercalado após a 2ª vaga -->
-            <tp-featured-company-card
-              *ngIf="i === 1 && featuredCompany()"
-              [company]="featuredCompany()!"
-              (exploreCompany)="onExploreCompany($event)"
-              (openMatch)="openMatchModal($event)"
-            ></tp-featured-company-card>
           </ng-container>
         </section>
 
         <!-- ESTADO VAZIO -->
-        <div *ngIf="!isLoading() && opportunities().length === 0" class="tp-timeline-empty-state">
+        <div *ngIf="!isLoading() && opportunities().length === 0 && !featuredCompany()" class="tp-timeline-empty-state">
           <div class="tp-empty-icon-circle">
             <tp-icon name="search" size="lg"></tp-icon>
           </div>

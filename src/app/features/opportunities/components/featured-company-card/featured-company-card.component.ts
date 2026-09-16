@@ -5,8 +5,14 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
   signal,
+  computed,
+  inject,
   ViewChild,
-  ElementRef
+  ElementRef,
+  OnInit,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -16,6 +22,9 @@ import {
   buildMatchBreakdownFromCompany
 } from '../../../../core/models/match-breakdown.model';
 import { TpIconComponent } from '../../../../shared/components';
+import { AuthService } from '../../../../core/services/auth.service';
+import { UserRole } from '../../../../core/models/auth.model';
+import { VideoStorageService } from '../../../../core/services/video-storage.service';
 
 @Component({
   selector: 'tp-featured-company-card',
@@ -29,8 +38,12 @@ import { TpIconComponent } from '../../../../shared/components';
   styleUrl: './featured-company-card.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FeaturedCompanyCardComponent {
+export class FeaturedCompanyCardComponent implements OnInit, OnChanges, OnDestroy {
+  private readonly authService = inject(AuthService, { optional: true });
+  private readonly videoStorageService = inject(VideoStorageService);
+
   @Input({ required: true }) company!: FeaturedCompany;
+  @Input() isOwnCompany?: boolean;
   @Output() exploreCompany = new EventEmitter<FeaturedCompany>();
   @Output() openMatch = new EventEmitter<MatchBreakdownData>();
 
@@ -39,6 +52,87 @@ export class FeaturedCompanyCardComponent {
   readonly isPlaying = signal<boolean>(false);
   readonly isMuted = signal<boolean>(true);
   readonly progressPercent = signal<number>(0);
+  readonly resolvedVideoUrl = signal<string>('');
+
+  private readonly onBoostUpdatedListener = (event: any) => {
+    if (event?.detail?.videoUrl) {
+      this.resolvedVideoUrl.set(event.detail.videoUrl);
+    } else {
+      this.resolveVideoUrl();
+    }
+  };
+
+  ngOnInit(): void {
+    this.resolveVideoUrl();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('trampou:boost-updated', this.onBoostUpdatedListener);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['company']) {
+      this.resolveVideoUrl();
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('trampou:boost-updated', this.onBoostUpdatedListener);
+    }
+  }
+
+  async resolveVideoUrl(): Promise<void> {
+    if (!this.company) return;
+
+    if (this.company.videoStorageKey) {
+      try {
+        const url = await this.videoStorageService.getVideoUrl(this.company.videoStorageKey);
+        if (url) {
+          this.resolvedVideoUrl.set(url);
+          return;
+        }
+      } catch {}
+    }
+
+    if (this.company.videoFileName) {
+      try {
+        const url = await this.videoStorageService.getVideoUrl('active_boost_video');
+        if (url) {
+          this.resolvedVideoUrl.set(url);
+          return;
+        }
+      } catch {}
+    }
+
+    if (this.company.videoUrl) {
+      this.resolvedVideoUrl.set(this.company.videoUrl);
+    }
+  }
+
+  readonly userRole = computed<UserRole>(() => {
+    return this.authService?.userRole() ?? 'professional';
+  });
+
+  readonly isContractor = computed<boolean>(() => {
+    return this.userRole() === 'contractor';
+  });
+
+  readonly isOwnAd = computed<boolean>(() => {
+    if (this.isOwnCompany !== undefined) {
+      return this.isOwnCompany;
+    }
+    if (!this.isContractor()) {
+      return false;
+    }
+    const user = this.authService?.currentUser();
+    if (user?.id && user.id === this.company?.companyId) {
+      return true;
+    }
+    if (this.company?.companyId === 'comp-001') {
+      return true;
+    }
+    return false;
+  });
 
   // Alias para retrocompatibilidade
   get isVideoPlaying() {
