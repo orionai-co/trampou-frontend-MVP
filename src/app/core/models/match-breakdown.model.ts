@@ -62,7 +62,7 @@ export function buildMatchBreakdownFromOpportunity(opportunity: {
       {
         id: 'level',
         label: 'Nível de Experiência',
-        description: `Exige Nível ${level}. Seu perfil no Trampou é Nível ${level} (${level === 3 ? 'Especialista' : level === 2 ? 'Experiente' : 'Iniciante'}).`,
+        description: `Exige Nível ${level}. Seu perfil no Trampali é Nível ${level} (${level === 3 ? 'Especialista' : level === 2 ? 'Experiente' : 'Iniciante'}).`,
         scorePercentage: levelScore,
         status: levelScore >= 95 ? 'perfect' : 'good',
         icon: 'award'

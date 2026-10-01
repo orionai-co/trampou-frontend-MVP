@@ -177,7 +177,7 @@ describe('MyJobsService', () => {
     expect(found).toBeTruthy();
     expect(found?.title).toBe('Recepcionista para Clínica');
 
-    const stored = localStorage.getItem('trampou_user_applications');
+    const stored = localStorage.getItem('trampali_user_applications');
     expect(stored).toBeTruthy();
     expect(stored).toContain('app-test-999');
   });

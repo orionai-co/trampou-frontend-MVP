@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NotificationsComponent } from '../../src/app/features/notifications/notifications.component';
-import { NotificationsService, TrampouNotification } from '../../src/app/core/services/notifications.service';
+import { NotificationsService, TrampaliNotification } from '../../src/app/core/services/notifications.service';
 import { ApiClientService } from '../../src/app/core/services/api-client.service';
 import { provideRouter } from '@angular/router';
 
@@ -9,7 +9,7 @@ describe('NotificationsComponent', () => {
   let fixture: ComponentFixture<NotificationsComponent>;
   let service: NotificationsService;
 
-  const mockNotifs: TrampouNotification[] = [
+  const mockNotifs: TrampaliNotification[] = [
     {
       id: 'notif-1',
       type: 'pix_received',

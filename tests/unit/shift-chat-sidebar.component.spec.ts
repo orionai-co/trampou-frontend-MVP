@@ -79,11 +79,11 @@ describe('ShiftChatSidebarComponent', () => {
     expect(component.emptyStateDescription).toContain('Selecione um contratante');
   });
 
-  it('should render mobile brand header with Trampou logo', () => {
+  it('should render mobile brand header with Trampali logo', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     const brandHeader = compiled.querySelector('.tp-mobile-chat-brand-header');
     expect(brandHeader).toBeTruthy();
-    expect(brandHeader?.textContent).toContain('TRAMPOU');
+    expect(brandHeader?.textContent).toContain('TRAMPALI');
   });
 });

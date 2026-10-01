@@ -11,7 +11,7 @@ export type NotificationType =
   | 'company_favorite' // Confirmação de empresa favoritada
   | 'system';
 
-export interface TrampouNotification {
+export interface TrampaliNotification {
   id: string;
   type: NotificationType;
   title: string;
@@ -40,7 +40,7 @@ export type NotificationFilterTab = 'all' | 'shifts' | 'pix' | 'opportunities' |
 export class NotificationsService {
   private apiClient = inject(ApiClientService);
 
-  readonly notifications = signal<TrampouNotification[]>([]);
+  readonly notifications = signal<TrampaliNotification[]>([]);
   readonly isLoading = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
 
@@ -48,10 +48,10 @@ export class NotificationsService {
     return this.notifications().filter(n => !n.read).length;
   });
 
-  async fetchNotifications(): Promise<TrampouNotification[]> {
+  async fetchNotifications(): Promise<TrampaliNotification[]> {
     this.isLoading.set(true);
     try {
-      const data = await this.apiClient.get<TrampouNotification[]>(API_ENDPOINTS.NOTIFICATIONS.LIST);
+      const data = await this.apiClient.get<TrampaliNotification[]>(API_ENDPOINTS.NOTIFICATIONS.LIST);
       this.notifications.set(data || []);
       return data || [];
     } catch (error: any) {
@@ -62,12 +62,12 @@ export class NotificationsService {
     }
   }
 
-  addNotification(notification: Omit<TrampouNotification, 'id' | 'read' | 'timestamp'> & {
+  addNotification(notification: Omit<TrampaliNotification, 'id' | 'read' | 'timestamp'> & {
     id?: string;
     read?: boolean;
     timestamp?: string;
-  }): TrampouNotification {
-    const newNotif: TrampouNotification = {
+  }): TrampaliNotification {
+    const newNotif: TrampaliNotification = {
       id: notification.id || `notif-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       type: notification.type,
       title: notification.title,
@@ -85,7 +85,7 @@ export class NotificationsService {
     return newNotif;
   }
 
-  notifyCompanyFollowed(companyName: string, companyId?: string): TrampouNotification {
+  notifyCompanyFollowed(companyName: string, companyId?: string): TrampaliNotification {
     return this.addNotification({
       type: 'company_alert',
       title: `Acompanhando ${companyName}`,
@@ -99,7 +99,7 @@ export class NotificationsService {
     });
   }
 
-  notifyCompanyFavorited(companyName: string, companyId?: string): TrampouNotification {
+  notifyCompanyFavorited(companyName: string, companyId?: string): TrampaliNotification {
     return this.addNotification({
       type: 'company_favorite',
       title: `Empresa Favoritada: ${companyName}`,
@@ -113,7 +113,7 @@ export class NotificationsService {
     });
   }
 
-  notifyCompanyNewJob(companyName: string, jobTitle: string, matchScore = 98, companyId?: string): TrampouNotification {
+  notifyCompanyNewJob(companyName: string, jobTitle: string, matchScore = 98, companyId?: string): TrampaliNotification {
     return this.addNotification({
       type: 'company_alert',
       title: `Nova vaga de ${companyName}`,
@@ -146,7 +146,7 @@ export class NotificationsService {
     );
   }
 
-  getFilteredNotifications(tab: NotificationFilterTab): TrampouNotification[] {
+  getFilteredNotifications(tab: NotificationFilterTab): TrampaliNotification[] {
     const list = this.notifications();
     switch (tab) {
       case 'shifts':

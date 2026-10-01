@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { OpportunityService, TRAMPOU_COMPANY_JOBS_STORAGE_KEY } from '../../src/app/features/opportunities/services/opportunity.service';
+import { OpportunityService, TRAMPALI_COMPANY_JOBS_STORAGE_KEY } from '../../src/app/features/opportunities/services/opportunity.service';
 import { ApiClientService } from '../../src/app/core/services/api-client.service';
 import { Opportunity } from '../../src/app/features/opportunities/models/opportunity.model';
 
@@ -149,7 +149,7 @@ describe('OpportunityService', () => {
       description: 'Recepção bilíngue'
     };
 
-    localStorage.setItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY, JSON.stringify([customJob]));
+    localStorage.setItem(TRAMPALI_COMPANY_JOBS_STORAGE_KEY, JSON.stringify([customJob]));
     const list = await service.fetchOpportunities();
     expect(list.some(o => o.id === 'custom-company-job-99')).toBeTrue();
     expect(list.some(o => o.title === 'Recepcionista Bilíngue')).toBeTrue();

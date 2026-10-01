@@ -40,7 +40,7 @@ describe('RegisterProfessionalComponent', () => {
     it('deve validar correspondência de senha e complexidade', () => {
       component.step1Form.patchValue({
         nome: 'Carlos Silva',
-        email: 'carlos@trampou.com',
+        email: 'carlos@trampali.com',
         whatsapp: '(11) 99999-9999',
         senha: 'apenasletras',
         confirmarSenha: 'apenasletras'
@@ -68,7 +68,7 @@ describe('RegisterProfessionalComponent', () => {
     it('deve avançar para a Etapa 2 quando a Etapa 1 for válida', () => {
       component.step1Form.patchValue({
         nome: 'Carlos Silva',
-        email: 'carlos@trampou.com',
+        email: 'carlos@trampali.com',
         whatsapp: '(11) 99999-9999',
         senha: 'Password123!',
         confirmarSenha: 'Password123!'
@@ -92,7 +92,7 @@ describe('RegisterProfessionalComponent', () => {
     beforeEach(() => {
       component.step1Form.patchValue({
         nome: 'Carlos Silva',
-        email: 'carlos@trampou.com',
+        email: 'carlos@trampali.com',
         whatsapp: '(11) 99999-9999',
         senha: 'Password123!',
         confirmarSenha: 'Password123!'
@@ -105,7 +105,7 @@ describe('RegisterProfessionalComponent', () => {
       component.prevStep();
       expect(component.currentStep()).toBe(1);
       expect(component.step1Form.get('nome')?.value).toBe('Carlos Silva');
-      expect(component.step1Form.get('email')?.value).toBe('carlos@trampou.com');
+      expect(component.step1Form.get('email')?.value).toBe('carlos@trampali.com');
     });
 
     it('deve alternar a seleção de especialidades dinâmicas', () => {
@@ -133,7 +133,7 @@ describe('RegisterProfessionalComponent', () => {
     beforeEach(() => {
       component.step1Form.patchValue({
         nome: 'Carlos Silva',
-        email: 'carlos@trampou.com',
+        email: 'carlos@trampali.com',
         whatsapp: '(11) 99999-9999',
         senha: 'Password123!',
         confirmarSenha: 'Password123!'
@@ -162,7 +162,7 @@ describe('RegisterProfessionalComponent', () => {
         user: {
           id: 'usr-prof-new',
           name: 'Carlos Silva',
-          email: 'carlos@trampou.com',
+          email: 'carlos@trampali.com',
           role: 'professional'
         }
       };
@@ -174,7 +174,7 @@ describe('RegisterProfessionalComponent', () => {
       expect(authServiceSpy.registerProfessional).toHaveBeenCalledWith(
         jasmine.objectContaining({
           nome: 'Carlos Silva',
-          email: 'carlos@trampou.com',
+          email: 'carlos@trampali.com',
           whatsapp: '(11) 99999-9999',
           senha: 'Password123!',
           cidade: 'São Paulo',

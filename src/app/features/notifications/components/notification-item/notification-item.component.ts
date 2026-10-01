@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { TrampouNotification, NotificationType } from '../../../../core/services/notifications.service';
+import { TrampaliNotification, NotificationType } from '../../../../core/services/notifications.service';
 import { TpIconComponent, IconName } from '../../../../shared/components';
 
 @Component({
@@ -13,11 +13,11 @@ import { TpIconComponent, IconName } from '../../../../shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotificationItemComponent {
-  @Input({ required: true }) notification!: TrampouNotification;
+  @Input({ required: true }) notification!: TrampaliNotification;
 
   @Output() markAsRead = new EventEmitter<string>();
   @Output() delete = new EventEmitter<string>();
-  @Output() actionClick = new EventEmitter<TrampouNotification>();
+  @Output() actionClick = new EventEmitter<TrampaliNotification>();
 
   get iconName(): IconName {
     switch (this.notification.type) {

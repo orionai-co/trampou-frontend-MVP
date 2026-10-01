@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "trampou-frontend": {
+    "trampali-frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/trampou-frontend",
+            "outputPath": "dist/trampali-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "trampou-frontend:build:production"
+              "buildTarget": "trampali-frontend:build:production"
             },
             "development": {
-              "buildTarget": "trampou-frontend:build:development"
+              "buildTarget": "trampali-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

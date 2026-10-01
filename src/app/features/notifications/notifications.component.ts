@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import {
   NotificationsService,
   NotificationFilterTab,
-  TrampouNotification
+  TrampaliNotification
 } from '../../core/services/notifications.service';
 import { NotificationFiltersComponent } from './components/notification-filters/notification-filters.component';
 import { NotificationItemComponent } from './components/notification-item/notification-item.component';
@@ -34,7 +34,7 @@ export class NotificationsComponent implements OnInit {
 
   activeTab = signal<NotificationFilterTab>('all');
 
-  readonly filteredNotifications = computed<TrampouNotification[]>(() => {
+  readonly filteredNotifications = computed<TrampaliNotification[]>(() => {
     return this.notificationsService.getFilteredNotifications(this.activeTab());
   });
 
@@ -58,7 +58,7 @@ export class NotificationsComponent implements OnInit {
     this.notificationsService.deleteNotification(id);
   }
 
-  trackByNotificationId(index: number, item: TrampouNotification): string {
+  trackByNotificationId(index: number, item: TrampaliNotification): string {
     return item.id;
   }
 }

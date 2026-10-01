@@ -11,7 +11,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { MyJobsService } from '../../my-jobs/services/my-jobs.service';
 import { UserProfileService } from '../../../core/services/user-profile.service';
 
-export const TRAMPOU_COMPANY_JOBS_STORAGE_KEY = 'trampou_company_created_jobs';
+export const TRAMPALI_COMPANY_JOBS_STORAGE_KEY = 'trampali_company_created_jobs';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +37,7 @@ export class OpportunityService {
 
   constructor() {
     if (typeof window !== 'undefined') {
-      window.addEventListener('trampou:jobs-updated', () => {
+      window.addEventListener('trampali:jobs-updated', () => {
         this.fetchOpportunities(this.lastFilters).catch(() => {});
       });
     }
@@ -270,7 +270,7 @@ export class OpportunityService {
   private mergeWithStoredCompanyJobs(apiList: Opportunity[]): Opportunity[] {
     if (typeof localStorage === 'undefined') return apiList;
     try {
-      const raw = localStorage.getItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY) || localStorage.getItem('trampou_company_jobs');
+      const raw = localStorage.getItem(TRAMPALI_COMPANY_JOBS_STORAGE_KEY) || localStorage.getItem('trampali_company_jobs');
       if (!raw) return apiList;
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return apiList;

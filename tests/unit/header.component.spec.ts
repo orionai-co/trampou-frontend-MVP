@@ -28,10 +28,10 @@ describe('HeaderComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render brand logo with text TRAMPOU and proper branding classes', () => {
+  it('should render brand logo with text TRAMPALI and proper branding classes', () => {
     const brandElement = fixture.nativeElement.querySelector('.tp-brand-name');
     expect(brandElement).toBeTruthy();
-    expect(brandElement.textContent).toContain('TRAMPOU');
+    expect(brandElement.textContent).toContain('TRAMPALI');
     expect(fixture.nativeElement.querySelector('.tp-brand-title')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('.tp-brand-icon')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('.tp-brand-link')).toBeTruthy();
@@ -69,7 +69,7 @@ describe('HeaderComponent', () => {
     authService.currentUser.set({
       id: 'usr-prof',
       name: 'Carlos Garçom',
-      email: 'carlos@trampou.com',
+      email: 'carlos@trampali.com',
       role: 'professional'
     });
     fixture.detectChanges();
@@ -83,7 +83,7 @@ describe('HeaderComponent', () => {
     authService.currentUser.set({
       id: 'usr-comp',
       name: 'Buffet Delícia',
-      email: 'buffet@trampou.com',
+      email: 'buffet@trampali.com',
       role: 'contractor'
     });
     fixture.detectChanges();
@@ -200,7 +200,7 @@ describe('HeaderComponent', () => {
     authService.currentUser.set({
       id: 'usr-comp-1',
       name: 'Restaurante Fino',
-      email: 'fino@trampou.com',
+      email: 'fino@trampali.com',
       role: 'contractor'
     });
     fixture.detectChanges();

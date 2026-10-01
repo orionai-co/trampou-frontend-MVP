@@ -42,7 +42,7 @@ export class CandidateProfileModalComponent {
   }
 
   getRoleTitle(candidate: Candidate | null): string {
-    if (!candidate) return 'Profissional Trampou';
+    if (!candidate) return 'Profissional Trampali';
     if (candidate.roleTitle) return candidate.roleTitle;
     if (candidate.level === 3) return 'Especialista em Gastronomia & Eventos';
     if (candidate.level === 2) return 'Garçom de Salão • Eventos & Gastronomia';
@@ -58,7 +58,7 @@ export class CandidateProfileModalComponent {
     if (!candidate) return '';
     return (
       candidate.bio ||
-      'Profissional dedicado com pontualidade comprovada na plataforma Trampou, focado em agilidade, boa apresentação e excelência no atendimento ao cliente.'
+      'Profissional dedicado com pontualidade comprovada na plataforma Trampali, focado em agilidade, boa apresentação e excelência no atendimento ao cliente.'
     );
   }
 

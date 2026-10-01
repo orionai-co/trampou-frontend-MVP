@@ -105,7 +105,7 @@ describe('OpportunityCardComponent', () => {
     authService.currentUser.set({
       id: 'comp-other',
       name: 'Outra Empresa',
-      email: 'outra@trampou.com',
+      email: 'outra@trampali.com',
       role: 'contractor'
     });
     fixture.detectChanges();
@@ -119,7 +119,7 @@ describe('OpportunityCardComponent', () => {
     authService.currentUser.set({
       id: 'comp-01',
       name: 'Buffet Paulista',
-      email: 'paulista@trampou.com',
+      email: 'paulista@trampali.com',
       role: 'contractor'
     });
     fixture.detectChanges();

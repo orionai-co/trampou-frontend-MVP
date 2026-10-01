@@ -45,7 +45,7 @@ describe('AuthService', () => {
   describe('login', () => {
     it('deve realizar login com sucesso, persistir token no localStorage e atualizar signals reativos', async () => {
       const loginPayload: LoginPayload = {
-        email: 'marcos@trampou.com',
+        email: 'marcos@trampali.com',
         password: 'Password123!'
       };
 
@@ -54,7 +54,7 @@ describe('AuthService', () => {
         user: {
           id: 'usr-101',
           name: 'Marcos Silva',
-          email: 'marcos@trampou.com',
+          email: 'marcos@trampali.com',
           role: 'professional'
         }
       };
@@ -70,7 +70,7 @@ describe('AuthService', () => {
       expect(service.currentUser()).toEqual({
         id: 'usr-101',
         name: 'Marcos Silva',
-        email: 'marcos@trampou.com',
+        email: 'marcos@trampali.com',
         role: 'professional',
         avatarUrl: undefined
       });
@@ -80,7 +80,7 @@ describe('AuthService', () => {
 
     it('deve suportar resposta com accessToken alternativo e normalizar role', async () => {
       const loginPayload: LoginPayload = {
-        email: 'empresa@trampou.com',
+        email: 'empresa@trampali.com',
         password: 'Password123!'
       };
 
@@ -89,7 +89,7 @@ describe('AuthService', () => {
         user: {
           id: 'usr-202',
           name: 'Restaurante Bar do Chef',
-          email: 'empresa@trampou.com',
+          email: 'empresa@trampali.com',
           role: 'company'
         }
       };
@@ -110,7 +110,7 @@ describe('AuthService', () => {
     it('deve registrar profissional com role professional, persistir token e atualizar signals', async () => {
       const payload: ProfessionalRegisterPayload = {
         nome: 'Carlos Garçom',
-        email: 'carlos@trampou.com',
+        email: 'carlos@trampali.com',
         whatsapp: '11999999999',
         senha: 'SecretPassword123!',
         area: 'Gastronomia',
@@ -127,7 +127,7 @@ describe('AuthService', () => {
         user: {
           id: 'usr-303',
           name: 'Carlos Garçom',
-          email: 'carlos@trampou.com',
+          email: 'carlos@trampali.com',
           role: 'freelancer'
         }
       };
@@ -141,7 +141,7 @@ describe('AuthService', () => {
         jasmine.objectContaining({
           role: 'professional',
           name: 'Carlos Garçom',
-          email: 'carlos@trampou.com'
+          email: 'carlos@trampali.com'
         })
       );
       expect(localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)).toBe('prof-jwt-token-456');
@@ -206,7 +206,7 @@ describe('AuthService', () => {
       service.currentUser.set({
         id: 'usr-505',
         name: 'Usuário Logado',
-        email: 'user@trampou.com',
+        email: 'user@trampali.com',
         role: 'professional'
       });
 
@@ -237,7 +237,7 @@ describe('AuthService', () => {
       const mockMeResponse = {
         id: 'usr-999',
         name: 'Roberto Valente',
-        email: 'roberto@trampou.com',
+        email: 'roberto@trampali.com',
         role: 'professional'
       };
 
@@ -249,7 +249,7 @@ describe('AuthService', () => {
       expect(service.currentUser()).toEqual({
         id: 'usr-999',
         name: 'Roberto Valente',
-        email: 'roberto@trampou.com',
+        email: 'roberto@trampali.com',
         role: 'professional',
         avatarUrl: undefined
       });
@@ -324,7 +324,7 @@ describe('AuthService', () => {
       service.currentUser.set({
         id: 'usr-sync',
         name: 'Sync User',
-        email: 'sync@trampou.com',
+        email: 'sync@trampali.com',
         role: 'professional'
       });
 

@@ -19,11 +19,11 @@ import { TpIconComponent } from '../../../../shared/components/icon/icon.compone
           <div class="tp-auth-header-spacer"></div>
         }
 
-        <a routerLink="/oportunidades" class="tp-auth-brand" aria-label="TRAMPOU - Início">
+        <a routerLink="/oportunidades" class="tp-auth-brand" aria-label="TRAMPALI - Início">
           <div class="tp-auth-brand-icon">
             <tp-icon name="sparkles" size="sm"></tp-icon>
           </div>
-          <span class="tp-auth-brand-text">TRAMPOU</span>
+          <span class="tp-auth-brand-text">TRAMPALI</span>
         </a>
 
         <div class="tp-auth-header-spacer"></div>

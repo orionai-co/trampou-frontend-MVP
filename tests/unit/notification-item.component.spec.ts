@@ -1,13 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NotificationItemComponent } from '../../src/app/features/notifications/components/notification-item/notification-item.component';
-import { TrampouNotification } from '../../src/app/core/services/notifications.service';
+import { TrampaliNotification } from '../../src/app/core/services/notifications.service';
 import { provideRouter } from '@angular/router';
 
 describe('NotificationItemComponent', () => {
   let component: NotificationItemComponent;
   let fixture: ComponentFixture<NotificationItemComponent>;
 
-  const mockShiftReminder: TrampouNotification = {
+  const mockShiftReminder: TrampaliNotification = {
     id: 'notif-test-1',
     type: 'shift_reminder',
     title: 'Turno Hoje: Garçom para Casamento',
@@ -25,7 +25,7 @@ describe('NotificationItemComponent', () => {
     }
   };
 
-  const mockPixNotification: TrampouNotification = {
+  const mockPixNotification: TrampaliNotification = {
     id: 'notif-test-2',
     type: 'pix_received',
     title: 'Pagamento PIX Liberado',

@@ -16,9 +16,9 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'trampou-frontend' title`, () => {
+  it(`should have the 'trampali-frontend' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('trampou-frontend');
+    expect(app.title).toEqual('trampali-frontend');
   });
 });

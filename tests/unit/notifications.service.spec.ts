@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { NotificationsService, TrampouNotification } from '../../src/app/core/services/notifications.service';
+import { NotificationsService, TrampaliNotification } from '../../src/app/core/services/notifications.service';
 import { ApiClientService } from '../../src/app/core/services/api-client.service';
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
   let apiClientSpy: jasmine.SpyObj<ApiClientService>;
 
-  const mockNotifications: TrampouNotification[] = [
+  const mockNotifications: TrampaliNotification[] = [
     {
       id: 'notif-1',
       type: 'shift_reminder',

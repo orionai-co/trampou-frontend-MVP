@@ -102,7 +102,7 @@ export class OpportunityDetailsModalComponent implements OnChanges {
     const ownSuffix = this.isOwnJob ? ' (Sua vaga)' : '';
     if (this.currentStep() === 2) return `${this.opportunity.companyName}${ownSuffix} • Regras e orientações de apresentação`;
     if (this.currentStep() === 3) return 'Validação de presença e confirmação da chave PIX';
-    if (this.currentStep() === 4) return 'Sua solicitação foi registrada no Trampou';
+    if (this.currentStep() === 4) return 'Sua solicitação foi registrada no Trampali';
     return `${this.opportunity.companyName}${ownSuffix} • ${this.opportunity.location.neighborhood}`;
   }
 

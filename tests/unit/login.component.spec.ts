@@ -41,7 +41,7 @@ describe('LoginComponent', () => {
     expect(component.email?.hasError('email')).toBeTrue();
     expect(component.password?.hasError('minlength')).toBeTrue();
 
-    component.form.patchValue({ email: 'usuario@trampou.com', password: 'password123' });
+    component.form.patchValue({ email: 'usuario@trampali.com', password: 'password123' });
     expect(component.form.valid).toBeTrue();
   });
 
@@ -61,7 +61,7 @@ describe('LoginComponent', () => {
 
   it('deve realizar login e redirecionar para /oportunidades quando role for professional', async () => {
     component.form.patchValue({
-      email: 'profissional@trampou.com',
+      email: 'profissional@trampali.com',
       password: 'StrongPassword123!'
     });
 
@@ -70,7 +70,7 @@ describe('LoginComponent', () => {
       user: {
         id: 'usr-1',
         name: 'Prestador Silva',
-        email: 'profissional@trampou.com',
+        email: 'profissional@trampali.com',
         role: 'professional'
       }
     };
@@ -80,7 +80,7 @@ describe('LoginComponent', () => {
     await component.onSubmit();
 
     expect(authServiceSpy.login).toHaveBeenCalledWith({
-      email: 'profissional@trampou.com',
+      email: 'profissional@trampali.com',
       password: 'StrongPassword123!'
     });
     expect(router.navigate).toHaveBeenCalledWith(['/oportunidades']);
@@ -89,7 +89,7 @@ describe('LoginComponent', () => {
 
   it('deve realizar login e redirecionar para /empresa quando role for contractor', async () => {
     component.form.patchValue({
-      email: 'empresa@trampou.com',
+      email: 'empresa@trampali.com',
       password: 'CompanyPassword123!'
     });
 
@@ -98,7 +98,7 @@ describe('LoginComponent', () => {
       user: {
         id: 'usr-2',
         name: 'Buffet Gourmet',
-        email: 'empresa@trampou.com',
+        email: 'empresa@trampali.com',
         role: 'contractor'
       }
     };
@@ -108,7 +108,7 @@ describe('LoginComponent', () => {
     await component.onSubmit();
 
     expect(authServiceSpy.login).toHaveBeenCalledWith({
-      email: 'empresa@trampou.com',
+      email: 'empresa@trampali.com',
       password: 'CompanyPassword123!'
     });
     expect(router.navigate).toHaveBeenCalledWith(['/empresa']);
@@ -117,7 +117,7 @@ describe('LoginComponent', () => {
 
   it('deve exibir mensagem de erro amigável caso authService.login falhe', async () => {
     component.form.patchValue({
-      email: 'errado@trampou.com',
+      email: 'errado@trampali.com',
       password: 'WrongPassword123!'
     });
 

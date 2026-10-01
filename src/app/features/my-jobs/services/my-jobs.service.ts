@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { Observable, from, of } from 'rxjs';
-import { JobApplication, TRAMPOU_APPLICATIONS_STORAGE_KEY } from '../models/job-application.model';
+import { JobApplication, TRAMPALI_APPLICATIONS_STORAGE_KEY } from '../models/job-application.model';
 import { ApiClientService } from '../../../core/services/api-client.service';
 import { API_ENDPOINTS } from '../../../core/constants/api-endpoints';
 
@@ -43,7 +43,7 @@ export class MyJobsService {
 
   constructor() {
     if (typeof window !== 'undefined') {
-      window.addEventListener('trampou:application-created', (e: any) => {
+      window.addEventListener('trampali:application-created', (e: any) => {
         const newApp: JobApplication = e?.detail;
         if (newApp) {
           this.applicationsState.update(list => {
@@ -55,7 +55,7 @@ export class MyJobsService {
         }
       });
 
-      window.addEventListener('trampou:application-updated', (e: any) => {
+      window.addEventListener('trampali:application-updated', (e: any) => {
         const updated = e?.detail;
         if (updated?.id || updated?.opportunityId) {
           this.applicationsState.update(list =>
@@ -74,7 +74,7 @@ export class MyJobsService {
   loadStoredApplications(): JobApplication[] {
     if (typeof localStorage === 'undefined') return [];
     try {
-      const raw = localStorage.getItem(TRAMPOU_APPLICATIONS_STORAGE_KEY);
+      const raw = localStorage.getItem(TRAMPALI_APPLICATIONS_STORAGE_KEY);
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed : [];
@@ -86,7 +86,7 @@ export class MyJobsService {
   persistApplicationsLocally(apps: JobApplication[]): void {
     if (typeof localStorage === 'undefined') return;
     try {
-      localStorage.setItem(TRAMPOU_APPLICATIONS_STORAGE_KEY, JSON.stringify(apps));
+      localStorage.setItem(TRAMPALI_APPLICATIONS_STORAGE_KEY, JSON.stringify(apps));
     } catch {}
   }
 
@@ -267,7 +267,7 @@ export class MyJobsService {
 
     // Dispara evento para outros serviços
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('trampou:application-created', { detail: newApp }));
+      window.dispatchEvent(new CustomEvent('trampali:application-created', { detail: newApp }));
     }
   }
 }

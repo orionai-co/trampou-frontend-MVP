@@ -23,7 +23,7 @@ export interface JobPayment {
   pixKeyType?: string;
 }
 
-export const TRAMPOU_APPLICATIONS_STORAGE_KEY = 'trampou_user_applications';
+export const TRAMPALI_APPLICATIONS_STORAGE_KEY = 'trampali_user_applications';
 
 export interface JobApplication {
   id: string;

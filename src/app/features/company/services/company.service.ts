@@ -5,8 +5,8 @@ import { ApiClientService } from '../../../core/services/api-client.service';
 import { API_ENDPOINTS } from '../../../core/constants/api-endpoints';
 import { ChatContact } from '../../../shared/components';
 import { AuthService } from '../../../core/services/auth.service';
-import { OpportunityService, TRAMPOU_COMPANY_JOBS_STORAGE_KEY } from '../../opportunities/services/opportunity.service';
-import { TRAMPOU_APPLICATIONS_STORAGE_KEY } from '../../my-jobs/models/job-application.model';
+import { OpportunityService, TRAMPALI_COMPANY_JOBS_STORAGE_KEY } from '../../opportunities/services/opportunity.service';
+import { TRAMPALI_APPLICATIONS_STORAGE_KEY } from '../../my-jobs/models/job-application.model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +44,7 @@ export class CompanyService {
 
   constructor() {
     if (typeof window !== 'undefined') {
-      window.addEventListener('trampou:application-created', (e: any) => {
+      window.addEventListener('trampali:application-created', (e: any) => {
         const app = e?.detail;
         if (app) {
           this._jobs.update(list => this.enrichJobsWithApplications(list));
@@ -56,7 +56,7 @@ export class CompanyService {
   private enrichJobsWithApplications(jobs: CompanyJob[]): CompanyJob[] {
     if (typeof localStorage === 'undefined') return jobs;
     try {
-      const raw = localStorage.getItem(TRAMPOU_APPLICATIONS_STORAGE_KEY);
+      const raw = localStorage.getItem(TRAMPALI_APPLICATIONS_STORAGE_KEY);
       if (!raw) return jobs;
       const apps = JSON.parse(raw);
       if (!Array.isArray(apps)) return jobs;
@@ -212,7 +212,7 @@ export class CompanyService {
   private persistJobLocally(job: CompanyJob): void {
     if (typeof localStorage === 'undefined') return;
     try {
-      const raw = localStorage.getItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY);
+      const raw = localStorage.getItem(TRAMPALI_COMPANY_JOBS_STORAGE_KEY);
       let list: CompanyJob[] = [];
       if (raw) {
         try {
@@ -220,13 +220,13 @@ export class CompanyService {
         } catch {}
       }
       const filtered = list.filter(j => j && j.id !== job.id);
-      localStorage.setItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY, JSON.stringify([job, ...filtered]));
+      localStorage.setItem(TRAMPALI_COMPANY_JOBS_STORAGE_KEY, JSON.stringify([job, ...filtered]));
     } catch {}
   }
 
   private notifyJobsUpdated(job?: CompanyJob): void {
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('trampou:jobs-updated', { detail: job }));
+      window.dispatchEvent(new CustomEvent('trampali:jobs-updated', { detail: job }));
     }
     this.opportunityService?.fetchOpportunities().catch(() => {});
   }
@@ -242,7 +242,7 @@ export class CompanyService {
       // Mescla com vagas locais salvas no localStorage
       if (typeof localStorage !== 'undefined') {
         try {
-          const raw = localStorage.getItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY);
+          const raw = localStorage.getItem(TRAMPALI_COMPANY_JOBS_STORAGE_KEY);
           if (raw) {
             const localJobs: CompanyJob[] = JSON.parse(raw);
             if (Array.isArray(localJobs)) {
@@ -265,7 +265,7 @@ export class CompanyService {
     } catch (error) {
       if (typeof localStorage !== 'undefined') {
         try {
-          const raw = localStorage.getItem(TRAMPOU_COMPANY_JOBS_STORAGE_KEY);
+          const raw = localStorage.getItem(TRAMPALI_COMPANY_JOBS_STORAGE_KEY);
           if (raw) {
             const localJobs: CompanyJob[] = JSON.parse(raw);
             if (Array.isArray(localJobs)) {
@@ -458,7 +458,7 @@ export class CompanyService {
     // Sincroniza com o armazenamento de candidaturas e notifica Meus Trabalhos
     if (typeof localStorage !== 'undefined') {
       try {
-        const raw = localStorage.getItem(TRAMPOU_APPLICATIONS_STORAGE_KEY);
+        const raw = localStorage.getItem(TRAMPALI_APPLICATIONS_STORAGE_KEY);
         if (raw) {
           const apps = JSON.parse(raw);
           if (Array.isArray(apps)) {
@@ -468,9 +468,9 @@ export class CompanyService {
               }
               return a;
             });
-            localStorage.setItem(TRAMPOU_APPLICATIONS_STORAGE_KEY, JSON.stringify(updated));
+            localStorage.setItem(TRAMPALI_APPLICATIONS_STORAGE_KEY, JSON.stringify(updated));
             if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('trampou:application-updated', {
+              window.dispatchEvent(new CustomEvent('trampali:application-updated', {
                 detail: { id: candidateId, opportunityId: jobId, status: 'accepted' }
               }));
             }
@@ -520,7 +520,7 @@ export class CompanyService {
 
     if (typeof localStorage !== 'undefined') {
       try {
-        const raw = localStorage.getItem(TRAMPOU_APPLICATIONS_STORAGE_KEY);
+        const raw = localStorage.getItem(TRAMPALI_APPLICATIONS_STORAGE_KEY);
         if (raw) {
           const apps = JSON.parse(raw);
           if (Array.isArray(apps)) {
@@ -530,9 +530,9 @@ export class CompanyService {
               }
               return a;
             });
-            localStorage.setItem(TRAMPOU_APPLICATIONS_STORAGE_KEY, JSON.stringify(updated));
+            localStorage.setItem(TRAMPALI_APPLICATIONS_STORAGE_KEY, JSON.stringify(updated));
             if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('trampou:application-updated', {
+              window.dispatchEvent(new CustomEvent('trampali:application-updated', {
                 detail: { id: candidateId, opportunityId: jobId, status: 'cancelled' }
               }));
             }
@@ -592,7 +592,7 @@ export class CompanyService {
     }));
 
     const approvedCandidate = (job.candidates || []).find(c => c.status === 'approved') || (job.candidates || [])[0];
-    const freelancerName = approvedCandidate?.name || 'Profissional Trampou';
+    const freelancerName = approvedCandidate?.name || 'Profissional Trampali';
     const pixKeyPreview = approvedCandidate?.pixKeyPreview || '***.842.190-**';
 
     const now = new Date();

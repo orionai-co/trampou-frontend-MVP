@@ -8,7 +8,7 @@ export interface ApiError {
   raw: any;
 }
 
-export const AUTH_TOKEN_STORAGE_KEY = 'trampou_access_token';
+export const AUTH_TOKEN_STORAGE_KEY = 'trampali_access_token';
 
 @Injectable({
   providedIn: 'root'

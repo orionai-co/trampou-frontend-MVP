@@ -75,7 +75,7 @@ export class ShiftChatService {
           id: `msg-${Date.now()}`,
           roomId: `room-${jobId}-${freelancerId}`,
           senderId: 'system',
-          senderName: 'Sistema Trampou',
+          senderName: 'Sistema Trampali',
           senderRole: 'company',
           text: `Canal efêmero iniciado para alinhamento operacional do turno "${jobTitle}". As mensagens serão excluídas ao término do serviço.`,
           timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
