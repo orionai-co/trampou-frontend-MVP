@@ -21,7 +21,7 @@
       <div class="tp-prof-headline">
         <div class="tp-prof-name-row">
           <h3 class="tp-prof-name">{{ candidate.name }}</h3>
-          <span class="tp-prof-verified-badge" title="Identidade e histórico validados pelo Trampou">
+          <span class="tp-prof-verified-badge" title="Identidade e histórico validados pelo Trampali">
             <tp-icon name="check-circle" size="xs"></tp-icon>
             <span>Verificado</span>
           </span>
@@ -54,7 +54,7 @@
           <span class="tp-rep-value" *ngIf="candidate.reviewsCount > 0">{{ candidate.rating.toFixed(1) }}</span>
           <span class="tp-rep-value tp-rep-newbie" *ngIf="candidate.reviewsCount === 0">Novo</span>
           <span class="tp-rep-label" *ngIf="candidate.reviewsCount > 0">{{ candidate.reviewsCount }} avaliações</span>
-          <span class="tp-rep-label tp-badge-newbie" *ngIf="candidate.reviewsCount === 0">Novo no Trampou</span>
+          <span class="tp-rep-label tp-badge-newbie" *ngIf="candidate.reviewsCount === 0">Novo no Trampali</span>
         </div>
       </div>
 
@@ -147,8 +147,8 @@
           <tp-icon name="star" size="md"></tp-icon>
         </div>
         <div class="tp-empty-reviews-info">
-          <span class="tp-reviews-empty-badge">Novo no Trampou</span>
-          <p class="tp-empty-reviews-text">Este profissional ainda não possui avaliações de contratantes no Trampou.</p>
+          <span class="tp-reviews-empty-badge">Novo no Trampali</span>
+          <p class="tp-empty-reviews-text">Este profissional ainda não possui avaliações de contratantes no Trampali.</p>
           <span class="tp-empty-reviews-sub">O histórico e as avaliações serão exibidos aqui após a realização dos primeiros turnos.</span>
         </div>
       </div>

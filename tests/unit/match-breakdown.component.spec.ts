@@ -94,7 +94,7 @@ describe('MatchBreakdownComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).toContain('Transparência & Neutralidade Algorítmica');
-    expect(compiled.textContent).toContain('O Match do TRAMPOU é 100% neutro');
+    expect(compiled.textContent).toContain('O Match do TRAMPALI é 100% neutro');
     expect(compiled.textContent).toContain('Patrocínios e destaques não influenciam esta pontuação');
   });
 

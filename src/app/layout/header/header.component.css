@@ -554,7 +554,7 @@
     box-sizing: border-box;
   }
 
-  /* Oculta a escrita 'TRAMPOU' e preserva apenas o ícone azul */
+  /* Oculta a escrita 'TRAMPALI' e preserva apenas o ícone azul */
   .tp-brand-title,
   .tp-brand-name {
     display: none;

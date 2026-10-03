@@ -115,7 +115,7 @@
   color: inherit;
 }
 
-/* Estilo Enviada (Outgoing - Azul TRAMPOU) */
+/* Estilo Enviada (Outgoing - Azul TRAMPALI) */
 .tp-msg-outgoing .tp-msg-bubble {
   background-color: var(--tp-color-primary-900);
   color: #ffffff;

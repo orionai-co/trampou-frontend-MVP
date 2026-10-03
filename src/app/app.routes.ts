@@ -24,22 +24,22 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () => import('./features/auth/pages/login/login.component').then(m => m.LoginComponent),
-        title: 'Entrar — TRAMPOU'
+        title: 'Entrar — TRAMPALI'
       },
       {
         path: 'tipo-conta',
         loadComponent: () => import('./features/auth/pages/account-type-selector/account-type-selector.component').then(m => m.AccountTypeSelectorComponent),
-        title: 'Escolha seu Perfil — TRAMPOU'
+        title: 'Escolha seu Perfil — TRAMPALI'
       },
       {
         path: 'cadastro/profissional',
         loadComponent: () => import('./features/auth/pages/register-professional/register-professional.component').then(m => m.RegisterProfessionalComponent),
-        title: 'Cadastro de Prestador — TRAMPOU'
+        title: 'Cadastro de Prestador — TRAMPALI'
       },
       {
         path: 'cadastro/empresa',
         loadComponent: () => import('./features/auth/pages/register-company/register-company.component').then(m => m.RegisterCompanyComponent),
-        title: 'Cadastro de Empresa — TRAMPOU'
+        title: 'Cadastro de Empresa — TRAMPALI'
       }
     ]
   },
@@ -52,12 +52,12 @@ export const routes: Routes = [
         path: 'oportunidades',
         // canActivate: [authGuard],
         component: OpportunitiesFeedComponent,
-        title: 'Oportunidades — TRAMPOU'
+        title: 'Oportunidades — TRAMPALI'
       },
       {
         path: 'empresas/:id',
         component: CompanyProfilePageComponent,
-        title: 'Perfil da Empresa — TRAMPOU'
+        title: 'Perfil da Empresa — TRAMPALI'
       },
       {
         path: 'empresas',
@@ -68,25 +68,25 @@ export const routes: Routes = [
         path: 'meus-trabalhos',
         // canActivate: [authGuard],
         component: MyJobsComponent,
-        title: 'Meus Trabalhos — TRAMPOU'
+        title: 'Meus Trabalhos — TRAMPALI'
       },
       {
         path: 'perfil',
         // canActivate: [authGuard],
         component: ProfileComponent,
-        title: 'Meu Perfil — TRAMPOU'
+        title: 'Meu Perfil — TRAMPALI'
       },
       {
         path: 'empresa',
         // canActivate: [authGuard],
         component: CompanyComponent,
-        title: 'Painel da Empresa — TRAMPOU'
+        title: 'Painel da Empresa — TRAMPALI'
       },
       {
         path: 'avisos',
         // canActivate: [authGuard],
         component: NotificationsComponent,
-        title: 'Avisos & Lembretes — TRAMPOU'
+        title: 'Avisos & Lembretes — TRAMPALI'
       },
       {
         path: 'notificacoes',

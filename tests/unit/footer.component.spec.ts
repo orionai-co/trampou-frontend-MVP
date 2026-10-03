@@ -23,7 +23,7 @@ describe('FooterComponent', () => {
 
   it('should render copyright text and version tag', () => {
     const textContent = fixture.nativeElement.textContent;
-    expect(textContent).toContain('TRAMPOU');
+    expect(textContent).toContain('TRAMPALI');
     expect(textContent).toContain('MVP v0.1.0');
     expect(textContent).toContain('Todos os direitos reservados');
   });
